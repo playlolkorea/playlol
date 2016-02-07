@@ -35,13 +35,13 @@ namespace NechritoRiven
 
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
         private static bool DrawAlwaysR => Menu.Item("DrawAlwaysR").GetValue<bool>();
-        private static bool DrawUseHoola => Menu.Item("DrawUseHoola").GetValue <bool>();
+        private static bool DrawUseHoola => Menu.Item("DrawUseHoola").GetValue<bool>();
         private static bool DrawFH => Menu.Item("DrawFH").GetValue<bool>();
         private static bool DrawTimer1 => Menu.Item("DrawTimer1").GetValue<bool>();
         private static bool DrawTimer2 => Menu.Item("DrawTimer2").GetValue<bool>();
         private static bool DrawHS => Menu.Item("DrawHS").GetValue<bool>();
         private static bool DrawBT => Menu.Item("DrawBT").GetValue<bool>();
-        private static bool UseHoola => Menu.Item("UseHoola").GetValue<KeyBind>().Active;
+        private static bool UseLogic => Menu.Item("UseLogic").GetValue<KeyBind>().Active;
         private static bool AlwaysR => Menu.Item("AlwaysR").GetValue<KeyBind>().Active;
         private static bool AutoShield => Menu.Item("AutoShield").GetValue<bool>();
         private static bool Shield => Menu.Item("Shield").GetValue<bool>();
@@ -61,13 +61,13 @@ namespace NechritoRiven
         private static bool Youmu => Menu.Item("youmu").GetValue<bool>();
 
 
-      private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
+        private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
 
-      private static void OnGameLoad(EventArgs args)
+        private static void OnGameLoad(EventArgs args)
         {
 
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("HELLO FROM THE OTHER SIIIDEE");
+            Game.PrintChat("Nechrito Riven Loaded. Gl & Hf");
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 300);
@@ -117,10 +117,10 @@ namespace NechritoRiven
             }
         }
 
-      private static void OnDoCastLC(Obj_AI_Base Sender, GameObjectProcessSpellCastEventArgs args)
+        private static void OnDoCastLC(Obj_AI_Base Sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!Sender.IsMe || !Orbwalking.IsAutoAttack((args.SData.Name))) return;
-            QTarget = (Obj_AI_Base) args.Target;
+            QTarget = (Obj_AI_Base)args.Target;
             if (args.Target is Obj_AI_Minion)
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
@@ -134,7 +134,7 @@ namespace NechritoRiven
                     if (Q.IsReady() && LaneQ)
                     {
                         ForceItem();
-                        Utility.DelayAction.Add(1, ()=>ForceCastQ(Minions[0]));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(Minions[0]));
                     }
                     if ((!Q.IsReady() || (Q.IsReady() && !LaneQ)) && W.IsReady() && LaneW != 0 &&
                         Minions.Count >= LaneW)
@@ -152,7 +152,7 @@ namespace NechritoRiven
             }
         }
         private static int Item => Items.CanUseItem(3077) && Items.HasItem(3077) ? 3077 : Items.CanUseItem(3074) && Items.HasItem(3074) ? 3074 : 0;
-      private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             var spellName = args.SData.Name;
             if (!sender.IsMe || !Orbwalking.IsAutoAttack(spellName)) return;
@@ -174,25 +174,25 @@ namespace NechritoRiven
                         if (Q.IsReady())
                         {
                             ForceItem();
-                            Utility.DelayAction.Add(1, ()=> ForceCastQ(Mobs[0]));
+                            Utility.DelayAction.Add(1, () => ForceCastQ(Mobs[0]));
                         }
-                       else if (W.IsReady())
+                        if (W.IsReady())
                         {
                             ForceItem();
                             Utility.DelayAction.Add(1, ForceW);
                         }
-                        else if (E.IsReady())
+                        if (E.IsReady())
                         {
                             E.Cast(Mobs[0].Position);
                         }
-                        
+
                     }
                 }
             }
             if (args.Target is Obj_AI_Turret || args.Target is Obj_Barracks || args.Target is Obj_BarracksDampener || args.Target is Obj_Building) if (args.Target.IsValid && args.Target != null && Q.IsReady() && LaneQ && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ((Obj_AI_Base)args.Target);
             if (args.Target is Obj_AI_Hero)
             {
-            var target = (Obj_AI_Hero)args.Target;
+                var target = (Obj_AI_Hero)args.Target;
                 if (KillstealR && R.IsReady() && R.Instance.Name == IsSecondR) if (target.Health < (Rdame(target, target.Health) + Player.GetAutoAttackDamage(target)) && target.Health > Player.GetAutoAttackDamage(target)) R.Cast(target.Position);
                 if (KillstealW && W.IsReady()) if (target.Health < (W.GetDamage(target) + Player.GetAutoAttackDamage(target)) && target.Health > Player.GetAutoAttackDamage(target)) W.Cast();
                 if (KillstealQ && Q.IsReady()) if (target.Health < (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)) && target.Health > Player.GetAutoAttackDamage(target)) Q.Cast();
@@ -206,7 +206,7 @@ namespace NechritoRiven
                     if (Q.IsReady())
                     {
                         ForceItem();
-                        Utility.DelayAction.Add(1, ()=>ForceCastQ(target));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
                     else if (W.IsReady() && InWRange(target))
                     {
@@ -231,7 +231,7 @@ namespace NechritoRiven
                     else if (Q.IsReady())
                     {
                         ForceItem();
-                        Utility.DelayAction.Add(1,()=>ForceCastQ(target));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
                     else if (E.IsReady() && !Orbwalking.InAutoAttackRange(target) && !InWRange(target))
                     {
@@ -262,7 +262,7 @@ namespace NechritoRiven
                     if (R.IsReady())
                     {
                         ForceItem();
-                        
+
                     }
                     if (HasTitan())
                     {
@@ -273,21 +273,21 @@ namespace NechritoRiven
                     {
                         ForceItem();
                         Utility.DelayAction.Add(1, ForceW);
-                       
+
                     }
                     if (R.IsReady() && R.Instance.Name == IsSecondR)
                     {
                         R.Cast(target.Position);
                     }
-                    else if (Q.IsReady())
+                    if (Q.IsReady())
                     {
                         ForceItem();
-                        Utility.DelayAction.Add(1, ()=>ForceCastQ(target));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
                 }
             }
         }
-      private static void OnMenuLoad()
+        private static void OnMenuLoad()
         {
             Menu = new Menu("Hoola Riven", "hoolariven", true);
             Menu ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector"));
@@ -298,7 +298,7 @@ namespace NechritoRiven
             var Combo = new Menu("Combo", "Combo");
 
             Combo.AddItem(new MenuItem("AlwaysR", "Always Use R (Toggle)").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            Combo.AddItem(new MenuItem("UseHoola", "Use Hoola Combo Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            Combo.AddItem(new MenuItem("UseLogic", "Use Hoola Combo Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             Combo.AddItem(new MenuItem("RKillable", "Use R When Target Can Killable").SetValue(true));
 
@@ -349,15 +349,13 @@ namespace NechritoRiven
             var Credit = new Menu("Credit", "Credit");
 
             Credit.AddItem(new MenuItem("hoola", "Made by Hoola, Configured By Nechrito"));
-            Credit.AddItem(new MenuItem("notfixe", "There will be bugs if you set the ping to high"));
-            Credit.AddItem(new MenuItem("feedback", "Feedback To Hoola!"));
 
             Menu.AddSubMenu(Credit);
 
             Menu.AddToMainMenu();
         }
 
-      private static void Interrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
+        private static void Interrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
             if (sender.IsEnemy && W.IsReady() && sender.IsValidTarget() && !sender.IsZombie && WInterrupt)
             {
@@ -367,7 +365,7 @@ namespace NechritoRiven
 
         private static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
-      private static void AutoUseW()
+        private static void AutoUseW()
         {
             if (AutoW > 0)
             {
@@ -378,7 +376,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void OnTick(EventArgs args)
+        private static void OnTick(EventArgs args)
         {
             Timer.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
             Timer.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 43;
@@ -394,10 +392,10 @@ namespace NechritoRiven
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass) FastHarass();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst) Burst();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) Flee();
-            if (Utils.GameTimeTickCount - LastQ >= 3650 && QStack != 1 && !Player.IsRecalling()  && Q.IsReady()) Q.Cast(Game.CursorPos);
+            if (Utils.GameTimeTickCount - LastQ >= 3650 && QStack != 1 && !Player.IsRecalling() && !Player.InFountain() && Q.IsReady()) Q.Cast(Game.CursorPos);
         }
 
-      private static void Killsteal()
+        private static void Killsteal()
         {
             if (KillstealQ && Q.IsReady())
             {
@@ -427,7 +425,7 @@ namespace NechritoRiven
                 }
             }
         }
-      private static void UseRMaxDam()
+        private static void UseRMaxDam()
         {
             if (RMaxDam && R.IsReady() && R.Instance.Name == IsSecondR)
             {
@@ -440,7 +438,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             if (Player.IsDead)
                 return;
@@ -449,13 +447,13 @@ namespace NechritoRiven
 
             if (QStack != 1 && DrawTimer1)
             {
-                Timer.text = ("Q Expiry =>  " + ((double)(LastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0")+"S");
+                Timer.text = ("Q Expiry =>  " + ((double)(LastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0") + "S");
                 Timer.OnEndScene();
             }
 
             if (Player.HasBuff("RivenFengShuiEngine") && DrawTimer2)
             {
-                Timer2.text = ("R Expiry =>  " + (((double)LastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0") +"S");
+                Timer2.text = ("R Expiry =>  " + (((double)LastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0") + "S");
                 Timer2.OnEndScene();
             }
 
@@ -463,19 +461,19 @@ namespace NechritoRiven
             if (DrawBT && Flash != SpellSlot.Unknown) Render.Circle.DrawCircle(Player.Position, 800, R.IsReady() && Flash.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
             if (DrawFH) Render.Circle.DrawCircle(Player.Position, 450 + Player.AttackRange + 70, E.IsReady() && Q.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
             if (DrawHS) Render.Circle.DrawCircle(Player.Position, 400, Q.IsReady() && W.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
-            if (DrawAlwaysR) 
+            if (DrawAlwaysR)
             {
-                Drawing.DrawText(heropos.X -40, heropos.Y + 20, System.Drawing.Color.DodgerBlue, "Always R  (     )");
+                Drawing.DrawText(heropos.X - 40, heropos.Y + 20, System.Drawing.Color.DodgerBlue, "Always R  (     )");
                 Drawing.DrawText(heropos.X + 40, heropos.Y + 20, AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, AlwaysR ? "On" : "Off");
             }
             if (DrawUseHoola)
             {
-                Drawing.DrawText(heropos.X -40, heropos.Y + 33, System.Drawing.Color.DodgerBlue, "Hoola Logic  (     )");
-                Drawing.DrawText(heropos.X + 60, heropos.Y + 33, UseHoola ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseHoola ? "On" : "Off");
+                Drawing.DrawText(heropos.X - 40, heropos.Y + 33, System.Drawing.Color.DodgerBlue, "Hoola Logic  (     )");
+                Drawing.DrawText(heropos.X + 60, heropos.Y + 33, UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
             }
         }
 
-      private static void Jungleclear()
+        private static void Jungleclear()
         {
 
             var Mobs = MinionManager.GetMinions(250 + Player.AttackRange + 70, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
@@ -489,7 +487,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void Combo()
+        private static void Combo()
         {
             var targetR = TargetSelector.GetTarget(250 + Player.AttackRange + 70, TargetSelector.DamageType.Physical);
             if (R.IsReady() && R.Instance.Name == IsFirstR && Orbwalker.InAutoAttackRange(targetR) && AlwaysR && targetR != null) ForceR();
@@ -499,7 +497,7 @@ namespace NechritoRiven
                 Utility.DelayAction.Add(1, ForceW);
             }
             if (W.IsReady() && InWRange(targetR) && ComboW && targetR != null) W.Cast();
-            if (UseHoola && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null && E.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
+            if (UseLogic && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null && E.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
             {
                 if (!InWRange(targetR))
                 {
@@ -509,7 +507,7 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(305, () => ForceCastQ(targetR));
                 }
             }
-            else if (!UseHoola && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null && E.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
+            else if (!UseLogic && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null && E.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
             {
                 if (!InWRange(targetR))
                 {
@@ -518,7 +516,7 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(200, ForceW);
                 }
             }
-            else if (UseHoola && W.IsReady() && E.IsReady())
+            else if (UseLogic && W.IsReady() && E.IsReady())
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
@@ -528,7 +526,7 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(305, () => ForceCastQ(targetR));
                 }
             }
-            else if (!UseHoola && W.IsReady() && targetR != null && E.IsReady())
+            else if (!UseLogic && W.IsReady() && targetR != null && E.IsReady())
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
@@ -546,7 +544,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void Burst()
+        private static void Burst()
         {
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
@@ -564,7 +562,7 @@ namespace NechritoRiven
                     E.Cast(target.Position);
                     CastYoumoo();
                     ForceR();
-                    Utility.DelayAction.Add(150,()=>ForceCastQ(target));
+                    Utility.DelayAction.Add(150, () => ForceCastQ(target));
                     Utility.DelayAction.Add(160, ForceW);
                 }
                 else if (Flash.IsReady()
@@ -586,7 +584,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void FastHarass()
+        private static void FastHarass()
         {
             if (Q.IsReady() && E.IsReady())
             {
@@ -595,12 +593,12 @@ namespace NechritoRiven
                 {
                     if (!Orbwalking.InAutoAttackRange(target) && !InWRange(target)) E.Cast(target.Position);
                     Utility.DelayAction.Add(10, ForceItem);
-                    Utility.DelayAction.Add(170, ()=>ForceCastQ(target));
+                    Utility.DelayAction.Add(170, () => ForceCastQ(target));
                 }
             }
         }
 
-      private static void Harass()
+        private static void Harass()
         {
             var target = TargetSelector.GetTarget(400, TargetSelector.DamageType.Physical);
             if (Q.IsReady() && W.IsReady() && E.IsReady() && QStack == 1)
@@ -620,7 +618,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void Flee()
+        private static void Flee()
         {
             var enemy =
                 HeroManager.Enemies.Where(
@@ -634,7 +632,7 @@ namespace NechritoRiven
             if (E.IsReady() && !Player.IsDashing()) E.Cast(x);
         }
 
-      private static void OnPlay(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
+        private static void OnPlay(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
         {
             if (!sender.IsMe) return;
 
@@ -674,7 +672,7 @@ namespace NechritoRiven
             }
         }
 
-      private static void OnCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        private static void OnCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
 
@@ -685,15 +683,15 @@ namespace NechritoRiven
             if (args.SData.Name == IsSecondR) forceR2 = false;
         }
 
-      private static void Reset()
+        private static void Reset()
         {
             Game.Say("/d");
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
         }
 
-      private static bool InWRange(GameObject target)=> (Player.HasBuff("RivenFengShuiEngine") && target != null) ?
-                    330 >= Player.Distance(target.Position) : 265 >= Player.Distance(target.Position);
+        private static bool InWRange(GameObject target) => (Player.HasBuff("RivenFengShuiEngine") && target != null) ?
+                      330 >= Player.Distance(target.Position) : 265 >= Player.Distance(target.Position);
         private static bool InQRange(GameObject target) => (Player.HasBuff("RivenFengShuiEngine") && target != null) ?
                    330 >= Player.Distance(target.Position) : 265 >= Player.Distance(target.Position);
 
@@ -719,7 +717,7 @@ namespace NechritoRiven
         private static void ForceR()
         {
             forceR = (R.IsReady() && R.Instance.Name == IsFirstR);
-            Utility.DelayAction.Add(500, ()=> forceR = false);
+            Utility.DelayAction.Add(500, () => forceR = false);
         }
         private static void ForceR2()
         {
@@ -732,14 +730,14 @@ namespace NechritoRiven
             Utility.DelayAction.Add(500, () => forceW = false);
         }
 
-      private static void ForceCastQ(AttackableUnit target)
+        private static void ForceCastQ(AttackableUnit target)
         {
             forceQ = true;
             QTarget = target;
         }
 
 
-      private static void FlashW()
+        private static void FlashW()
         {
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
@@ -751,8 +749,8 @@ namespace NechritoRiven
 
         private static bool HasItem() => ItemData.Tiamat_Melee_Only.GetItem().IsReady() || ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady();
 
-        private static void CastYoumoo(){if(ItemData.Youmuus_Ghostblade.GetItem().IsReady())ItemData.Youmuus_Ghostblade.GetItem().Cast();}
-      private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        private static void CastYoumoo() { if (ItemData.Youmuus_Ghostblade.GetItem().IsReady()) ItemData.Youmuus_Ghostblade.GetItem().Cast(); }
+        private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsEnemy && sender.Type == Player.Type && (AutoShield || (Shield && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)))
             {
@@ -936,8 +934,8 @@ namespace NechritoRiven
                 }
             }
         }
-        
-      private static double basicdmg(Obj_AI_Base target)
+
+        private static double basicdmg(Obj_AI_Base target)
         {
             if (target != null)
             {
@@ -964,7 +962,7 @@ namespace NechritoRiven
         }
 
 
-      private static float getComboDamage(Obj_AI_Base enemy)
+        private static float getComboDamage(Obj_AI_Base enemy)
         {
             if (enemy != null)
             {
@@ -1005,7 +1003,7 @@ namespace NechritoRiven
             return false;
         }
 
-      private static double totaldame(Obj_AI_Base target)
+        private static double totaldame(Obj_AI_Base target)
         {
             if (target != null)
             {
@@ -1036,7 +1034,7 @@ namespace NechritoRiven
             return 0;
         }
 
-      private static double Rdame(Obj_AI_Base target, double health)
+        private static double Rdame(Obj_AI_Base target, double health)
         {
             if (target != null)
             {
