@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Policy;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -176,12 +177,12 @@ namespace NechritoRiven
                             ForceItem();
                             Utility.DelayAction.Add(1, () => ForceCastQ(Mobs[0]));
                         }
-                        if (W.IsReady())
+                      else  if (W.IsReady())
                         {
                             ForceItem();
                             Utility.DelayAction.Add(1, ForceW);
                         }
-                        if (E.IsReady())
+                      else if (E.IsReady())
                         {
                             E.Cast(Mobs[0].Position);
                         }
@@ -289,7 +290,7 @@ namespace NechritoRiven
         }
         private static void OnMenuLoad()
         {
-            Menu = new Menu("Hoola Riven", "hoolariven", true);
+            Menu = new Menu("Nechrito Riven", "hoolariven", true);
             Menu ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector"));
             TargetSelector.AddToMenu(ts);
             var orbwalker = new Menu("Orbwalk", "rorb");
@@ -298,7 +299,7 @@ namespace NechritoRiven
             var Combo = new Menu("Combo", "Combo");
 
             Combo.AddItem(new MenuItem("AlwaysR", "Always Use R (Toggle)").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            Combo.AddItem(new MenuItem("UseLogic", "Use Hoola Combo Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            Combo.AddItem(new MenuItem("UseLogic", "Use Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             Combo.AddItem(new MenuItem("RKillable", "Use R When Target Can Killable").SetValue(true));
 
@@ -314,17 +315,16 @@ namespace NechritoRiven
             Menu.AddSubMenu(Lane);
             var Misc = new Menu("Misc", "Misc");
 
-            Misc.AddItem(new MenuItem("youmu", "Use Youmus When E").SetValue(false));
-            Misc.AddItem(new MenuItem("FirstHydra", "Flash Burst Hydra Cast before W").SetValue(false));
-            Misc.AddItem(new MenuItem("Qstrange", "Strange Q For Speed").SetValue(false));
-            Misc.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
-            Misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
+            Misc.AddItem(new MenuItem("youmu", "Auto Yomuu's").SetValue(false));
+            Misc.AddItem(new MenuItem("Qstrange", "Fast Q, not legit!").SetValue(false));  
             Misc.AddItem(new MenuItem("RMaxDam", "Use Second R Max Damage").SetValue(true));
             Misc.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
             Misc.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
             Misc.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
             Misc.AddItem(new MenuItem("AutoShield", "Auto Cast E").SetValue(true));
             Misc.AddItem(new MenuItem("Shield", "Auto Cast E While LastHit").SetValue(true));
+            Misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
+            Misc.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
             Misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             Misc.AddItem(new MenuItem("QD", "First,Second Q Delay").SetValue(new Slider(29, 23, 43)));
             Misc.AddItem(new MenuItem("QLD", "Third Q Delay").SetValue(new Slider(39, 36, 53)));
@@ -334,15 +334,16 @@ namespace NechritoRiven
 
             var Draw = new Menu("Draw", "Draw");
 
-            Draw.AddItem(new MenuItem("DrawAlwaysR", "Draw Always R Status").SetValue(true));
-            Draw.AddItem(new MenuItem("DrawTimer1", "Draw Q Expiry Time").SetValue(true));
-            Draw.AddItem(new MenuItem("DrawTimer2", "Draw R Expiry Time").SetValue(true));
-            Draw.AddItem(new MenuItem("DrawUseHoola", "Draw Hoola Logic Status").SetValue(true));
-            Draw.AddItem(new MenuItem("Dind", "Draw Damage Indicator").SetValue(true));
-            Draw.AddItem(new MenuItem("DrawCB", "Draw Combo Engage Range").SetValue(false));
-            Draw.AddItem(new MenuItem("DrawBT", "Draw Burst Engage Range").SetValue(false));
-            Draw.AddItem(new MenuItem("DrawFH", "Draw FastHarass Engage Range").SetValue(false));
-            Draw.AddItem(new MenuItem("DrawHS", "Draw Harass Engage Range").SetValue(false));
+
+            Draw.AddItem(new MenuItem("DrawTimer1", "Q Timer").SetValue(true));
+            Draw.AddItem(new MenuItem("DrawTimer2", "R Timer").SetValue(true));
+            Draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
+            Draw.AddItem(new MenuItem("DrawUseHoola", "Logic").SetValue(true));
+            Draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
+            Draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
+            Draw.AddItem(new MenuItem("DrawBT", "Burst Engage").SetValue(false));
+            Draw.AddItem(new MenuItem("DrawFH", "FastHarass Engage").SetValue(false));
+            Draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
 
             Menu.AddSubMenu(Draw);
 
@@ -468,8 +469,8 @@ namespace NechritoRiven
             }
             if (DrawUseHoola)
             {
-                Drawing.DrawText(heropos.X - 40, heropos.Y + 33, System.Drawing.Color.DodgerBlue, "Hoola Logic  (     )");
-                Drawing.DrawText(heropos.X + 60, heropos.Y + 33, UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
+                Drawing.DrawText(heropos.X - 40, heropos.Y + 33, System.Drawing.Color.DodgerBlue, "Logic  (     )");
+                Drawing.DrawText(heropos.X + 13, heropos.Y + 33, UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
             }
         }
 
@@ -935,6 +936,7 @@ namespace NechritoRiven
             }
         }
 
+        
         private static double basicdmg(Obj_AI_Base target)
         {
             if (target != null)
@@ -1003,6 +1005,7 @@ namespace NechritoRiven
             return false;
         }
 
+        
         private static double totaldame(Obj_AI_Base target)
         {
             if (target != null)
