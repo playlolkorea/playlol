@@ -45,7 +45,6 @@ namespace NechritoRiven
         private static bool UseLogic => Menu.Item("UseLogic").GetValue<KeyBind>().Active;
         private static bool AlwaysR => Menu.Item("AlwaysR").GetValue<KeyBind>().Active;
         private static bool AutoShield => Menu.Item("AutoShield").GetValue<bool>();
-        private static bool Shield => Menu.Item("Shield").GetValue<bool>();
         private static bool KeepQ => Menu.Item("KeepQ").GetValue<bool>();
         private static int QD => Menu.Item("QD").GetValue<Slider>().Value;
         private static int QLD => Menu.Item("QLD").GetValue<Slider>().Value;
@@ -137,8 +136,7 @@ namespace NechritoRiven
                         ForceItem();
                         Utility.DelayAction.Add(1, () => ForceCastQ(Minions[0]));
                     }
-                    if ((!Q.IsReady() || (Q.IsReady() && !LaneQ)) && W.IsReady() && LaneW != 0 &&
-                        Minions.Count >= LaneW)
+                    if ((!Q.IsReady() || (Q.IsReady() && !LaneQ)) && W.IsReady() && LaneW != 1 )
                     {
                         ForceItem();
                         Utility.DelayAction.Add(1, ForceW);
@@ -190,7 +188,7 @@ namespace NechritoRiven
                     }
                 }
             }
-            if (args.Target is Obj_AI_Turret || args.Target is Obj_Barracks || args.Target is Obj_BarracksDampener || args.Target is Obj_Building) if (args.Target.IsValid && args.Target != null && Q.IsReady() && LaneQ && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ((Obj_AI_Base)args.Target);
+            if (args.Target is Obj_AI_Turret || args.Target is Obj_Barracks|| args.Target is Obj_BarracksDampener || args.Target is Obj_Building) if (args.Target.IsValid && args.Target != null && Q.IsReady() && LaneQ && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ((Obj_AI_Base)args.Target);
             if (args.Target is Obj_AI_Hero)
             {
                 var target = (Obj_AI_Hero)args.Target;
@@ -253,7 +251,7 @@ namespace NechritoRiven
                         Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
                 }
-                //ercwrq
+                //Nechrito Burst.
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
                 {
                     if (E.IsReady() && !Orbwalking.InAutoAttackRange(target))
@@ -285,6 +283,7 @@ namespace NechritoRiven
                         ForceItem();
                         Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
+                    else if (E.IsReady() && !Orbwalking.InAutoAttackRange(target)) E.Cast(target.Position);
                 }
             }
         }
@@ -306,9 +305,9 @@ namespace NechritoRiven
 
             Menu.AddSubMenu(Combo);
             var Lane = new Menu("Lane", "Lane");
-            Lane.AddItem(new MenuItem("LaneQ", "Use Q While Laneclear").SetValue(true));
-            Lane.AddItem(new MenuItem("LaneW", "Use W X Minion (0 = Don't)").SetValue(new Slider(5, 0, 5)));
-            Lane.AddItem(new MenuItem("LaneE", "Use E While Laneclear").SetValue(true));
+            Lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
+            Lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
+            Lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
 
 
 
@@ -322,7 +321,6 @@ namespace NechritoRiven
             Misc.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
             Misc.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
             Misc.AddItem(new MenuItem("AutoShield", "Auto Cast E").SetValue(true));
-            Misc.AddItem(new MenuItem("Shield", "Auto Cast E While LastHit").SetValue(true));
             Misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
             Misc.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
             Misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
@@ -631,6 +629,7 @@ namespace NechritoRiven
             if (W.IsReady() && enemy.Any()) foreach (var target in enemy) if (InWRange(target)) W.Cast();
             if (Q.IsReady() && !Player.IsDashing()) Q.Cast(Game.CursorPos);
             if (E.IsReady() && !Player.IsDashing()) E.Cast(x);
+
         }
 
         private static void OnPlay(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
@@ -754,7 +753,7 @@ namespace NechritoRiven
         private static void CastYoumoo() { if (ItemData.Youmuus_Ghostblade.GetItem().IsReady()) ItemData.Youmuus_Ghostblade.GetItem().Cast(); }
         private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsEnemy && sender.Type == Player.Type && (AutoShield || (Shield && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)))
+            if (sender.IsEnemy && sender.Type == Player.Type && (AutoShield))   
             {
                 var epos = Player.ServerPosition +
                           (Player.ServerPosition - sender.ServerPosition).Normalized() * 300;
@@ -812,6 +811,7 @@ namespace NechritoRiven
                             if (E.IsReady()) E.Cast(epos);
                         }
                     }
+
                     if (args.SData.Name.Contains("GarenQAttack"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
