@@ -160,12 +160,13 @@ namespace NechritoRiven
                             ForceItem();
                             Utility.DelayAction.Add(1, () => ForceCastQ(Minions[0]));
                         }
-                         if (W.IsReady() && Minions.Count < LaneW)
-                        {
+                        
+                       if (W.IsReady() && Minions.Count >= LaneW)
+                       {
                             ForceItem();
                             Utility.DelayAction.Add(1, ForceW);
                         }
-                        if (E.IsReady() && LaneE)
+                       else if (E.IsReady() && LaneE)
                         {
                             E.Cast(Minions[0].Position);
                         }
@@ -289,14 +290,7 @@ namespace NechritoRiven
                 }
                 //Nechrito Burst.
                 if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
-                if (target == null || !target.IsValidTarget() || target.IsZombie) return;
-                if (Flash.IsReady() && R.IsReady() && R.Instance.Name == IsFirstR &&
-                    (Player.Distance(target.Position) <= 800))
-
-                {
-                    Utility.DelayAction.Add(1, FlashW);
-                }
-
+               
                 if (E.IsReady() && !Orbwalking.InAutoAttackRange(target) && target.IsValidTarget() &&
                     !target.IsZombie)
                 {
@@ -832,7 +826,7 @@ namespace NechritoRiven
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                W.Cast();
+                
                 Utility.DelayAction.Add(10, () => Player.Spellbook.CastSpell(Flash, target.Position));
             }
         }
