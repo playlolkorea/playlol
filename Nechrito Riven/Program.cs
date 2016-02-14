@@ -297,9 +297,9 @@ namespace NechritoRiven
                     !target.IsZombie && DoubleCast && R.IsReady() && (Player.Distance(target.Position) <= 800))
 
                 {
-                    
+
                     if (E.IsReady()) { E.Cast(target.Position); }
-                   
+
                     if (R.IsReady()) { ForceR(); }
                     if (Flash.IsReady())
                     {
@@ -359,13 +359,13 @@ namespace NechritoRiven
 
                     }
                 }
-                
+
                 //Nechrito Burst.
                 else if (E.IsReady() && Flash.IsReady() && target.IsValidTarget() &&
                      !target.IsZombie && !DoubleCast && R.IsReady() && (Player.Distance(target.Position) <= 750))
 
                 {
-                   
+
                     E.Cast(target.Position);
                     Utility.DelayAction.Add(180, FlashW);
                 }
@@ -415,6 +415,7 @@ namespace NechritoRiven
             var orbwalker = new Menu("Orbwalk", "rorb");
             Orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Menu.AddSubMenu(orbwalker);
+
             var Combo = new Menu("Combo", "Combo");
 
             Combo.AddItem(new MenuItem("AlwaysR", "Always Use R (Toggle)").SetValue(new KeyBind('G', KeyBindType.Toggle)));
@@ -703,7 +704,7 @@ namespace NechritoRiven
                     CastYoumoo();
                 }
                 else if (Flash.IsReady()
-                    && R.IsReady() && E.IsReady() && W.IsReady()  && R.Instance.Name == IsFirstR && (Player.Distance(target.Position) <=800))
+                    && R.IsReady() && E.IsReady() && W.IsReady() && R.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= 800))
                 {
                     Utility.DelayAction.Add(180, FlashW);
                     E.Cast(target.Position);
