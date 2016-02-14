@@ -145,7 +145,7 @@ namespace NechritoRiven
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var Minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
+                    var Minions = MinionManager.GetMinions(70 + 160 + Player.BoundingRadius);
 
 
                     if (Minions.Count != 0)
@@ -156,7 +156,7 @@ namespace NechritoRiven
                             return;
                         }
 
-                        if (E.IsReady() && LaneE)
+                        if (E.IsReady() && LaneE && !Minions[0].UnderTurret())
                         {
                             E.Cast(Minions[0].Position);
                         }
@@ -294,25 +294,39 @@ namespace NechritoRiven
                 if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
                 //DoubleCast Burst
                 if (E.IsReady() && Flash.IsReady() && target.IsValidTarget() &&
-                    !target.IsZombie && DoubleCast && R.IsReady() && (Player.Distance(target.Position) <= 600))
+                    !target.IsZombie && DoubleCast && R.IsReady() && (Player.Distance(target.Position) <= 800))
 
                 {
+                    
+                    if (E.IsReady()) { E.Cast(target.Position); }
+                   
+                    if (R.IsReady()) { ForceR(); }
                     if (Flash.IsReady())
                     {
-                        FlashW();
+                        Utility.DelayAction.Add(200, FlashW);
                     }
-                    if (E.IsReady()) { E.Cast(target.Position); }
-                    if (R.IsReady()) { ForceR(); }
                     if (HasTitan())
                     {
                         CastTitan();
                         return;
                     }
-                    if (W.IsReady()) { ForceW(); }
+                    if (W.IsReady())
+                    {
+                        ForceItem();
+                        DelayAction.Add(1, ForceW);
+
+                    }
                     if (Q1.IsReady()) { Q1.Cast(target); }
                     if (R.IsReady()) { R.Cast(target.Position); }
                     if (Q2.IsReady()) { Q2.Cast(target); }
+                    else if (E.IsReady())
+                    {
+                        if (target.IsValidTarget() && !target.IsZombie)
+                        {
+                            E.Cast(target.Position);
+                        }
 
+                    }
 
 
                 }
@@ -327,18 +341,33 @@ namespace NechritoRiven
                         CastTitan();
                         return;
                     }
-                    if (W.IsReady()) { ForceW(); }
+                    if (W.IsReady() && InWRange(target))
+                    {
+                        ForceItem();
+                        DelayAction.Add(1, ForceW);
+
+                    }
                     if (Q1.IsReady()) { Q1.Cast(target); }
                     if (R.IsReady()) { R.Cast(target.Position); }
                     if (Q2.IsReady()) { Q2.Cast(target); }
+                    else if (E.IsReady())
+                    {
+                        if (target.IsValidTarget() && !target.IsZombie)
+                        {
+                            E.Cast(target.Position);
+                        }
+
+                    }
                 }
+                
                 //Nechrito Burst.
                 else if (E.IsReady() && Flash.IsReady() && target.IsValidTarget() &&
-                     !target.IsZombie && R.IsReady() && (Player.Distance(target.Position) <= 750))
+                     !target.IsZombie && !DoubleCast && R.IsReady() && (Player.Distance(target.Position) <= 750))
 
                 {
-                    FlashW();
+                   
                     E.Cast(target.Position);
+                    Utility.DelayAction.Add(180, FlashW);
                 }
                 if (R.IsReady())
                 {
@@ -392,7 +421,8 @@ namespace NechritoRiven
             Combo.AddItem(new MenuItem("UseLogic", "Use Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             Combo.AddItem(new MenuItem("RKillable", "Use R When Target Can Killable").SetValue(true));
-            Combo.AddItem(new MenuItem("DoubleCast", "Double Cast?").SetValue(false));
+            Combo.AddItem(new MenuItem("DoubleCast", "Double Cast").SetValue(false));
+
 
             Menu.AddSubMenu(Combo);
             var Lane = new Menu("Lane", "Lane");
@@ -551,7 +581,7 @@ namespace NechritoRiven
                 Render.Circle.DrawCircle(Player.Position, 250 + Player.AttackRange + 70,
                     E.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
             if (DrawBT && Flash != SpellSlot.Unknown)
-                Render.Circle.DrawCircle(Player.Position, 800,
+                Render.Circle.DrawCircle(Player.Position, 750,
                     R.IsReady() && Flash.IsReady()
                         ? System.Drawing.Color.FromArgb(120, 0, 170, 255)
                         : System.Drawing.Color.IndianRed);
@@ -673,9 +703,9 @@ namespace NechritoRiven
                     CastYoumoo();
                 }
                 else if (Flash.IsReady()
-                    && R.IsReady() && E.IsReady() && W.IsReady() && R.Instance.Name == IsFirstR && (Player.Distance(target.Position) <=600))
+                    && R.IsReady() && E.IsReady() && W.IsReady()  && R.Instance.Name == IsFirstR && (Player.Distance(target.Position) <=800))
                 {
-                    FlashW();
+                    Utility.DelayAction.Add(180, FlashW);
                     E.Cast(target.Position);
                     ForceR();
                     DelayAction.Add(100, ForceItem);
