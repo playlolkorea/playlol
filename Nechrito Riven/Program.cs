@@ -166,7 +166,7 @@ namespace NechritoRiven
                             ForceItem();
                             DelayAction.Add(1, () => ForceCastQ(Minions[0]));
                         }
-                        if (W.IsReady() && LaneW)
+                        if (W.IsReady() && LaneW && Minions.Count != 2)
                         {
                             ForceItem();
                             DelayAction.Add(1, ForceW);
@@ -294,20 +294,19 @@ namespace NechritoRiven
 
                     //Nechrito Burst | Improved
 
-                 if (HasTitan())
+                 if (HasTitan() && target.IsValidTarget() && !target.IsZombie)
                     {
                         CastTitan();
                         return;
                     }
                 if (W.IsReady() && InWRange(target))
                 {
-                    ForceItem();
-                    ForceW();
+                    W.Cast();
                 }
                if (Q.IsReady())
                     {
                         ForceItem();
-                       ForceCastQ(target);
+                       Q.Cast(target);
                     }
                if (R.IsReady() && R.Instance.Name == IsSecondR)
                     {
@@ -315,9 +314,9 @@ namespace NechritoRiven
                     }
                if (QStack == 2 && Q.IsReady())
                     {
-                        ForceItem();
-                        DelayAction.Add(1, () => ForceCastQ(target));
-                    }
+                    ForceItem();
+                    DelayAction.Add(1, () => ForceCastQ(target));
+                }
 
                 else if (E.IsReady())
                     {
@@ -617,7 +616,7 @@ namespace NechritoRiven
                     E.Cast(target.Position);
                     R.Cast();
                     CastTitan();
-                    ForceW();
+
                 }
 
                 else if (Flash.IsReady()
