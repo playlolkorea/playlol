@@ -305,9 +305,9 @@ namespace NechritoRiven
                 }
                if (Q.IsReady())
                     {
-                        ForceItem();
-                       Q.Cast(target);
-                    }
+                    ForceItem();
+                    DelayAction.Add(1, () => ForceCastQ(target));
+                }
                if (R.IsReady() && R.Instance.Name == IsSecondR)
                     {
                         R.Cast(target.Position);
