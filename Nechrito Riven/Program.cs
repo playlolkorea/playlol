@@ -144,33 +144,35 @@ namespace NechritoRiven
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var Minions = MinionManager.GetMinions(70 + 160 + Player.BoundingRadius);
+                    var Minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
 
 
                     if (Minions.Count != 0)
                     {
+                        if (E.IsReady() && !Orbwalking.InAutoAttackRange(Minions[0]) && LaneE)
+                        {
+                            E.Cast(Minions[0].Position);
+                        }
+
                         if (HasTitan())
                         {
                             CastTitan();
                             return;
                         }
-
-                        if (E.IsReady() && LaneE && !Minions[0].UnderTurret())
-                        {
-                            E.Cast(Minions[0].Position);
-                        }
-
-
                         if (Q.IsReady() && LaneQ)
                         {
                             ForceItem();
                             DelayAction.Add(1, () => ForceCastQ(Minions[0]));
                         }
-                        if (W.IsReady() && LaneW && Minions.Count != 2)
-                        {
-                            ForceItem();
-                            DelayAction.Add(1, ForceW);
+                        else if (Minions.Count != 1)
+                        { 
+                        if (W.IsReady() && LaneW)
+                            {
+                                ForceItem();
+                                DelayAction.Add(1, ForceW);
+                            }
                         }
+
                     }
                 }
             }
@@ -186,7 +188,7 @@ namespace NechritoRiven
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var Mobs = MinionManager.GetMinions(120 + 70 + Player.BoundingRadius, MinionTypes.All,
+                    var Mobs = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius, MinionTypes.All,
                         MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
                     if (Mobs.Count != 0)
                     {
@@ -205,11 +207,12 @@ namespace NechritoRiven
                             ForceItem();
                             DelayAction.Add(1, () => ForceCastQ(Mobs[0]));
                         }
-                        else if (W.IsReady())
+                         if (W.IsReady())
                         {
                             ForceItem();
                             DelayAction.Add(1, ForceW);
                         }
+                      
                         else if (E.IsReady())
                         {
                             E.Cast(Mobs[0].Position);
@@ -330,7 +333,7 @@ namespace NechritoRiven
 
         private static void OnMenuLoad()
         {
-            Menu = new Menu("Nechrito Riven", "hoolariven", true);
+            Menu = new Menu("Nechrito Riven", "nechritoriven", true);
             var ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector"));
             TargetSelector.AddToMenu(ts);
             var orbwalker = new Menu("Orbwalk", "rorb");
@@ -616,7 +619,7 @@ namespace NechritoRiven
                     E.Cast(target.Position);
                     R.Cast();
                     CastTitan();
-
+                    CastYoumoo();
                 }
 
                 else if (Flash.IsReady()
@@ -625,6 +628,7 @@ namespace NechritoRiven
                 {
                     E.Cast(target.Position);
                     ForceR();
+                    CastYoumoo();
                     DelayAction.Add(180, FlashW);
                 }
             }
