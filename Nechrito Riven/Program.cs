@@ -63,6 +63,20 @@ namespace NechritoRiven
         private static bool FirstHydra => Menu.Item("FirstHydra").GetValue<bool>();
         private static bool LaneQ => Menu.Item("LaneQ").GetValue<bool>();
         private static bool Youmu => Menu.Item("youmu").GetValue<bool>();
+        private static bool IsLethal(Obj_AI_Base unit)
+        {
+            return totaldame(unit) / 1.65 >= unit.Health;
+        }
+        private static Obj_AI_Base GetCenterMinion()
+        {
+
+            var minionposition = MinionManager.GetMinions(300 +Q.Range).Select(x => x.Position.To2D()).ToList();
+            var center = MinionManager.GetBestCircularFarmLocation(minionposition, 250, 300 + Q.Range);
+
+            return center.MinionsHit >= 3
+                ? MinionManager.GetMinions(1000).OrderBy(x => x.Distance(center.Position)).FirstOrDefault()
+                : null;
+        }
 
         private static int Item
             =>
@@ -72,19 +86,20 @@ namespace NechritoRiven
 
         private static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
-
+        
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
 
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("Nechrito Riven Loaded. Gl & Hf");
-            Q = new Spell(SpellSlot.Q);
-            W = new Spell(SpellSlot.W);
-            E = new Spell(SpellSlot.E, 300);
+            Game.PrintChat("<b><font color=\"#00e5e5\">Nechrito Riven, GL & HF</font></b>");
+            Q = new Spell(SpellSlot.Q, 260f);
+            Q.SetSkillshot(0.25f, 100f, 2200f, false, SkillshotType.SkillshotCircle);
+            W = new Spell(SpellSlot.W, 250f);
+            E = new Spell(SpellSlot.E, 270);
             R = new Spell(SpellSlot.R, 900);
-            R.SetSkillshot(0.25f, 45, 1600, false, SkillshotType.SkillshotCone);
-
+            R.SetSkillshot(0.25f, (float) (45 * 0.5), 1600, false, SkillshotType.SkillshotCircle);
+          
             OnMenuLoad();
 
 
@@ -147,35 +162,40 @@ namespace NechritoRiven
                     var Minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
 
 
-                    if (Minions.Count != 0)
+                    if (Minions.Count >= 1)
                     {
-                        if (E.IsReady() && !Orbwalking.InAutoAttackRange(Minions[0]) && LaneE)
-                        {
-                            E.Cast(Minions[0].Position);
-                        }
 
-                        if (HasTitan())
+                        
+                        if (Q.IsReady() && (Player.Distance(Player.ServerPosition) <= 250 + Player.AttackRange)&& LaneQ)
+                           
                         {
-                            CastTitan();
-                            return;
+                            if (GetCenterMinion().IsValidTarget())
+                            
+               
+                                Q.Cast(GetCenterMinion());
+                            
+                            else  Q.Cast(Minions[1]);
                         }
-                        if (Q.IsReady() && LaneQ)
+                       
+                        if (W.IsReady() && Minions.Count >= 2 && LaneW)
                         {
-                            ForceItem();
-                            DelayAction.Add(1, () => ForceCastQ(Minions[0]));
-                        }
-                        else if (Minions.Count != 1)
-                        { 
-                        if (W.IsReady() && LaneW)
+                            if (HasTitan())
                             {
-                                ForceItem();
-                                DelayAction.Add(1, ForceW);
+                                CastTitan();
+                                return;
                             }
+                            W.Cast(GetCenterMinion());
                         }
-
+                        if (E.IsReady() &&  E.IsReady() && (Player.Distance(Player.ServerPosition) < Player.AttackRange + 30 && !Minions[0].UnderTurret() && LaneE))
+                        {
+                                if (GetCenterMinion().IsValidTarget())
+                                E.Cast(GetCenterMinion());
+                            
+                        }
                     }
                 }
             }
+
         }
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -295,42 +315,33 @@ namespace NechritoRiven
 
                 if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
 
-                    //Nechrito Burst | Improved
-
-                 if (HasTitan() && target.IsValidTarget() && !target.IsZombie)
+                //Nechrito Burst | Improved
+                if (E.IsReady())
+                {
+                    if (target.IsValidTarget() && !target.IsZombie)
                     {
-                        CastTitan();
-                        return;
+                        E.Cast(target.Position);
                     }
+                }
                 if (W.IsReady() && InWRange(target))
                 {
                     W.Cast();
                 }
-               if (Q.IsReady())
+                
+                if (Q.IsReady())
                     {
                     ForceItem();
                     DelayAction.Add(1, () => ForceCastQ(target));
                 }
-               if (R.IsReady() && R.Instance.Name == IsSecondR)
+               if (R.IsReady() && QStack == 2 && R.Instance.Name == IsSecondR)
                     {
                         R.Cast(target.Position);
                     }
-               if (QStack == 2 && Q.IsReady())
-                    {
-                    ForceItem();
-                    DelayAction.Add(1, () => ForceCastQ(target));
-                }
-
-                else if (E.IsReady())
-                    {
-                        if (target.IsValidTarget() && !target.IsZombie)
-                        {
-                            E.Cast(target.Position);
-                        }
-                    }
+               
+                
             }
         }
-
+        
         private static void OnMenuLoad()
         {
             Menu = new Menu("Nechrito Riven", "nechritoriven", true);
@@ -350,10 +361,11 @@ namespace NechritoRiven
 
             Menu.AddSubMenu(Combo);
             var Lane = new Menu("Lane", "Lane");
-            Lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
-            Lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
-            Lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
-
+                Lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
+                Lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
+                Lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
+            
+           
 
             Menu.AddSubMenu(Lane);
             var Misc = new Menu("Misc", "Misc");
@@ -428,7 +440,7 @@ namespace NechritoRiven
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass) FastHarass();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst) Burst();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) Flee();
-            if (Utils.GameTimeTickCount - LastQ >= 3650 && QStack != 1 && !Player.IsRecalling() && !Player.InFountain() &&
+            if (Utils.GameTimeTickCount - LastQ >= 3650 && QStack != 1 && !Player.IsRecalling() && !Player.InFountain() && !Player.Spellbook.IsChanneling && 
                 Q.IsReady()) Q.Cast(Game.CursorPos);
         }
 
@@ -532,6 +544,7 @@ namespace NechritoRiven
                 Drawing.DrawText(heropos.X + 13, heropos.Y + 33,
                     UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
             }
+         
         }
 
         private static void Jungleclear()
@@ -680,6 +693,7 @@ namespace NechritoRiven
             if (W.IsReady() && enemy.Any()) foreach (var target in enemy) if (InWRange(target)) W.Cast();
             if (Q.IsReady() && !Player.IsDashing()) Q.Cast(Game.CursorPos);
             if (E.IsReady() && !Player.IsDashing()) E.Cast(x);
+
         }
 
         private static void OnPlay(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
@@ -696,10 +710,10 @@ namespace NechritoRiven
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
                         DelayAction.Add(QD*10 + 1, Reset);
-                    break;
+                    break;  
                 case "Spell1b":
                     LastQ = Utils.GameTimeTickCount;
-                    if (Qstrange && Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None) Game.Say("/d");
+                    if (Qstrange && Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None) Game.Say("/´d");
                     QStack = 3;
                     if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
@@ -748,8 +762,9 @@ namespace NechritoRiven
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                 Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-        }
 
+        }
+        
         private static bool InWRange(GameObject target) => Player.HasBuff("RivenFengShuiEngine") && target != null
             ? 330 >= Player.Distance(target.Position)
             : 265 >= Player.Distance(target.Position);
@@ -891,6 +906,7 @@ namespace NechritoRiven
                             if (E.IsReady()) E.Cast();
                         }
                     }
+                  
                     if (args.SData.Name.Contains("XenZhaoThrust3"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
