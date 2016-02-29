@@ -314,6 +314,7 @@ namespace NechritoRiven
             Combo.AddItem(new MenuItem("AlwaysR", "Use R (Toggle)").SetValue(new KeyBind('G', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("UseLogic", "Use Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
+            Combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
 
             Menu.AddSubMenu(Combo);
             var Lane = new Menu("Lane", "Lane");
