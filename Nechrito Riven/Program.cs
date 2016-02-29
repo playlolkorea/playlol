@@ -36,7 +36,6 @@ namespace NechritoRiven
         private static bool Dind => Menu.Item("Dind").GetValue<bool>();
         private static bool DrawCB => Menu.Item("DrawCB").GetValue<bool>();
         private static bool KillstealW => Menu.Item("killstealw").GetValue<bool>();
-        private static bool KillstealH => Menu.Item("killstealH").GetValue<bool>();
 
         private static bool KillstealQ => Menu.Item("killstealq").GetValue<bool>();
 
@@ -246,9 +245,7 @@ namespace NechritoRiven
                 if (KillstealQ && Q.IsReady())
                     if (target.Health < Q.GetDamage(target) + Player.GetAutoAttackDamage(target) &&
                         target.Health > Player.GetAutoAttackDamage(target)) Q.Cast(target);
-                if (KillstealH && HasTitan())
-                    if (target.Health < totaldame(target)  + Player.GetAutoAttackDamage(target) &&
-                        target.Health > Player.GetAutoAttackDamage(target)) CastTitan();
+               
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
                     if (HasTitan())
@@ -326,7 +323,6 @@ namespace NechritoRiven
             Combo.AddItem(new MenuItem("RKillable", "Don't use R on E.g. Trynda R").SetValue(true));
             Combo.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
             Combo.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
-            Combo.AddItem(new MenuItem("killstealH", "Killsteal Hydra").SetValue(true));
             Combo.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
 
             Menu.AddSubMenu(Combo);
@@ -414,15 +410,7 @@ namespace NechritoRiven
 
         private static void Killsteal()
         {
-            if (KillstealH && HasTitan())
-            {
-                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsZombie);
-                foreach (var target in targets)
-                {
-                    if (target.Health < totaldame(target) && InQRange(target))
-                        CastTitan();
-                }
-            }
+            
             if (KillstealQ && Q.IsReady())
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsZombie);
