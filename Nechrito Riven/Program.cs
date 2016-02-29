@@ -15,7 +15,7 @@ namespace NechritoRiven
 {
     public class Program
     {
-        private const string IsFirstR = "rivenfengshuiengine";
+        private const string IsFirstR = "RivenFengShuiEngine";
         private const string IsSecondR = "rivenizunablade";
         public static Menu Menu;
         private static Orbwalking.Orbwalker Orbwalker;
