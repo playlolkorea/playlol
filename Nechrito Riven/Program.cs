@@ -3,20 +3,14 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
-using
-
-
-static
-
-LeagueSharp.Common.Utility;
-    using ItemData = LeagueSharp.Common.Data.ItemData;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace NechritoRiven
 {
     public class Program
     {
         private const string IsFirstR = "RivenFengShuiEngine";
-        private const string IsSecondR = "rivenizunablade";
+        private const string IsSecondR = "RivenIzunaBlade";
         public static Menu Menu;
         private static Orbwalking.Orbwalker Orbwalker;
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
@@ -211,12 +205,12 @@ namespace NechritoRiven
                         if (Q.IsReady())
                         {
                             ForceItem();
-                            DelayAction.Add(1, () => ForceCastQ(Mobs[0]));
+                            Utility.DelayAction.Add(1, () => ForceCastQ(Mobs[0]));
                         }
                         if (W.IsReady())
                         {
                             ForceItem();
-                            DelayAction.Add(1, ForceW);
+                            Utility.DelayAction.Add(1, ForceW);
                         }
 
                         else if (E.IsReady())
@@ -256,10 +250,10 @@ namespace NechritoRiven
                     if (W.IsReady() && InWRange(target))
                         W.Cast();
 
-                    if (Q.IsReady() && UseLogic)
+                    if (Q.IsReady())
                     {
                         ForceItem();
-                        DelayAction.Add(1, () => ForceCastQ(target));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
 
                     if (R.IsReady() && QStack == 2 && R.Instance.Name == IsSecondR)
@@ -277,7 +271,7 @@ namespace NechritoRiven
                     if (QStack == 2 && Q.IsReady())
                     {
                         ForceItem();
-                        DelayAction.Add(1, () => ForceCastQ(target));
+                        Utility.DelayAction.Add(1, () => ForceCastQ(target));
                     }
                 }
 
@@ -293,7 +287,7 @@ namespace NechritoRiven
                 if (Q.IsReady())
                 {
                     ForceItem();
-                    DelayAction.Add(1, () => ForceCastQ(target));
+                    Utility.DelayAction.Add(1, () => ForceCastQ(target));
                 }
                 if (R.IsReady() && QStack == 2 && R.Instance.Name == IsSecondR)
                     R.Cast(target.Position);
@@ -315,6 +309,9 @@ namespace NechritoRiven
             Combo.AddItem(new MenuItem("UseLogic", "Use Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             Combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
+            Combo.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
+            Combo.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
+            Combo.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
 
             Menu.AddSubMenu(Combo);
             var Lane = new Menu("Lane", "Lane");
@@ -328,9 +325,6 @@ namespace NechritoRiven
             Misc.AddItem(new MenuItem("youmu", "Auto Yomuu's").SetValue(true));
             Misc.AddItem(new MenuItem("Qstrange", "Fast Q, not legit!").SetValue(false));
             Misc.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
-            Misc.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
-            Misc.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
-            Misc.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
             Misc.AddItem(new MenuItem("AutoShield", "Auto Cast E").SetValue(true));
             Misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
             Misc.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
@@ -527,7 +521,7 @@ namespace NechritoRiven
                 targetR != null)
             {
                 ForceR();
-                DelayAction.Add(1, ForceW);
+                Utility.DelayAction.Add(1, ForceW);
             }
             if (W.IsReady() && InWRange(targetR) && ComboW && targetR != null) W.Cast();
             if (UseLogic && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null && E.IsReady() &&
@@ -537,8 +531,8 @@ namespace NechritoRiven
                 {
                     E.Cast(targetR.Position);
                     ForceR();
-                    DelayAction.Add(20, ForceW);
-                    DelayAction.Add(30, () => ForceCastQ(targetR));
+                    Utility.DelayAction.Add(20, ForceW);
+                    Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
             else if (!UseLogic && R.IsReady() && R.Instance.Name == IsFirstR && W.IsReady() && targetR != null &&
@@ -548,7 +542,8 @@ namespace NechritoRiven
                 {
                     E.Cast(targetR.Position);
                     ForceR();
-                    DelayAction.Add(20, ForceW);
+                    Utility.DelayAction.Add(20, ForceW);
+                    
                 }
             }
             else if (UseLogic && W.IsReady() && E.IsReady())
@@ -556,9 +551,9 @@ namespace NechritoRiven
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
                     E.Cast(targetR.Position);
-                    DelayAction.Add(10, ForceItem);
-                    DelayAction.Add(20, ForceW);
-                    DelayAction.Add(30, () => ForceCastQ(targetR));
+                    Utility.DelayAction.Add(100, ForceItem);
+                    Utility.DelayAction.Add(20, ForceW);
+                    Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
             else if (!UseLogic && W.IsReady() && targetR != null && E.IsReady())
@@ -566,8 +561,9 @@ namespace NechritoRiven
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
                     E.Cast(targetR.Position);
-                    DelayAction.Add(10, ForceItem);
-                    DelayAction.Add(10, ForceW);
+                    Utility.DelayAction.Add(100, ForceItem);
+                    Utility.DelayAction.Add(100, ForceW);
+                    Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
             else if (E.IsReady())
@@ -598,7 +594,7 @@ namespace NechritoRiven
                     E.Cast(target.Position);
                     ForceR();
                     CastYoumoo();
-                    DelayAction.Add(180, FlashW);
+                    Utility.DelayAction.Add(180, FlashW);
                 }
             }
         }
@@ -611,8 +607,8 @@ namespace NechritoRiven
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
                     if (!Orbwalking.InAutoAttackRange(target) && !InWRange(target)) E.Cast(target.Position);
-                    DelayAction.Add(10, ForceItem);
-                    DelayAction.Add(170, () => ForceCastQ(target));
+                    Utility.DelayAction.Add(10, ForceItem);
+                    Utility.DelayAction.Add(170, () => ForceCastQ(target));
                 }
             }
         }
@@ -625,7 +621,7 @@ namespace NechritoRiven
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
                     ForceCastQ(target);
-                    DelayAction.Add(1, ForceW);
+                    Utility.DelayAction.Add(1, ForceW);
                 }
             }
             if (Q.IsReady() && E.IsReady() && QStack == 3 && !Orbwalking.CanAttack() && Orbwalking.CanMove(5))
@@ -633,7 +629,7 @@ namespace NechritoRiven
                 var epos = Player.ServerPosition +
                            (Player.ServerPosition - target.ServerPosition).Normalized()*300;
                 E.Cast(epos);
-                DelayAction.Add(190, () => Q.Cast(epos));
+                Utility.DelayAction.Add(190, () => Q.Cast(epos));
             }
         }
 
@@ -664,7 +660,7 @@ namespace NechritoRiven
                     if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        DelayAction.Add(QD*10 + 1, Reset);
+                        Utility.DelayAction.Add(QD*10 + 1, Reset);
                     break;
                 case "Spell1b":
                     LastQ = Utils.GameTimeTickCount;
@@ -673,7 +669,7 @@ namespace NechritoRiven
                     if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        DelayAction.Add(QD*10 + 1, Reset);
+                        Utility.DelayAction.Add(QD*10 + 1, Reset);
                     break;
                 case "Spell1c":
                     LastQ = Utils.GameTimeTickCount;
@@ -682,7 +678,7 @@ namespace NechritoRiven
                     if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        DelayAction.Add(QLD*10 + 3, Reset);
+                        Utility.DelayAction.Add(QLD*10 + 3, Reset);
                     break;
                 case "Spell3":
                     if ((Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst ||
@@ -750,25 +746,25 @@ namespace NechritoRiven
         private static void ForceItem()
         {
             if (Items.CanUseItem(Item) && Items.HasItem(Item) && Item != 0) forceItem = true;
-            DelayAction.Add(500, () => forceItem = false);
+            Utility.DelayAction.Add(500, () => forceItem = false);
         }
 
         private static void ForceR()
         {
             forceR = R.IsReady() && R.Instance.Name == IsFirstR;
-            DelayAction.Add(500, () => forceR = false);
+            Utility.DelayAction.Add(500, () => forceR = false);
         }
 
         private static void ForceR2()
         {
             forceR2 = R.IsReady() && R.Instance.Name == IsSecondR;
-            DelayAction.Add(500, () => forceR2 = false);
+            Utility.DelayAction.Add(500, () => forceR2 = false);
         }
 
         private static void ForceW()
         {
             forceW = W.IsReady();
-            DelayAction.Add(500, () => forceW = false);
+            Utility.DelayAction.Add(500, () => forceW = false);
         }
 
         private static void ForceCastQ(AttackableUnit target)
@@ -783,7 +779,7 @@ namespace NechritoRiven
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                DelayAction.Add(10, () => Player.Spellbook.CastSpell(Flash, target.Position));
+                Utility.DelayAction.Add(10, () => Player.Spellbook.CastSpell(Flash, target.Position));
             }
         }
 
