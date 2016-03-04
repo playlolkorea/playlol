@@ -284,8 +284,8 @@ namespace NechritoRiven
             }
 
             if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
-            //Nechrito Burst | Improved
-            if (_e.IsReady() && (Player.Distance(target.Position) <= 310))
+
+            if (_e.IsReady())
                 _e.Cast(target.Position);
 
             if (_w.IsReady() && InWRange(target))
@@ -299,9 +299,12 @@ namespace NechritoRiven
             if (_r.IsReady() && _qStack == 2 && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
 
-            
-            
-           
+            if (_r.IsReady() && StunBurst && _r.Instance.Name == IsSecondR)
+                _r.Cast(target.Position);
+
+
+
+
 
 
         }
@@ -317,9 +320,9 @@ namespace NechritoRiven
 
             var combo = new Menu("Combo", "Combo");
 
-            combo.AddItem(new MenuItem("StunBurst", "Stun Burst").SetValue(false));
-            combo.AddItem(new MenuItem("AlwaysR", "Use R (Toggle)").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("UseLogic", "Use Logic (Toggle)").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
+            combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("UseLogic", "Use Logic").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
             combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
@@ -446,7 +449,7 @@ namespace NechritoRiven
 
         private static void UseRMaxDam()
         {
-            if (RMaxDam && _r.IsReady() && _r.Instance.Name == IsSecondR || DoIgnite)
+            if (RMaxDam && _r.IsReady() && _r.Instance.Name == IsSecondR)
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
                 foreach (var target in targets)
@@ -455,6 +458,17 @@ namespace NechritoRiven
                         (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
                          !target.HasBuff("JudicatorIntervention")))
                         _r.Cast(target.Position);
+                }
+            }
+            else if (DoIgnite)
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health/target.MaxHealth <= 0.25 &&
+                        (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
+                         !target.HasBuff("JudicatorIntervention")))
+                        Player.Spellbook.CastSpell(Ignite, target);
                 }
             }
         }
@@ -573,7 +587,7 @@ namespace NechritoRiven
                 {
                     _e.Cast(targetR.Position);
                     Utility.DelayAction.Add(100, ForceItem);
-                    Utility.DelayAction.Add(20, ForceW);
+                    Utility.DelayAction.Add(200, ForceW);
                     Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
@@ -626,13 +640,15 @@ namespace NechritoRiven
                          (Player.Distance(target.Position) <= 1300))
                 {
                     _q.Cast(target.Position);
-                    if (_qStack == 3 && (Geometry.Distance(Player, target.Position) <= 1100))
+                    if (_qStack == 3 && (Geometry.Distance(Player, target.Position) <= 800))
                     {
                         _e.Cast(target.Position);
                         ForceR();
                         CastYoumoo();
                         Utility.DelayAction.Add(180, FlashW);
                         _q3.Cast(target.Position);
+                        
+                       
                         
 
                     }
