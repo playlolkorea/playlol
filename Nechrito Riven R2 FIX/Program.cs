@@ -10,7 +10,7 @@ namespace NechritoRiven
     public class Program
     {
         private const string IsFirstR = "RivenFengShuiEngine";
-        private const string IsSecondR = "RivenIzunaBlade";
+        private const string IsSecondR = "rivenizunablade";
         public static Menu Menu;
         private static Orbwalking.Orbwalker _orbwalker;
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
@@ -38,7 +38,7 @@ namespace NechritoRiven
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
 
         private static bool DrawAlwaysR => Menu.Item("DrawAlwaysR").GetValue<bool>();
-        private static bool DrawStunBurst => Menu.Item("DrawStunBurst").GetValue<bool>();
+        private static bool DrawLogic => Menu.Item("DrawLogic").GetValue<bool>();
 
         private static bool DrawFh => Menu.Item("DrawFH").GetValue<bool>();
         private static bool DrawTimer1 => Menu.Item("DrawTimer1").GetValue<bool>();
@@ -46,6 +46,7 @@ namespace NechritoRiven
         private static bool DrawHs => Menu.Item("DrawHS").GetValue<bool>();
         private static bool DrawBt => Menu.Item("DrawBT").GetValue<bool>();
 
+        private static bool UseLogic => Menu.Item("UseLogic").GetValue<KeyBind>().Active;
         private static bool AlwaysR => Menu.Item("AlwaysR").GetValue<KeyBind>().Active;
         private static bool AutoShield => Menu.Item("AutoShield").GetValue<bool>();
         private static int Qd => Menu.Item("QD").GetValue<Slider>().Value;
@@ -64,7 +65,7 @@ namespace NechritoRiven
 
         public static bool IsLethal(Obj_AI_Base unit)
         {
-            return Totaldame(unit)/1.65 >= unit.Health;
+            return Totaldame(unit) / 1.65 >= unit.Health;
         }
 
         private static Obj_AI_Base GetCenterMinion()
@@ -97,21 +98,21 @@ namespace NechritoRiven
             _w = new Spell(SpellSlot.W, 250f);
             _e = new Spell(SpellSlot.E, 270);
             _r = new Spell(SpellSlot.R, 900);
-            _r.SetSkillshot(0.25f, (float) (45*0.5), 1600, false, SkillshotType.SkillshotCircle);
+            _r.SetSkillshot(0.25f, (float)(45 * 0.5), 1600, false, SkillshotType.SkillshotCircle);
             Ignite = Player.GetSpellSlot("SummonerDot");
             Flash = Player.GetSpellSlot("SummonerFlash");
 
             OnMenuLoad();
             Timer =
                 new Render.Text(
-                    "Q Expiry =>  " + ((double) (_lastQ - Utils.GameTimeTickCount + 3800)/1000).ToString("0.0"),
-                    (int) Drawing.WorldToScreen(Player.Position).X - 140,
-                    (int) Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
+                    "Q Expiry =>  " + ((double)(_lastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0"),
+                    (int)Drawing.WorldToScreen(Player.Position).X - 140,
+                    (int)Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
             Timer2 =
                 new Render.Text(
-                    "R Expiry =>  " + (((double) _lastR - Utils.GameTimeTickCount + 15000)/1000).ToString("0.0"),
-                    (int) Drawing.WorldToScreen(Player.Position).X - 60,
-                    (int) Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
+                    "R Expiry =>  " + (((double)_lastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0"),
+                    (int)Drawing.WorldToScreen(Player.Position).X - 60,
+                    (int)Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
 
             Game.OnUpdate += OnTick;
             Drawing.OnDraw += Drawing_OnDraw;
@@ -153,7 +154,7 @@ namespace NechritoRiven
         private static void OnDoCastLc(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe || !Orbwalking.IsAutoAttack(args.SData.Name)) return;
-            _qTarget = (Obj_AI_Base) args.Target;
+            _qTarget = (Obj_AI_Base)args.Target;
             if (args.Target is Obj_AI_Minion)
             {
                 if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
@@ -168,15 +169,15 @@ namespace NechritoRiven
                         }
                         if (_e.IsReady() && _e.IsReady() &&
                             !minions[0].UnderTurret() && LaneE)
-                        
+
                             _e.Cast(GetCenterMinion().IsValidTarget() ? GetCenterMinion() : minions[0]);
-                        
+
 
                         if (_q.IsReady() && (Player.Distance(Player.ServerPosition) <= 250 + Player.AttackRange) &&
                             LaneQ)
-                        
+
                             _q.Cast(GetCenterMinion().IsValidTarget() ? GetCenterMinion() : minions[1]);
-                        
+
 
                         if (_w.IsReady() && minions.Count >= 2 && LaneW)
                             _w.Cast(GetCenterMinion());
@@ -189,7 +190,7 @@ namespace NechritoRiven
         {
             var spellName = args.SData.Name;
             if (!sender.IsMe || !Orbwalking.IsAutoAttack(spellName)) return;
-            _qTarget = (Obj_AI_Base) args.Target;
+            _qTarget = (Obj_AI_Base)args.Target;
 
             if (args.Target is Obj_AI_Minion)
             {
@@ -319,9 +320,9 @@ namespace NechritoRiven
 
             var combo = new Menu("Combo", "Combo");
 
-            
+            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
             combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("UseLogic", "Use Logic").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
             combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
@@ -334,7 +335,7 @@ namespace NechritoRiven
             lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
             lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
             lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
-            
+
 
 
             Menu.AddSubMenu(lane);
@@ -355,12 +356,12 @@ namespace NechritoRiven
             draw.AddItem(new MenuItem("DrawTimer1", "Draw Q Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawTimer2", "Draw R Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
-            draw.AddItem(new MenuItem("DrawStunBurst", "Q3 Flash").SetValue(true));
-            draw.AddItem(new MenuItem("Dind", "Damage").SetValue(true));
-            draw.AddItem(new MenuItem("DrawCB", "Combo").SetValue(false));
-            draw.AddItem(new MenuItem("DrawBT", "Burst").SetValue(false));
-            draw.AddItem(new MenuItem("DrawFH", "FastHarass").SetValue(false));
-            draw.AddItem(new MenuItem("DrawHS", "Harass").SetValue(false));
+            draw.AddItem(new MenuItem("DrawLogic", "Logic").SetValue(true));
+            draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
+            draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawBT", "Burst Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawFH", "FastHarass Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
 
             Menu.AddSubMenu(draw);
 
@@ -394,10 +395,10 @@ namespace NechritoRiven
 
         private static void OnTick(EventArgs args)
         {
-            Timer.X = (int) Drawing.WorldToScreen(Player.Position).X - 60;
-            Timer.Y = (int) Drawing.WorldToScreen(Player.Position).Y + 43;
-            Timer2.X = (int) Drawing.WorldToScreen(Player.Position).X - 60;
-            Timer2.Y = (int) Drawing.WorldToScreen(Player.Position).Y + 65;
+            Timer.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
+            Timer.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 43;
+            Timer2.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
+            Timer2.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 65;
             ForceSkill();
             UseRMaxDam();
             AutoUseW();
@@ -453,7 +454,7 @@ namespace NechritoRiven
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health/target.MaxHealth <= 0.25 &&
+                    if (target.Health / target.MaxHealth <= 0.25 &&
                         (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
                          !target.HasBuff("JudicatorIntervention")))
                         _r.Cast(target.Position);
@@ -464,7 +465,7 @@ namespace NechritoRiven
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health/target.MaxHealth <= 0.25 &&
+                    if (target.Health / target.MaxHealth <= 0.25 &&
                         (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
                          !target.HasBuff("JudicatorIntervention")))
                         Player.Spellbook.CastSpell(Ignite, target);
@@ -481,7 +482,7 @@ namespace NechritoRiven
 
             if (_qStack != 1 && DrawTimer1)
             {
-                Timer.text = "Q Expiry =>  " + ((double) (_lastQ - Utils.GameTimeTickCount + 3800)/1000).ToString("0.0") +
+                Timer.text = "Q Expiry =>  " + ((double)(_lastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0") +
                              "S";
                 Timer.OnEndScene();
             }
@@ -489,7 +490,7 @@ namespace NechritoRiven
             if (Player.HasBuff("RivenFengShuiEngine") && DrawTimer2)
             {
                 Timer2.text = "R Expiry =>  " +
-                              (((double) _lastR - Utils.GameTimeTickCount + 15000)/1000).ToString("0.0") + "S";
+                              (((double)_lastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0") + "S";
                 Timer2.OnEndScene();
             }
 
@@ -519,11 +520,11 @@ namespace NechritoRiven
                     AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, AlwaysR ? "On" : "Off");
             }
 
-            if (DrawStunBurst)
+            if (DrawLogic)
             {
                 Drawing.DrawText(heropos.X - 15, heropos.Y + 36, System.Drawing.Color.DodgerBlue, "Logic  (     )");
                 Drawing.DrawText(heropos.X + 37, heropos.Y + 36,
-                    StunBurst ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, StunBurst ? "On" : "Off");
+                    UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
             }
         }
 
@@ -558,7 +559,7 @@ namespace NechritoRiven
                 Utility.DelayAction.Add(1, ForceW);
             }
             if (_w.IsReady() && InWRange(targetR) && ComboW && targetR != null) _w.Cast();
-            if (_r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
+            if (UseLogic && _r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
                 _e.IsReady() &&
                 targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
             {
@@ -570,8 +571,17 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
-            
-            else if ( _w.IsReady() && _e.IsReady())
+            else if (!UseLogic && _r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
+                     _e.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
+            {
+                if (!InWRange(targetR))
+                {
+                    _e.Cast(targetR.Position);
+                    ForceR();
+                    Utility.DelayAction.Add(20, ForceW);
+                }
+            }
+            else if (UseLogic && _w.IsReady() && _e.IsReady())
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
@@ -581,7 +591,16 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
-           
+            else if (!UseLogic && _w.IsReady() && targetR != null && _e.IsReady())
+            {
+                if (targetR.IsValidTarget() && !targetR.IsZombie && !InWRange(targetR))
+                {
+                    _e.Cast(targetR.Position);
+                    Utility.DelayAction.Add(100, ForceItem);
+                    Utility.DelayAction.Add(100, ForceW);
+                    Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
+                }
+            }
             else if (_e.IsReady())
             {
                 if (targetR != null && (targetR.IsValidTarget() && !targetR.IsZombie && !InWRange(targetR)))
@@ -608,17 +627,17 @@ namespace NechritoRiven
                     CastTitan();
                     CastYoumoo();
                 }
-                 if (Flash.IsReady() && !StunBurst && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
-                         (Player.Distance(target.Position) <= 800))
+                if (Flash.IsReady() && !StunBurst && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
+                        (Player.Distance(target.Position) <= 800))
                 {
                     _e.Cast(target.Position);
                     ForceR();
                     CastYoumoo();
                     Utility.DelayAction.Add(180, FlashW);
                 }
-                 if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady() &&
-                         _r.Instance.Name == IsFirstR &&
-                         (Player.Distance(target.Position) <= 1300))
+                if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady() &&
+                        _r.Instance.Name == IsFirstR &&
+                        (Player.Distance(target.Position) <= 1300))
                 {
                     _q.Cast(target.Position);
                     if (_qStack == 3 && (Geometry.Distance(Player, target.Position) <= 800))
@@ -628,9 +647,9 @@ namespace NechritoRiven
                         CastYoumoo();
                         Utility.DelayAction.Add(180, FlashW);
                         _q3.Cast(target.Position);
-                        
-                       
-                        
+
+
+
 
                     }
                 }
@@ -665,7 +684,7 @@ namespace NechritoRiven
             if (_q.IsReady() && _e.IsReady() && _qStack == 3 && !Orbwalking.CanAttack() && Orbwalking.CanMove(5))
             {
                 var epos = Player.ServerPosition +
-                           (Player.ServerPosition - target.ServerPosition).Normalized()*300;
+                           (Player.ServerPosition - target.ServerPosition).Normalized() * 300;
                 _e.Cast(epos);
                 Utility.DelayAction.Add(190, () => _q.Cast(epos));
             }
@@ -699,7 +718,7 @@ namespace NechritoRiven
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        Utility.DelayAction.Add(Qd*10 + 1, Reset);
+                        Utility.DelayAction.Add(Qd * 10 + 1, Reset);
                     break;
                 case "Spell1b":
                     _lastQ = Utils.GameTimeTickCount;
@@ -708,7 +727,7 @@ namespace NechritoRiven
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        Utility.DelayAction.Add(Qd*10 + 1, Reset);
+                        Utility.DelayAction.Add(Qd * 10 + 1, Reset);
                     break;
                 case "Spell1c":
                     _lastQ = Utils.GameTimeTickCount;
@@ -717,7 +736,7 @@ namespace NechritoRiven
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
                         _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Flee)
-                        Utility.DelayAction.Add(Qld*10 + 3, Reset);
+                        Utility.DelayAction.Add(Qld * 10 + 3, Reset);
                     break;
                 case "Spell3":
                     if ((_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst ||
@@ -840,7 +859,7 @@ namespace NechritoRiven
             if (sender.IsEnemy && sender.Type == Player.Type && AutoShield)
             {
                 var epos = Player.ServerPosition +
-                           (Player.ServerPosition - sender.ServerPosition).Normalized()*300;
+                           (Player.ServerPosition - sender.ServerPosition).Normalized() * 300;
 
                 if (Player.Distance(sender.ServerPosition) <= args.SData.CastRange)
                 {
@@ -1058,14 +1077,14 @@ namespace NechritoRiven
                 {
                     passivenhan = 0.2;
                 }
-                if (HasItem()) dmg = dmg + Player.GetAutoAttackDamage(target)*0.7;
+                if (HasItem()) dmg = dmg + Player.GetAutoAttackDamage(target) * 0.7;
                 if (_w.IsReady()) dmg = dmg + _w.GetDamage(target);
                 if (_q.IsReady())
                 {
                     var qnhan = 4 - _qStack;
-                    dmg = dmg + _q.GetDamage(target)*qnhan + Player.GetAutoAttackDamage(target)*qnhan*(1 + passivenhan);
+                    dmg = dmg + _q.GetDamage(target) * qnhan + Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
                 }
-                dmg = dmg + Player.GetAutoAttackDamage(target)*(1 + passivenhan);
+                dmg = dmg + Player.GetAutoAttackDamage(target) * (1 + passivenhan);
                 return dmg;
             }
             return 0;
@@ -1106,18 +1125,18 @@ namespace NechritoRiven
                 {
                     passivenhan = 0.2f;
                 }
-                if (HasItem()) damage = damage + (float) Player.GetAutoAttackDamage(enemy)*0.7f;
+                if (HasItem()) damage = damage + (float)Player.GetAutoAttackDamage(enemy) * 0.7f;
                 if (_w.IsReady()) damage = damage + _w.GetDamage(enemy);
                 if (_q.IsReady())
                 {
                     var qnhan = 4 - _qStack;
-                    damage = damage + _q.GetDamage(enemy)*qnhan +
-                             (float) Player.GetAutoAttackDamage(enemy)*qnhan*(1 + passivenhan);
+                    damage = damage + _q.GetDamage(enemy) * qnhan +
+                             (float)Player.GetAutoAttackDamage(enemy) * qnhan * (1 + passivenhan);
                 }
-                damage = damage + (float) Player.GetAutoAttackDamage(enemy)*(1 + passivenhan);
+                damage = damage + (float)Player.GetAutoAttackDamage(enemy) * (1 + passivenhan);
                 if (_r.IsReady())
                 {
-                    return damage*1.2f + _r.GetDamage(enemy);
+                    return damage * 1.2f + _r.GetDamage(enemy);
                 }
 
                 return damage;
@@ -1153,28 +1172,28 @@ namespace NechritoRiven
                 passivenhan = 0.25;
             else
                 passivenhan = 0.2;
-            if (HasItem()) dmg = dmg + Player.GetAutoAttackDamage(target)*0.7;
+            if (HasItem()) dmg = dmg + Player.GetAutoAttackDamage(target) * 0.7;
             if (_w.IsReady()) dmg = dmg + _w.GetDamage(target);
             if (_q.IsReady())
             {
                 var qnhan = 4 - _qStack;
-                dmg = dmg + _q.GetDamage(target)*qnhan + Player.GetAutoAttackDamage(target)*qnhan*(1 + passivenhan);
+                dmg = dmg + _q.GetDamage(target) * qnhan + Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
             }
-            dmg = dmg + Player.GetAutoAttackDamage(target)*(1 + passivenhan);
+            dmg = dmg + Player.GetAutoAttackDamage(target) * (1 + passivenhan);
             if (!_r.IsReady()) return dmg;
-            var rdmg = Rdame(target, target.Health - dmg*1.2);
-            return dmg*1.2 + rdmg;
+            var rdmg = Rdame(target, target.Health - dmg * 1.2);
+            return dmg * 1.2 + rdmg;
         }
 
         private static double Rdame(Obj_AI_Base target, double health)
         {
             if (target == null) return 0;
-            var missinghealth = (target.MaxHealth - health)/target.MaxHealth > 0.75
+            var missinghealth = (target.MaxHealth - health) / target.MaxHealth > 0.75
                 ? 0.75
-                : (target.MaxHealth - health)/target.MaxHealth;
-            var pluspercent = missinghealth*2;
-            var rawdmg = new double[] {80, 120, 160}[_r.Level - 1] + 0.6*Player.FlatPhysicalDamageMod;
-            return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg*(1 + pluspercent));
+                : (target.MaxHealth - health) / target.MaxHealth;
+            var pluspercent = missinghealth * 2;
+            var rawdmg = new double[] { 80, 120, 160 }[_r.Level - 1] + 0.6 * Player.FlatPhysicalDamageMod;
+            return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
         }
     }
 }
