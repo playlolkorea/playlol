@@ -38,7 +38,7 @@ namespace NechritoRiven
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
 
         private static bool DrawAlwaysR => Menu.Item("DrawAlwaysR").GetValue<bool>();
-        private static bool DrawStunBurst => Menu.Item("DrawStunBurst").GetValue<bool>();
+        private static bool DrawLogic => Menu.Item("DrawLogic").GetValue<bool>();
 
         private static bool DrawFh => Menu.Item("DrawFH").GetValue<bool>();
         private static bool DrawTimer1 => Menu.Item("DrawTimer1").GetValue<bool>();
@@ -46,6 +46,7 @@ namespace NechritoRiven
         private static bool DrawHs => Menu.Item("DrawHS").GetValue<bool>();
         private static bool DrawBt => Menu.Item("DrawBT").GetValue<bool>();
 
+        private static bool UseLogic => Menu.Item("UseLogic").GetValue<KeyBind>().Active;
         private static bool AlwaysR => Menu.Item("AlwaysR").GetValue<KeyBind>().Active;
         private static bool AutoShield => Menu.Item("AutoShield").GetValue<bool>();
         private static int Qd => Menu.Item("QD").GetValue<Slider>().Value;
@@ -161,7 +162,11 @@ namespace NechritoRiven
                     var minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
                     if (minions.Count >= 1)
                     {
-                        
+                        if (HasTitan())
+                        {
+                            CastTitan();
+                            return;
+                        }
                         if (_e.IsReady() && _e.IsReady() &&
                             !minions[0].UnderTurret() && LaneE)
 
@@ -170,14 +175,9 @@ namespace NechritoRiven
 
                         if (_q.IsReady() && (Player.Distance(Player.ServerPosition) <= 250 + Player.AttackRange) &&
                             LaneQ)
-                        {
-                            if (HasTitan())
-                            {
-                                CastTitan();
-                                return;
-                            }
+
                             _q.Cast(GetCenterMinion().IsValidTarget() ? GetCenterMinion() : minions[1]);
-                        }
+
 
                         if (_w.IsReady() && minions.Count >= 2 && LaneW)
                             _w.Cast(GetCenterMinion());
@@ -320,9 +320,9 @@ namespace NechritoRiven
 
             var combo = new Menu("Combo", "Combo");
 
-
+            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
             combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("UseLogic", "Use Logic").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
             combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
             combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
@@ -356,12 +356,12 @@ namespace NechritoRiven
             draw.AddItem(new MenuItem("DrawTimer1", "Draw Q Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawTimer2", "Draw R Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
-            draw.AddItem(new MenuItem("DrawStunBurst", "Q3 Flash").SetValue(true));
-            draw.AddItem(new MenuItem("Dind", "Damage").SetValue(true));
-            draw.AddItem(new MenuItem("DrawCB", "Combo").SetValue(false));
-            draw.AddItem(new MenuItem("DrawBT", "Burst").SetValue(false));
-            draw.AddItem(new MenuItem("DrawFH", "FastHarass").SetValue(false));
-            draw.AddItem(new MenuItem("DrawHS", "Harass").SetValue(false));
+            draw.AddItem(new MenuItem("DrawLogic", "Logic").SetValue(true));
+            draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
+            draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawBT", "Burst Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawFH", "FastHarass Engage").SetValue(false));
+            draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
 
             Menu.AddSubMenu(draw);
 
@@ -520,11 +520,11 @@ namespace NechritoRiven
                     AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, AlwaysR ? "On" : "Off");
             }
 
-            if (DrawStunBurst)
+            if (DrawLogic)
             {
                 Drawing.DrawText(heropos.X - 15, heropos.Y + 36, System.Drawing.Color.DodgerBlue, "Logic  (     )");
                 Drawing.DrawText(heropos.X + 37, heropos.Y + 36,
-                    StunBurst ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, StunBurst ? "On" : "Off");
+                    UseLogic ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, UseLogic ? "On" : "Off");
             }
         }
 
@@ -559,7 +559,7 @@ namespace NechritoRiven
                 Utility.DelayAction.Add(1, ForceW);
             }
             if (_w.IsReady() && InWRange(targetR) && ComboW && targetR != null) _w.Cast();
-            if (_r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
+            if (UseLogic && _r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
                 _e.IsReady() &&
                 targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
             {
@@ -571,8 +571,17 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
-
-            else if (_w.IsReady() && _e.IsReady())
+            else if (!UseLogic && _r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
+                     _e.IsReady() && targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
+            {
+                if (!InWRange(targetR))
+                {
+                    _e.Cast(targetR.Position);
+                    ForceR();
+                    Utility.DelayAction.Add(20, ForceW);
+                }
+            }
+            else if (UseLogic && _w.IsReady() && _e.IsReady())
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
@@ -582,7 +591,16 @@ namespace NechritoRiven
                     Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
                 }
             }
-
+            else if (!UseLogic && _w.IsReady() && targetR != null && _e.IsReady())
+            {
+                if (targetR.IsValidTarget() && !targetR.IsZombie && !InWRange(targetR))
+                {
+                    _e.Cast(targetR.Position);
+                    Utility.DelayAction.Add(100, ForceItem);
+                    Utility.DelayAction.Add(100, ForceW);
+                    Utility.DelayAction.Add(30, () => ForceCastQ(targetR));
+                }
+            }
             else if (_e.IsReady())
             {
                 if (targetR != null && (targetR.IsValidTarget() && !targetR.IsZombie && !InWRange(targetR)))
