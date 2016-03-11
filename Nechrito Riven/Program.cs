@@ -34,6 +34,10 @@ namespace NechritoRiven
         private static bool KillstealW => Menu.Item("killstealw").GetValue<bool>();
 
         private static bool KillstealQ => Menu.Item("killstealq").GetValue<bool>();
+        private static bool AnimLaugh => Menu.Item("animLaugh").GetValue<bool>();
+        private static bool AnimTaunt => Menu.Item("animTaunt").GetValue<bool>();
+        private static bool AnimDance => Menu.Item("animDance").GetValue<bool>();
+        private static bool AnimTalk => Menu.Item("animTalk").GetValue<bool>();
 
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
 
@@ -334,7 +338,15 @@ namespace NechritoRiven
 
             Menu.AddSubMenu(lane);
 
-            var killsteal = new Menu("killsteal", "Killsteal");
+            var animation = new Menu("Animation", "Animation");
+            animation.AddItem(new MenuItem("Qstrange", "Animation").SetValue(false));
+            animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
+            animation.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
+            animation.AddItem(new MenuItem("animTalk", "Talk").SetValue(false));
+            animation.AddItem(new MenuItem("animDance", "Dance").SetValue(true));
+            Menu.AddSubMenu(animation);
+
+            var killsteal = new Menu("Killsteal", "Killsteal");
             killsteal.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
             killsteal.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
             killsteal.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
@@ -343,7 +355,6 @@ namespace NechritoRiven
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("youmu", "Auto Yomuu's").SetValue(true));
-            misc.AddItem(new MenuItem("Qstrange", "No Animation").SetValue(false));
             misc.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
             misc.AddItem(new MenuItem("AutoShield", "Auto Cast E").SetValue(true));
             misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
@@ -691,8 +702,10 @@ namespace NechritoRiven
                     _lastQ = Utils.GameTimeTickCount;
                     if (Qstrange && _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
                     {
-                        Game.Say("/l");
-                        Game.Say("/d");
+                        if (AnimDance) Game.Say("/d");
+                        if (AnimLaugh) Game.Say("/l");
+                        if (AnimTaunt) Game.Say("/t");
+                        if (AnimTalk)  Game.Say("/j");
                     }
                     _qStack = 2;
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
@@ -704,8 +717,10 @@ namespace NechritoRiven
                     _lastQ = Utils.GameTimeTickCount;
                     if (Qstrange && _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
                     {
-                        Game.Say("/l");
-                        Game.Say("/d");
+                        if (AnimDance) Game.Say("/d");
+                        if (AnimLaugh) Game.Say("/l");
+                        if (AnimTaunt) Game.Say("/t");
+                        if (AnimTalk)  Game.Say("/j");
                     }
                     _qStack = 3;
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
@@ -717,8 +732,10 @@ namespace NechritoRiven
                     _lastQ = Utils.GameTimeTickCount;
                     if (Qstrange && _orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
                     {
-                        Game.Say("/l");
-                        Game.Say("/d");
+                        if (AnimDance) Game.Say("/d");
+                        if (AnimLaugh) Game.Say("/l");
+                        if (AnimTaunt) Game.Say("/t");
+                        if (AnimTalk)  Game.Say("/j");
                     }
                     _qStack = 1;
                     if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
@@ -756,11 +773,12 @@ namespace NechritoRiven
         private static void Reset()
         {
             Player.IssueOrder(GameObjectOrder.MoveTo,
-                Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
+                 Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
             Game.Say("/d");
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                 Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
+
         }
         
 
