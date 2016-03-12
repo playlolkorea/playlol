@@ -31,6 +31,7 @@ namespace NechritoRiven
         private static bool Dind => Menu.Item("Dind").GetValue<bool>();
         private static bool DrawCb => Menu.Item("DrawCB").GetValue<bool>();
         private static bool StunBurst => Menu.Item("StunBurst").GetValue<bool>();
+        private static bool NechBurst => Menu.Item("NechBurst").GetValue<bool>();
         private static bool KillstealW => Menu.Item("killstealw").GetValue<bool>();
 
         private static bool KillstealQ => Menu.Item("killstealq").GetValue<bool>();
@@ -38,7 +39,7 @@ namespace NechritoRiven
         private static bool AnimTaunt => Menu.Item("animTaunt").GetValue<bool>();
         private static bool AnimDance => Menu.Item("animDance").GetValue<bool>();
         private static bool AnimTalk => Menu.Item("animTalk").GetValue<bool>();
-
+        private static bool ShyBurst => Menu.Item("ShyBurst").GetValue<bool>();
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
 
         private static bool DrawAlwaysR => Menu.Item("DrawAlwaysR").GetValue<bool>();
@@ -54,7 +55,7 @@ namespace NechritoRiven
         private static int Qd => Menu.Item("QD").GetValue<Slider>().Value;
         private static int Qld => Menu.Item("QLD").GetValue<Slider>().Value;
         private static int AutoW => Menu.Item("AutoW").GetValue<Slider>().Value;
-        private static bool ComboW => Menu.Item("ComboW").GetValue<bool>();
+        
 
         private static bool RMaxDam => Menu.Item("RMaxDam").GetValue<bool>();
         private static bool RKillable => Menu.Item("RKillable").GetValue<bool>();
@@ -163,16 +164,14 @@ namespace NechritoRiven
                 if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
                     var minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
-                    if (minions.Count >= 1)
+                    if (minions.Count >= 0)
                     {
 
-                        if (_e.IsReady() && _e.IsReady() &&
-                            !minions[0].UnderTurret() && LaneE)
-
+                        if (_e.IsReady() && _e.IsReady() && !Player.ServerPosition.Extend(minions[0].ServerPosition, _e.Range).UnderTurret(true) && LaneE)
                             _e.Cast(GetCenterMinion().IsValidTarget() ? GetCenterMinion() : minions[0]);
 
 
-                        if (_q.IsReady() && (Player.Distance(Player.ServerPosition) <= 250 + Player.AttackRange) &&
+                        if (_q.IsReady() && (Player.Distance(Player.ServerPosition) <= 70 + 120 + Player.BoundingRadius) &&
                             LaneQ)
                         {
                             ForceItem();
@@ -218,7 +217,7 @@ namespace NechritoRiven
                             ForceItem();
                             Utility.DelayAction.Add(1, () => ForceCastQ(mobs[0]));
                         }
-                        if (_w.IsReady())
+                        if (_w.IsReady() )
                         {
                             ForceItem();
                             Utility.DelayAction.Add(1, ForceW);
@@ -299,10 +298,13 @@ namespace NechritoRiven
                 ForceItem();
                 Utility.DelayAction.Add(1, () => ForceCastQ(target));
             }
-            if (_r.IsReady() && _qStack == 2 && _r.Instance.Name == IsSecondR)
+            if (_r.IsReady() && NechBurst && _qStack == 2 && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
 
             if (_r.IsReady() && StunBurst && _r.Instance.Name == IsSecondR)
+                _r.Cast(target.Position);
+
+            if (_r.IsReady() && ShyBurst && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
 
 
@@ -321,23 +323,6 @@ namespace NechritoRiven
             _orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Menu.AddSubMenu(orbwalker);
 
-            var combo = new Menu("Combo", "Combo");
-
-            combo.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
-            combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
-            combo.AddItem(new MenuItem("ComboW", "Always use W").SetValue(true));
-            combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
-            
-
-            Menu.AddSubMenu(combo);
-            var lane = new Menu("Lane", "Lane");
-            lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
-            lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
-            lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
-
-            Menu.AddSubMenu(lane);
-
             var animation = new Menu("Animation", "Animation");
             animation.AddItem(new MenuItem("Qstrange", "Animation").SetValue(false));
             animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
@@ -346,23 +331,40 @@ namespace NechritoRiven
             animation.AddItem(new MenuItem("animDance", "Dance").SetValue(true));
             Menu.AddSubMenu(animation);
 
+            var combo = new Menu("Combo", "Combo");
+
+            combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
+            combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
+            combo.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
+            Menu.AddSubMenu(combo);
+
+            var burst = new Menu("Burst", "Burst");
+            burst.AddItem(new MenuItem("NechBurst", "DoubleCast Burst (Nechrito)").SetValue(true));
+            burst.AddItem(new MenuItem("ShyBurst", "ShyBurst").SetValue(false));
+            burst.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
+            Menu.AddSubMenu(burst);
+
+            var lane = new Menu("Lane", "Lane");
+            lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
+            lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
+            lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
+            Menu.AddSubMenu(lane);
+
             var killsteal = new Menu("Killsteal", "Killsteal");
             killsteal.AddItem(new MenuItem("killstealq", "Killsteal Q").SetValue(true));
             killsteal.AddItem(new MenuItem("killstealw", "Killsteal W").SetValue(true));
             killsteal.AddItem(new MenuItem("killstealr", "Killsteal Second R").SetValue(true));
-
             Menu.AddSubMenu(killsteal);
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("youmu", "Auto Yomuu's").SetValue(true));
-            misc.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
             misc.AddItem(new MenuItem("AutoShield", "Auto Cast E").SetValue(true));
             misc.AddItem(new MenuItem("AutoW", "Auto W When x Enemy").SetValue(new Slider(5, 0, 5)));
             misc.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
-
             Menu.AddSubMenu(misc);
 
             var draw = new Menu("Draw", "Draw");
@@ -556,14 +558,14 @@ namespace NechritoRiven
             }
             if (_r.IsReady() && _r.Instance.Name == IsFirstR  && AlwaysR &&
                 targetR != null) ForceR();
-            if (_r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && InWRange(targetR) && ComboW && AlwaysR &&
+            if (_r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && InWRange(targetR)  && AlwaysR &&
                 targetR != null)
             {
                 ForceR();
                 Utility.DelayAction.Add(1, ForceW);
             }
 
-            if (_w.IsReady() && InWRange(targetR) && ComboW && targetR != null) _w.Cast();
+            if (_w.IsReady() && InWRange(targetR)  && targetR != null) _w.Cast();
             if ( _r.IsReady() && _r.Instance.Name == IsFirstR && _w.IsReady() && targetR != null &&
                 _e.IsReady() &&
                 targetR.IsValidTarget() && !targetR.IsZombie && (IsKillableR(targetR) || AlwaysR))
@@ -610,11 +612,11 @@ namespace NechritoRiven
                 if (_e.IsReady() && !StunBurst && (Player.Distance(target.Position) <= 250 + Player.AttackRange))
                 {
                     _e.Cast(target.Position);
-                    _r.Cast();
+                    ForceR();
                     CastTitan();
                     CastYoumoo();
                 }
-                if (Flash.IsReady() && !StunBurst && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
+                if (Flash.IsReady() && NechBurst && !StunBurst && !ShyBurst && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
                         (Player.Distance(target.Position) <= 800))
                 {
                     _e.Cast(target.Position);
@@ -622,7 +624,7 @@ namespace NechritoRiven
                     CastYoumoo();
                     Utility.DelayAction.Add(180, FlashW);
                 }
-                if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady() &&
+                if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady() && !ShyBurst &&
                         _r.Instance.Name == IsFirstR &&
                         (Player.Distance(target.Position) <= 1300))
                 {
@@ -634,11 +636,17 @@ namespace NechritoRiven
                         CastYoumoo();
                         Utility.DelayAction.Add(180, FlashW);
                         _q3.Cast(target.Position);
-
-
-
-
                     }
+                }
+                if (Flash.IsReady() && ShyBurst
+                    && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= 800))
+                {
+                    _e.Cast(target.Position);
+                    ForceR();
+                    Utility.DelayAction.Add(210, FlashW);
+                    Utility.DelayAction.Add(100, ForceItem);
+                    Utility.DelayAction.Add(200, ForceW);
+                    _r.Cast(target);    
                 }
             }
         }
@@ -774,11 +782,7 @@ namespace NechritoRiven
         {
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-            Game.Say("/d");
             Orbwalking.LastAATick = 0;
-            Player.IssueOrder(GameObjectOrder.MoveTo,
-                Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-
         }
         
 
