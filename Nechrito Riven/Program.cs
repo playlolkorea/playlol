@@ -28,6 +28,7 @@ namespace NechritoRiven
         private static float _lastR;
         private static AttackableUnit _qTarget;
         private static bool DoIgnite => Menu.Item("doIgnite").GetValue<bool>();
+        private static bool qReset => Menu.Item("qReset").GetValue<bool>();
         private static bool Dind => Menu.Item("Dind").GetValue<bool>();
         private static bool DrawCb => Menu.Item("DrawCB").GetValue<bool>();
         private static bool StunBurst => Menu.Item("StunBurst").GetValue<bool>();
@@ -272,6 +273,29 @@ namespace NechritoRiven
                     _r.Cast(target.Position);
             }
 
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass)
+            {
+                if (HasTitan())
+                {
+                    CastTitan();
+                    return;
+                }
+                if (_w.IsReady() && InWRange(target))
+                {
+                    ForceItem();
+                    Utility.DelayAction.Add(1, ForceW);
+                    Utility.DelayAction.Add(2, () => ForceCastQ(target));
+                }
+                else if (_q.IsReady())
+                {
+                    ForceItem();
+                    Utility.DelayAction.Add(1, () => ForceCastQ(target));
+                }
+                else if (_e.IsReady() && !Orbwalking.InAutoAttackRange(target) && !InWRange(target))
+                {
+                    _e.Cast(target.Position);
+                }
+            }
 
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
@@ -292,14 +316,16 @@ namespace NechritoRiven
             if (_e.IsReady())
                 _e.Cast(target.Position);
 
-            else if (_w.IsReady() && InWRange(target))
-                _w.Cast();
-
-           else if (_q.IsReady())
+            if (_q.IsReady())
             {
                 ForceItem();
                 Utility.DelayAction.Add(1, () => ForceCastQ(target));
             }
+
+            if (_w.IsReady() && InWRange(target))
+                _w.Cast();
+
+            
             if (_r.IsReady() && NechBurst && _qStack == 2 && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
 
@@ -326,10 +352,11 @@ namespace NechritoRiven
             Menu.AddSubMenu(orbwalker);
 
             var animation = new Menu("Animation", "Animation");
+            animation.AddItem(new MenuItem("qReset", "Dance In Q? (Fast)").SetValue(false));
             animation.AddItem(new MenuItem("Qstrange", "Animation").SetValue(false));
             animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
             animation.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
-            animation.AddItem(new MenuItem("animTalk", "Talk").SetValue(false));
+            animation.AddItem(new MenuItem("animTalk", "Joke").SetValue(false));
             animation.AddItem(new MenuItem("animDance", "Dance").SetValue(true));
             Menu.AddSubMenu(animation);
 
@@ -625,6 +652,8 @@ namespace NechritoRiven
                     ForceR();
                     CastYoumoo();
                     Utility.DelayAction.Add(180, FlashW);
+                    ForceItem();
+                    
                 }
                 if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady()  &&
                         _r.Instance.Name == IsFirstR &&
@@ -646,6 +675,7 @@ namespace NechritoRiven
                     _e.Cast(target.Position);
                     ForceR();
                     Utility.DelayAction.Add(210, FlashW);
+                    CastYoumoo();
                     Utility.DelayAction.Add(100, ForceItem);
                     Utility.DelayAction.Add(200, ForceW);
                     _r.Cast(target);    
@@ -782,9 +812,11 @@ namespace NechritoRiven
 
         private static void Reset()
         {
+            if (qReset) Game.Say("/d");
+            Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-            Orbwalking.LastAATick = 0;
+            
         }
         
 
