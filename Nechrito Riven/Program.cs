@@ -27,8 +27,8 @@ namespace NechritoRiven
         private static float _lastQ;
         private static float _lastR;
         private static AttackableUnit _qTarget;
-        private static bool DoIgnite => Menu.Item("doIgnite").GetValue<bool>();
-        private static bool qReset => Menu.Item("qReset").GetValue<bool>();
+        private static int DoIgnite => Menu.Item("DoIgnite").GetValue<Slider>().Value;
+        private static bool QReset => Menu.Item("qReset").GetValue<bool>();
         private static bool Dind => Menu.Item("Dind").GetValue<bool>();
         private static bool DrawCb => Menu.Item("DrawCB").GetValue<bool>();
         private static bool StunBurst => Menu.Item("StunBurst").GetValue<bool>();
@@ -166,11 +166,17 @@ namespace NechritoRiven
             {
                 if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
+                    var minions = MinionManager.GetMinions(190 + Player.BoundingRadius);
                     if (minions.Count >= 0)
                     {
+                        if (_e.IsReady() && !Orbwalking.InAutoAttackRange(minions[0]))
+                        {
+                            _e.Cast(minions[0].Position);
+                        }
 
-                        if (_e.IsReady() && _e.IsReady() && !Player.ServerPosition.Extend(minions[0].ServerPosition, _e.Range).UnderTurret(true) && LaneE)
+                        if (_e.IsReady() && _e.IsReady() &&
+                            !Player.ServerPosition.Extend(minions[0].ServerPosition, _e.Range).UnderTurret(true) &&
+                            LaneE)
                             _e.Cast(GetCenterMinion().IsValidTarget() ? GetCenterMinion() : minions[0]);
 
 
@@ -237,9 +243,11 @@ namespace NechritoRiven
             if (@base != null)
                 if (@base.IsValid && args.Target != null && _q.IsReady() && LaneQ &&
                     _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ(@base);
+
             var hero = args.Target as Obj_AI_Hero;
             if (hero == null) return;
             var target = hero;
+
             if (KillstealR && _r.IsReady() && _r.Instance.Name == IsSecondR)
                 if (target.Health < Rdame(target, target.Health) + Player.GetAutoAttackDamage(target) &&
                     target.Health > Player.GetAutoAttackDamage(target)) _r.Cast(target.Position);
@@ -249,6 +257,7 @@ namespace NechritoRiven
             if (KillstealQ && _q.IsReady())
                 if (target.Health < _q.GetDamage(target) + Player.GetAutoAttackDamage(target) &&
                     target.Health > Player.GetAutoAttackDamage(target)) _q.Cast(target);
+
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 if (HasTitan())
@@ -352,18 +361,18 @@ namespace NechritoRiven
             Menu.AddSubMenu(orbwalker);
 
             var animation = new Menu("Animation", "Animation");
-            animation.AddItem(new MenuItem("qReset", "Dance In Q? (Fast)").SetValue(false));
+            animation.AddItem(new MenuItem("qReset", "Fast & Legit Q").SetValue(true));
             animation.AddItem(new MenuItem("Qstrange", "Animation").SetValue(false));
             animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
             animation.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
             animation.AddItem(new MenuItem("animTalk", "Joke").SetValue(false));
-            animation.AddItem(new MenuItem("animDance", "Dance").SetValue(true));
+            animation.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
             Menu.AddSubMenu(animation);
 
             var combo = new Menu("Combo", "Combo");
 
             combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("doIgnite", "Use Ignite").SetValue(true));
+            combo.AddItem(new MenuItem("DoIgnite", "Ignite %").SetValue(new Slider(0, 0, 50))); ;
             combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
             combo.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
             Menu.AddSubMenu(combo);
@@ -409,7 +418,7 @@ namespace NechritoRiven
 
             var credit = new Menu("Credit", "Credit");
 
-            credit.AddItem(new MenuItem("hoola", "Made by Hoola, Configured By Nechrito"));
+            credit.AddItem(new MenuItem("hoola", "Made by Hoola, Re-written By Nechrito"));
 
             Menu.AddSubMenu(credit);
 
@@ -434,6 +443,8 @@ namespace NechritoRiven
                 }
             }
         }
+
+        
 
         private static void OnTick(EventArgs args)
         {
@@ -496,13 +507,11 @@ namespace NechritoRiven
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health / target.MaxHealth <= 0.25 &&
-                        (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
-                         !target.HasBuff("JudicatorIntervention")))
+                    if (target.Health / target.MaxHealth <= 0.25 && (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") || !target.HasBuff("JudicatorIntervention")))
                         _r.Cast(target.Position);
                 }
             }
-            else if (DoIgnite)
+            if (DoIgnite > 0)
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
                 foreach (var target in targets)
@@ -580,9 +589,9 @@ namespace NechritoRiven
         private static void Combo()
         {
             var targetR = TargetSelector.GetTarget(250 + Player.AttackRange + 70, TargetSelector.DamageType.Physical);
-            if (DoIgnite)
+            if (DoIgnite > 0)
             {
-                if (targetR.HealthPercent < 25 && Ignite.IsReady())
+                if (targetR.HealthPercent < DoIgnite && Ignite.IsReady())
                     Player.Spellbook.CastSpell(Ignite, targetR);
             }
             if (_r.IsReady() && _r.Instance.Name == IsFirstR  && AlwaysR &&
@@ -631,9 +640,9 @@ namespace NechritoRiven
         private static void Burst()
         {
             var target = TargetSelector.GetSelectedTarget();
-            if (DoIgnite)
+            if (DoIgnite > 0)
             {
-                if (target.HealthPercent < 25 && Ignite.IsReady())
+                if (target.HealthPercent < DoIgnite && Ignite.IsReady())
                     Player.Spellbook.CastSpell(Ignite, target);
             }
             if (target != null && target.IsValidTarget() && !target.IsZombie)
@@ -812,7 +821,7 @@ namespace NechritoRiven
 
         private static void Reset()
         {
-            if (qReset) Game.Say("/d");
+            if (QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
