@@ -60,7 +60,7 @@ namespace NechritoRiven
         private static int AutoW => Menu.Item("AutoW").GetValue<Slider>().Value;
         
 
-        private static bool RMaxDam => Menu.Item("RMaxDam").GetValue<bool>();
+       
         private static bool RKillable => Menu.Item("RKillable").GetValue<bool>();
         private static bool LaneW => Menu.Item("LaneW").GetValue<bool>();
         private static bool LaneE => Menu.Item("LaneE").GetValue<bool>();
@@ -99,7 +99,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#00e5e5\">Nechrito Riven, GL & HF</font></b>");
+            Game.PrintChat("<b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"FFFFFF\"> Loaded</font></b>");
+            
             _q = new Spell(SpellSlot.Q, 260f);
             _q.SetSkillshot(0.25f, 100f, 2200f, false, SkillshotType.SkillshotCircle);
             _w = new Spell(SpellSlot.W, 250f);
@@ -333,7 +334,6 @@ namespace NechritoRiven
 
             if (_w.IsReady() && InWRange(target))
                 _w.Cast();
-
             
             if (_r.IsReady() && NechBurst && _qStack == 2 && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
@@ -343,11 +343,6 @@ namespace NechritoRiven
 
             if (_r.IsReady() && ShyBurst && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
-
-
-
-
-
 
         }
 
@@ -362,11 +357,11 @@ namespace NechritoRiven
 
             var animation = new Menu("Animation", "Animation");
             animation.AddItem(new MenuItem("qReset", "Fast & Legit Q").SetValue(true));
-            animation.AddItem(new MenuItem("Qstrange", "Animation").SetValue(false));
-            animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
-            animation.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
-            animation.AddItem(new MenuItem("animTalk", "Joke").SetValue(false));
-            animation.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
+            animation.AddItem(new MenuItem("Qstrange", "Animation | Enables Below").SetValue(false));
+            animation.AddItem(new MenuItem("animLaugh", "Laugh | Not Legit").SetValue(false));
+            animation.AddItem(new MenuItem("animTaunt", "Taunt | Not Legit").SetValue(false));
+            animation.AddItem(new MenuItem("animTalk", "Joke | Not Legit").SetValue(false));
+            animation.AddItem(new MenuItem("animDance", "Dance | Not Legit").SetValue(false));
             Menu.AddSubMenu(animation);
 
             var combo = new Menu("Combo", "Combo");
@@ -374,7 +369,6 @@ namespace NechritoRiven
             combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
             combo.AddItem(new MenuItem("DoIgnite", "Ignite %").SetValue(new Slider(0, 0, 50))); ;
             combo.AddItem(new MenuItem("RKillable", "Smart R").SetValue(true));
-            combo.AddItem(new MenuItem("RMaxDam", "R2 Max Dmg").SetValue(true));
             Menu.AddSubMenu(combo);
 
             var burst = new Menu("Burst", "Burst");
@@ -453,7 +447,6 @@ namespace NechritoRiven
             Timer2.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
             Timer2.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 65;
             ForceSkill();
-            UseRMaxDam();
             AutoUseW();
             Killsteal();
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) Combo();
@@ -500,29 +493,7 @@ namespace NechritoRiven
             }
         }
 
-        private static void UseRMaxDam()
-        {
-            if (RMaxDam && _r.IsReady() && _r.Instance.Name == IsSecondR)
-            {
-                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
-                foreach (var target in targets)
-                {
-                    if (target.Health / target.MaxHealth <= 0.25 && (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") || !target.HasBuff("JudicatorIntervention")))
-                        _r.Cast(target.Position);
-                }
-            }
-            if (DoIgnite > 0)
-            {
-                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(_r.Range) && !x.IsZombie);
-                foreach (var target in targets)
-                {
-                    if (target.Health / target.MaxHealth <= 0.25 &&
-                        (!target.HasBuff("kindrednodeathbuff") || !target.HasBuff("Undying Rage") ||
-                         !target.HasBuff("JudicatorIntervention")))
-                        Player.Spellbook.CastSpell(Ignite, target);
-                }
-            }
-        }
+    
 
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -655,7 +626,7 @@ namespace NechritoRiven
                     CastYoumoo();
                 }
                 if (Flash.IsReady() && NechBurst  && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
-                        (Player.Distance(target.Position) <= 800))
+                        (Player.Distance(target.Position) <= 750))
                 {
                     _e.Cast(target.Position);
                     ForceR();
@@ -679,7 +650,7 @@ namespace NechritoRiven
                     }
                 }
                 if (Flash.IsReady() && ShyBurst
-                    && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= 800))
+                    && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= 750))
                 {
                     _e.Cast(target.Position);
                     ForceR();
@@ -1207,13 +1178,14 @@ namespace NechritoRiven
 
         private static double Rdame(Obj_AI_Base target, double health)
         {
-            if (target == null) return 0;
-            var missinghealth = (target.MaxHealth - health) / target.MaxHealth > 0.75
-                ? 0.75
-                : (target.MaxHealth - health) / target.MaxHealth;
-            var pluspercent = missinghealth * 2;
-            var rawdmg = new double[] { 80, 120, 160 }[_r.Level - 1] + 0.6 * Player.FlatPhysicalDamageMod;
-            return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
+            if (target != null)
+            {
+                var missinghealth = (target.MaxHealth - health) / target.MaxHealth > 0.75 ? 0.75 : (target.MaxHealth - health) / target.MaxHealth;
+                var pluspercent = missinghealth * (8 / 3);
+                var rawdmg = new double[] { 80, 120, 160 }[_r.Level - 1] + 0.6 * Player.FlatPhysicalDamageMod;
+                return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
+            }
+            return 0;
         }
     }
 }
