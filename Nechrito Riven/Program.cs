@@ -31,7 +31,6 @@ namespace NechritoRiven
         private static bool QReset => Menu.Item("qReset").GetValue<bool>();
         private static bool Dind => Menu.Item("Dind").GetValue<bool>();
         private static bool DrawCb => Menu.Item("DrawCB").GetValue<bool>();
-        private static bool StunBurst => Menu.Item("StunBurst").GetValue<bool>();
         private static bool NechBurst => Menu.Item("NechBurst").GetValue<bool>();
         private static bool KillstealW => Menu.Item("killstealw").GetValue<bool>();
 
@@ -44,6 +43,7 @@ namespace NechritoRiven
         private static bool KillstealR => Menu.Item("killstealr").GetValue<bool>();
 
         private static bool DrawAlwaysR => Menu.Item("DrawAlwaysR").GetValue<bool>();
+        private static bool DrawFlash => Menu.Item("DrawFlash").GetValue<bool>();
         private static bool KeepQ => Menu.Item("KeepQ").GetValue<bool>();
 
 
@@ -323,7 +323,7 @@ namespace NechritoRiven
 
             if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
 
-            if (_e.IsReady())
+            if (_e.IsReady() && Player.Distance(target.Position) <= _e.Range + 50)
                 _e.Cast(target.Position);
 
             if (_q.IsReady())
@@ -336,9 +336,6 @@ namespace NechritoRiven
                 _w.Cast();
             
             if (_r.IsReady() && NechBurst && _qStack == 2 && _r.Instance.Name == IsSecondR)
-                _r.Cast(target.Position);
-
-            if (_r.IsReady() && StunBurst && _r.Instance.Name == IsSecondR)
                 _r.Cast(target.Position);
 
             if (_r.IsReady() && ShyBurst && _r.Instance.Name == IsSecondR)
@@ -356,6 +353,7 @@ namespace NechritoRiven
             Menu.AddSubMenu(orbwalker);
 
             var animation = new Menu("Animation", "Animation");
+            animation.AddItem(new MenuItem("LegitQ", "All off = Legit"));
             animation.AddItem(new MenuItem("qReset", "Fast & Legit Q").SetValue(true));
             animation.AddItem(new MenuItem("Qstrange", "Animation | Enables Below").SetValue(false));
             animation.AddItem(new MenuItem("animLaugh", "Laugh | Not Legit").SetValue(false));
@@ -372,9 +370,9 @@ namespace NechritoRiven
             Menu.AddSubMenu(combo);
 
             var burst = new Menu("Burst", "Burst");
+            burst.AddItem(new MenuItem("FlashB", "Flash").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             burst.AddItem(new MenuItem("NechBurst", "DoubleCast Burst (Nechrito)").SetValue(true));
             burst.AddItem(new MenuItem("ShyBurst", "ShyBurst").SetValue(false));
-            burst.AddItem(new MenuItem("StunBurst", "Flash Q3 Burst").SetValue(false));
             Menu.AddSubMenu(burst);
 
             var lane = new Menu("Lane", "Lane");
@@ -402,6 +400,7 @@ namespace NechritoRiven
             var draw = new Menu("Draw", "Draw");
             draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
+            draw.AddItem(new MenuItem("DrawFlash", "Flash Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawTimer1", "Draw Q Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawTimer2", "Draw R Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
@@ -541,6 +540,12 @@ namespace NechritoRiven
                 Drawing.DrawText(heropos.X + 40, heropos.Y + 20,
                     AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, AlwaysR ? "On" : "Off");
             }
+            if (DrawFlash)
+            {
+                Drawing.DrawText(heropos.X - 15, heropos.Y + 40, System.Drawing.Color.DodgerBlue, "Use Flash  (     )");
+                Drawing.DrawText(heropos.X + 70, heropos.Y + 40,
+                   (Menu.Item("FlashB").GetValue<KeyBind>().Active) ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, (Menu.Item("FlashB").GetValue<KeyBind>().Active) ? "On" : "Off");
+            }
         }
 
         private static void Jungleclear()
@@ -618,43 +623,30 @@ namespace NechritoRiven
             }
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (_e.IsReady() && (Player.Distance(target.Position) <= 250 + Player.AttackRange))
+                if (Menu.Item("FlashB").GetValue<KeyBind>().Active)
                 {
-                    _e.Cast(target.Position);
-                    ForceR();
-                    CastTitan();
-                    CastYoumoo();
-                }
-                if (Flash.IsReady() && NechBurst  && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
-                        (Player.Distance(target.Position) <= 750))
-                {
-                    _e.Cast(target.Position);
-                    ForceR();
-                    CastYoumoo();
-                    Utility.DelayAction.Add(180, FlashW);
-                    ForceItem();
-                    
-                }
-                if (Flash.IsReady() && StunBurst && _r.IsReady() && _q.IsReady() && _e.IsReady() && _w.IsReady()  &&
-                        _r.Instance.Name == IsFirstR &&
-                        (Player.Distance(target.Position) <= 1300))
-                {
-                    _q.Cast(target.Position);
-                    if (_qStack == 3 && (Geometry.Distance(Player, target.Position) <= 800))
+                    if (target.IsValidTarget() && !target.IsZombie && (Player.Distance(target.Position) <= 750) && (Player.Distance(target.Position) >= 600) && _r.IsReady() && _e.IsReady() && _w.IsReady())
                     {
                         _e.Cast(target.Position);
                         ForceR();
-                        CastYoumoo();
-                        Utility.DelayAction.Add(180, FlashW);
-                        _q3.Cast(target.Position);
+                        Utility.DelayAction.Add(100, () => Player.Spellbook.CastSpell(Flash, target.Position));
                     }
                 }
-                if (Flash.IsReady() && ShyBurst
-                    && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= 750))
+                //NECHRITO
+                if (NechBurst  && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR &&
+                        (Player.Distance(target.Position) <= _e.Range + (Player.AttackRange)))
                 {
                     _e.Cast(target.Position);
                     ForceR();
-                    Utility.DelayAction.Add(210, FlashW);
+                    CastYoumoo();
+                    ForceItem();
+                    
+                }
+                //SHY
+                if (ShyBurst && _r.IsReady() && _e.IsReady() && _w.IsReady() && _r.Instance.Name == IsFirstR && (Player.Distance(target.Position) <= _e.Range + (Player.AttackRange)))
+                {
+                    _e.Cast(target.Position);
+                    ForceR();
                     CastYoumoo();
                     Utility.DelayAction.Add(100, ForceItem);
                     Utility.DelayAction.Add(200, ForceW);
@@ -860,15 +852,6 @@ namespace NechritoRiven
             _qTarget = target;
         }
 
-
-        private static void FlashW()
-        {
-            var target = TargetSelector.GetSelectedTarget();
-            if (target != null && target.IsValidTarget() && !target.IsZombie)
-            {
-                Utility.DelayAction.Add(10, () => Player.Spellbook.CastSpell(Flash, target.Position));
-            }
-        }
 
 
         private static bool HasItem()
