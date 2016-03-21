@@ -56,8 +56,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"FFFFFF\"> Loaded</font></b>");
-            Game.PrintChat("<b><font color=\"FFFFFF\"> Don't forget to</font></b><b><font color=\"#00ff00\"> Upvote</font></b><b><font color=\"FFFFFF\"> In The Assembly Database</font></b>");
+            Game.PrintChat("<b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"FFFFFF\"> Don't forget to</font></b><b><font color=\"#00ff00\"> Upvote</font></b><b><font color=\"FFFFFF\"> In The Assembly Database If You Liked It</font></b>");
+            // fu myo and l3gacy :Kappa:
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
