@@ -12,7 +12,6 @@ namespace NechritoRiven
         public const string IsFirstR = "RivenFengShuiEngine";
         public const string IsSecondR = "RivenIzunaBlade";
         public static Menu Menu;
-        private static Orbwalking.Orbwalker _orbwalker;
         public static readonly Obj_AI_Hero Player = ObjectManager.Player;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
         public static SpellSlot Ignite, Flash;
@@ -29,13 +28,13 @@ namespace NechritoRiven
 
        
 
-        private static int Item
+       public static int Item
             =>
                 Items.CanUseItem(3077) && Items.HasItem(3077)
                     ? 3077
                     : Items.CanUseItem(3074) && Items.HasItem(3074) ? 3074 : 0;
 
-        private static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
+        public static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
 
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
@@ -44,7 +43,7 @@ namespace NechritoRiven
         {
             if (Player.ChampionName != "Riven") return;
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 49</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Faster Combo, Q-AA on Turret Fix, W when minion killable, 2 new classes for performance. Will only flash burst if killable</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Faster Combo</font></b>");
 
 
             
@@ -76,7 +75,7 @@ namespace NechritoRiven
         }
         public static bool IsLethal(Obj_AI_Base unit)
         {
-            return Program.Totaldame(unit) / 1.65 >= unit.Health;
+            return Totaldame(unit) / 1.65 >= unit.Health;
         }
 
         public static Obj_AI_Base GetCenterMinion()
@@ -138,11 +137,14 @@ namespace NechritoRiven
                             Spells._q.Cast(GetCenterMinion().ServerPosition);
 
 
-                        if (Spells._w.IsReady() && minions.Count >= 6 && MenuConfig.LaneW)
+                        int count = 0;
+                        foreach(var unit in minions.Where(x => x.Health <= Spells._w.GetDamage(x) && x.Distance(Player.ServerPosition) <= Spells._w.Range))
                         {
-                             if(Spells._w.IsKillable(GetCenterMinion()))
-                                Spells._w.Cast(GetCenterMinion().ServerPosition);
+                            count++;
                         }
+                        if (count >= 1 && Spells._w.IsReady() && MenuConfig.LaneW)
+                            Spells._w.Cast();
+                        
                             
                     }
                    
@@ -272,8 +274,7 @@ namespace NechritoRiven
 
             if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
 
-            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsFirstR &&
-                  target != null) ForceR();
+            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsFirstR) ForceR();
 
             if (Spells._e.IsReady() && Player.Distance(target.Position) <= Spells._e.Range + 50)
                 Spells._e.Cast(target.Position);
@@ -305,11 +306,11 @@ namespace NechritoRiven
             Timer2.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 65;
             ForceSkill();
             Killsteal();
-            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) Combo.doCombo();
+            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) Combo.DoCombo();
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) Jungleclear();
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed) Harass();
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass) FastHarass();
-            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst) Burst.doBurst();
+            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst) Burst.DoBurst();
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) Flee();
             if (Utils.GameTimeTickCount - _lastQ >= 3650 && _qstack != 1 && !Player.IsRecalling() &&
                 !Player.InFountain() && MenuConfig.KeepQ &&
@@ -931,7 +932,7 @@ namespace NechritoRiven
             if (target != null)
             {
                 var missinghealth = (target.MaxHealth - health) / target.MaxHealth > 0.75 ? 0.75 : (target.MaxHealth - health) / target.MaxHealth;
-                var pluspercent = missinghealth * (8 / 3);
+                var pluspercent = missinghealth * 2;
                 var rawdmg = new double[] { 80, 120, 160 }[Spells._r.Level - 1] + 0.6 * Player.FlatPhysicalDamageMod;
                 return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
             }

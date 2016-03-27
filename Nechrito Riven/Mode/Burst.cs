@@ -7,7 +7,7 @@ namespace NechritoRiven
     class Burst
     {
 
-        public static void doBurst()
+        public static void DoBurst()
         {
             var target = TargetSelector.GetSelectedTarget();
 

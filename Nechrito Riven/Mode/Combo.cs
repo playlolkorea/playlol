@@ -4,7 +4,7 @@ namespace NechritoRiven
 {
     class Combo
     {
-        public static void doCombo()
+        public static void DoCombo()
         {
             
             var targetR = TargetSelector.GetTarget(250 + Program.Player.AttackRange + 70, TargetSelector.DamageType.Physical);
