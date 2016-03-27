@@ -66,7 +66,7 @@ namespace NechritoRiven
             Config.AddSubMenu(draw);
 
             var credit = new Menu("Credit", "Credit");
-            credit.AddItem(new MenuItem("hoola", "Made by Hoola, Re-written By Nechrito"));
+            credit.AddItem(new MenuItem("nechrito", "Originally made by Hoola, completely re-written By Nechrito"));
             Config.AddSubMenu(credit);
 
             Config.AddToMainMenu();
