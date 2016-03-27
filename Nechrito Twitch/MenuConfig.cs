@@ -35,6 +35,11 @@ namespace Nechrito_Twitch
             lane.AddItem(new MenuItem("laneW", "Use W").SetValue(true));
             Config.AddSubMenu(lane);
 
+
+            var draw = new Menu("Draw", "Draw");
+            draw.AddItem(new MenuItem("dind", "Dmg Indicator").SetValue(true));
+            Config.AddSubMenu(draw);
+
             /*
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('B', KeyBindType.Press)));
@@ -49,6 +54,7 @@ namespace Nechrito_Twitch
         public static bool KsE => Config.Item("KsE").GetValue<bool>();
         public static bool laneW => Config.Item("laneW").GetValue<bool>();
         public static bool harassW => Config.Item("harassW").GetValue<bool>();
+        public static bool dind => Config.Item("dind").GetValue<bool>();
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
         public static int ESlider => Config.Item("ESlider").GetValue<Slider>().Value;
     }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 
 namespace Nechrito_Twitch
@@ -12,18 +13,23 @@ namespace Nechrito_Twitch
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
         public static Menu Menu;
         private static Orbwalking.Orbwalker _orbwalker;
-
+        private static readonly HpBarIndicator Indicator = new HpBarIndicator();
+        private static float GetDamage(Obj_AI_Hero target)
+        {
+            return Spells._e.GetDamage(target);
+        }
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
 
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Twitch") return;
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 1</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 2</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Release!</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Damage Indicator on E!</font></b>");
 
 
+            Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnUpdate += Game_OnUpdate;
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -148,5 +154,22 @@ namespace Nechrito_Twitch
 
             }
         }
+
+
+        private static void Drawing_OnEndScene(EventArgs args)
+        {
+            foreach (
+                var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(ene => ene.IsValidTarget() && !ene.IsZombie))
+            {
+                if (MenuConfig.dind)
+                {
+                    Indicator.unit = enemy;
+                    Indicator.drawDmg(GetDamage(enemy), new ColorBGRA(255, 204, 0, 170));
+                }
+            }
         }
+
+    }
     }
