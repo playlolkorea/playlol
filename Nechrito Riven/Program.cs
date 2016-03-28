@@ -17,10 +17,7 @@ namespace NechritoRiven
         public static int _qstack = 1;
         public static Render.Text Timer, Timer2;
         private static bool _forceItem;
-
-
-
-        
+        public static Spell Ignite = new Spell(SpellSlot.Unknown, 600);
 
         public static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
@@ -30,10 +27,12 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 51 (Date: 3/28-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Perfect JungleClear, Performance, Burst</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Credit Kurisu For Dmg Indicator(Green When Easy Kill)</font></b>");
-
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 52 (Date: 3/28-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Ignite KS & More Classes</font></b>");
+            
+            var ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
+            if (ignite != null)
+                Ignite.Slot = ignite.Slot;
             Timer =
                 new Render.Text(
                     "Q Expiry =>  " + ((double)(Logic._lastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0"),
@@ -70,7 +69,7 @@ namespace NechritoRiven
                 Orbwalking.LastAATick = 0;
             }
         }
-
+            
         private static void Drawing_OnEndScene(EventArgs args)
         {
             foreach (
@@ -96,8 +95,6 @@ namespace NechritoRiven
 
         private static void OnDoCastLc(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-         
-        
             if (!sender.IsMe || !Orbwalking.IsAutoAttack(args.SData.Name)) return;
             Logic._qtarget = (Obj_AI_Base)args.Target;
 
@@ -122,9 +119,6 @@ namespace NechritoRiven
                       
                         if (Spells._w.IsReady() && MenuConfig.LaneW)
                             Spells._w.Cast();
-
-
-
                     }
                 }
             }
@@ -326,6 +320,19 @@ namespace NechritoRiven
                         Spells._q.Cast(target);
                 }
             }
+            if(Ignite.Slot != SpellSlot.Unknown)
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Ignite.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health < Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) && Player.Distance(target) <= Ignite.Range && !target.IsDead && target.IsValidTarget())
+                    {
+                        Ignite.Cast(target, true);
+                        return;
+                    }
+                }
+
+            }
             if (Spells._w.IsReady())
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
@@ -344,6 +351,8 @@ namespace NechritoRiven
                         Spells._r.Cast(target.Position);
                 }
             }
+          
+
         }
 
         private static void Drawing_OnDraw(EventArgs args)

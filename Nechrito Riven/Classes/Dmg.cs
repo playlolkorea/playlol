@@ -72,6 +72,10 @@ namespace NechritoRiven
                 {
                     return damage * 1.2f + Spells._r.GetDamage(enemy);
                 }
+                if (Program.Ignite.Slot != SpellSlot.Unknown)
+                {
+                    damage += (float)Program.Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
+                }
 
                 return damage;
             }
@@ -110,6 +114,10 @@ namespace NechritoRiven
             {
                 var qnhan = 4 - Program._qstack;
                 dmg = dmg + Spells._q.GetDamage(target) * qnhan + Program.Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
+            }
+            if (Program.Ignite.Slot != SpellSlot.Unknown)
+            {
+                dmg += (float)Program.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
             }
             dmg = dmg + Program.Player.GetAutoAttackDamage(target) * (1 + passivenhan);
             if (!Spells._r.IsReady()) return dmg;

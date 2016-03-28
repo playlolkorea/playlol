@@ -83,15 +83,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dmg.cs" />
-    <Compile Include="HpBarIndicator.cs" />
-    <Compile Include="Logic.cs" />
-    <Compile Include="MenuConfig.cs" />
-    <Compile Include="Mode\Modes.cs" />
-    <Compile Include="Orbwalking.cs" />
+    <Compile Include="Classes\Dmg.cs" />
+    <Compile Include="Classes\HpBarIndicator.cs" />
+    <Compile Include="Classes\Logic.cs" />
+    <Compile Include="Classes\MenuConfig.cs" />
+    <Compile Include="Classes\Modes.cs" />
+    <Compile Include="Classes\Orbwalking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Spells.cs" />
+    <Compile Include="Classes\Spells.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
