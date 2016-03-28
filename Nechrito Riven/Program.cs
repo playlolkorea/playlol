@@ -57,7 +57,7 @@ namespace NechritoRiven
                     (int)Drawing.WorldToScreen(Player.Position).X - 60,
                     (int)Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
 
-
+            
             MenuConfig.LoadMenu();
             Spells.Initialise();
 
@@ -297,7 +297,7 @@ namespace NechritoRiven
             Timer2.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 65;
             ForceSkill();
             Killsteal();
-            if (Utils.GameTimeTickCount - _lastQ >= 3650 && _qstack != 1 && !Player.IsRecalling() && !Player.Spellbook.IsAutoAttacking &&
+            if (Utils.GameTimeTickCount - _lastQ >= 3650 && _qstack != 1 && !Player.IsRecalling() &&
                 !Player.InFountain() && MenuConfig.KeepQ &&
                 !Player.Spellbook.IsChanneling &&
                 Spells._q.IsReady()) Spells._q.Cast(Game.CursorPos);
