@@ -85,8 +85,7 @@
   <ItemGroup>
     <Compile Include="HpBarIndicator.cs" />
     <Compile Include="MenuConfig.cs" />
-    <Compile Include="Mode\Burst.cs" />
-    <Compile Include="Mode\Combo.cs" />
+    <Compile Include="Mode\Modes.cs" />
     <Compile Include="Orbwalking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

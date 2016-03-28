@@ -39,7 +39,6 @@ namespace NechritoRiven
             var combo = new Menu("Combo", "Combo");
 
             combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            combo.AddItem(new MenuItem("DoIgnite", "Ignite").SetValue(true));
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
