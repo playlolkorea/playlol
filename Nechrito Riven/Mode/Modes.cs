@@ -13,43 +13,43 @@ namespace NechritoRiven
             var targetR = TargetSelector.GetTarget(250 + Program.Player.AttackRange + 70, TargetSelector.DamageType.Physical);
 
             if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && MenuConfig.AlwaysR &&
-                targetR != null) Program.ForceR();
-            if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && Spells._w.IsReady() && Program.InWRange(targetR) && MenuConfig.AlwaysR &&
+                targetR != null) Logic.ForceR();
+            if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && Spells._w.IsReady() && Logic.InWRange(targetR) && MenuConfig.AlwaysR &&
                 targetR != null)
             {
-                Program.ForceR();
-                Utility.DelayAction.Add(1, Program.ForceW);
+                Logic.ForceR();
+                Utility.DelayAction.Add(1, Logic.ForceW);
             }
 
-            if (Spells._w.IsReady() && Program.InWRange(targetR) && targetR != null) Spells._w.Cast();
+            if (Spells._w.IsReady() && Logic.InWRange(targetR) && targetR != null) Spells._w.Cast();
             if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && Spells._w.IsReady() && targetR != null &&
                 Spells._e.IsReady() &&
-                targetR.IsValidTarget() && !targetR.IsZombie && (Program.IsKillableR(targetR) || MenuConfig.AlwaysR))
+                targetR.IsValidTarget() && !targetR.IsZombie && (Dmg.IsKillableR(targetR) || MenuConfig.AlwaysR))
             {
-                if (!Program.InWRange(targetR))
+                if (!Logic.InWRange(targetR))
                 {
                     Spells._e.Cast(targetR.Position);
-                    Program.ForceR();
-                    Utility.DelayAction.Add(200, Program.ForceW);
-                    Utility.DelayAction.Add(100, () => Program.ForceCastQ(targetR));
+                    Logic.ForceR();
+                    Utility.DelayAction.Add(200, Logic.ForceW);
+                    Utility.DelayAction.Add(30, () => Logic.ForceCastQ(targetR));
                 }
             }
 
             else if (Spells._w.IsReady() && Spells._e.IsReady())
             {
-                if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !Program.InWRange(targetR))
+                if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !Logic.InWRange(targetR))
                 {
                     Spells._e.Cast(targetR.Position);
-                    Utility.DelayAction.Add(10, Program.ForceItem);
-                    if (Program.InWRange(targetR))
-                        Utility.DelayAction.Add(100, Program.ForceW);
-                    Utility.DelayAction.Add(135, () => Program.ForceCastQ(targetR));
+                    Utility.DelayAction.Add(10, Logic.ForceItem);
+                    if (Logic.InWRange(targetR))
+                        Utility.DelayAction.Add(100, Logic.ForceW);
+                    Utility.DelayAction.Add(30, () => Logic.ForceCastQ(targetR));
                 }
             }
 
             else if (Spells._e.IsReady())
             {
-                if (targetR != null && (targetR.IsValidTarget() && !targetR.IsZombie && !Program.InWRange(targetR)))
+                if (targetR != null && (targetR.IsValidTarget() && !targetR.IsZombie && !Logic.InWRange(targetR)))
                 {
                     Spells._e.Cast(targetR.Position);
                 }
@@ -65,31 +65,31 @@ namespace NechritoRiven
                 // Else R wont cast, Bug
                 if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && MenuConfig.AlwaysR && Program.Player.Distance(target.Position) <= Spells._e.Range + (Program.Player.AttackRange) &&
                target != null)
-                    Program.ForceR();
+                    Logic.ForceR();
 
                 // Flash
-                if ((Program.Player.Distance(target.Position) <= 700) && (Program.Player.Distance(target.Position) >= 600) && Program.Player.Spellbook.GetSpell(Spells.Flash).State == SpellState.Ready && Spells._r.IsReady() && Spells._e.IsReady() && Spells._w.IsReady() && target.Health < Program.Totaldame(target))
+                if ((Program.Player.Distance(target.Position) <= 700) && (Program.Player.Distance(target.Position) >= 600) && Program.Player.Spellbook.GetSpell(Spells.Flash).State == SpellState.Ready && Spells._r.IsReady() && Spells._e.IsReady() && Spells._w.IsReady() && target.Health < Dmg.Totaldame(target))
                 {
                     Spells._e.Cast(target.Position);
-                    Program.ForceR();
-                    Program.CastYoumoo();
+                    Logic.ForceR();
+                    Logic.CastYoumoo();
                     Utility.DelayAction.Add(65, () => Program.Player.Spellbook.CastSpell(Spells.Flash, target.Position));
-                    Utility.DelayAction.Add(70, Program.ForceItem);
-                    Utility.DelayAction.Add(50, Program.ForceW);
+                    Utility.DelayAction.Add(70, Logic.ForceItem);
+                    Utility.DelayAction.Add(30, Logic.ForceW);
                     Spells._r.Cast(target.ServerPosition);
-                    Utility.DelayAction.Add(30, () => Program.ForceCastQ(target));
+                    Utility.DelayAction.Add(30, () => Logic.ForceCastQ(target));
                 }
                 // Burst
                 if (Spells._e.IsReady() && Spells._w.IsReady() &&
                         (Program.Player.Distance(target.Position) <= Spells._e.Range))
                 {
                     Spells._e.Cast(target.ServerPosition);
-                    Program.ForceR();
-                    Program.CastYoumoo();
-                    Utility.DelayAction.Add(70, Program.ForceItem);
-                    Utility.DelayAction.Add(50, Program.ForceW);
+                    Logic.ForceR();
+                    Logic.CastYoumoo();
+                    Utility.DelayAction.Add(70, Logic.ForceItem);
+                    Utility.DelayAction.Add(50, Logic.ForceW);
                     Spells._r.Cast(target.ServerPosition);
-                    Utility.DelayAction.Add(30, () => Program.ForceCastQ(target));
+                    Utility.DelayAction.Add(30, () => Logic.ForceCastQ(target));
                 }
 
             }
@@ -115,16 +115,16 @@ namespace NechritoRiven
             {
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
-                    Program.ForceCastQ(target);
-                    Utility.DelayAction.Add(1, Program.ForceW);
+                    Logic.ForceCastQ(target);
+                    Utility.DelayAction.Add(1, Logic.ForceW);
                 }
             }
             if (Spells._q.IsReady() && Program._qstack == 3)
             {
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
-                    Program.ForceCastQ(target);
-                    Utility.DelayAction.Add(1, Program.ForceW);
+                    Logic.ForceCastQ(target);
+                    Utility.DelayAction.Add(1, Logic.ForceW);
                 }
             }
         }
@@ -136,8 +136,8 @@ namespace NechritoRiven
             {
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
-                    Program.ForceCastQ(target);
-                    Utility.DelayAction.Add(1, Program.ForceW);
+                    Logic.ForceCastQ(target);
+                    Utility.DelayAction.Add(1, Logic.ForceW);
                 }
             }
             if (Spells._q.IsReady() && Spells._e.IsReady() && Program._qstack == 3 && !Orbwalking.CanAttack() && Orbwalking.CanMove(5))
@@ -159,7 +159,7 @@ namespace NechritoRiven
                             : 70 + 120 + Program.Player.BoundingRadius) && Spells._w.IsReady());
             var x = Program.Player.Position.Extend(Game.CursorPos, 300);
             var objAiHeroes = enemy as Obj_AI_Hero[] ?? enemy.ToArray();
-            if (Spells._w.IsReady() && objAiHeroes.Any()) foreach (var target in objAiHeroes) if (Program.InWRange(target)) Spells._w.Cast();
+            if (Spells._w.IsReady() && objAiHeroes.Any()) foreach (var target in objAiHeroes) if (Logic.InWRange(target)) Spells._w.Cast();
             if (Spells._q.IsReady() && !Program.Player.IsDashing()) Spells._q.Cast(Game.CursorPos);
             if (Spells._e.IsReady() && !Program.Player.IsDashing()) Spells._e.Cast(x);
         }

@@ -83,7 +83,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dmg.cs" />
     <Compile Include="HpBarIndicator.cs" />
+    <Compile Include="Logic.cs" />
     <Compile Include="MenuConfig.cs" />
     <Compile Include="Mode\Modes.cs" />
     <Compile Include="Orbwalking.cs" />
