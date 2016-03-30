@@ -37,8 +37,8 @@ namespace NechritoRiven
             Config.AddSubMenu(animation);
             
             var combo = new Menu("Combo", "Combo");
-
-            combo.AddItem(new MenuItem("AlwaysR", "Use R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("KAPPA", "Force R OFF Will use R when killable"));
+            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
@@ -71,7 +71,7 @@ namespace NechritoRiven
             Config.AddToMainMenu();
         }
 
-        public static bool DoIgnite => Config.Item("DoIgnite").GetValue<bool>();
+        public static bool RKill => Config.Item("RKill").GetValue<bool>();
         public static bool QReset => Config.Item("qReset").GetValue<bool>();
         public static bool Dind => Config.Item("Dind").GetValue<bool>();
         public static bool DrawCb => Config.Item("DrawCB").GetValue<bool>();
@@ -79,27 +79,19 @@ namespace NechritoRiven
         public static bool AnimTaunt => Config.Item("animTaunt").GetValue<bool>();
         public static bool AnimDance => Config.Item("animDance").GetValue<bool>();
         public static bool AnimTalk => Config.Item("animTalk").GetValue<bool>();
-
         public static bool DrawAlwaysR => Config.Item("DrawAlwaysR").GetValue<bool>();
-
         public static bool KeepQ => Config.Item("KeepQ").GetValue<bool>();
-
-
         public static bool DrawFh => Config.Item("DrawFH").GetValue<bool>();
         public static bool DrawTimer1 => Config.Item("DrawTimer1").GetValue<bool>();
         public static bool DrawTimer2 => Config.Item("DrawTimer2").GetValue<bool>();
         public static bool DrawHs => Config.Item("DrawHS").GetValue<bool>();
         public static bool DrawBt => Config.Item("DrawBT").GetValue<bool>();
-
         public static bool AlwaysR => Config.Item("AlwaysR").GetValue<KeyBind>().Active;
         public static int Qd => Config.Item("QD").GetValue<Slider>().Value;
         public static int Qld => Config.Item("QLD").GetValue<Slider>().Value;
-
-
         public static bool LaneW => Config.Item("LaneW").GetValue<bool>();
         public static bool LaneE => Config.Item("LaneE").GetValue<bool>();
         public static bool Qstrange => Config.Item("Qstrange").GetValue<bool>();
-
         public static bool LaneQ => Config.Item("LaneQ").GetValue<bool>();
 
 

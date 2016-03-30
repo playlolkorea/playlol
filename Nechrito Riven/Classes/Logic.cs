@@ -1,6 +1,7 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
 using ItemData = LeagueSharp.Common.Data.ItemData;
+using System.Linq;
 
 namespace NechritoRiven
 {
@@ -30,7 +31,15 @@ namespace NechritoRiven
                 : 265 >= Program.Player.Distance(target.Position));
         }
 
+        public static Obj_AI_Base GetCenterMinion()
+        {
+            var minionposition = MinionManager.GetMinions(300 + Spells._q.Range).Select(x => x.Position.To2D()).ToList();
+            var center = MinionManager.GetBestCircularFarmLocation(minionposition, 250, 300 + Spells._q.Range);
 
+            return center.MinionsHit >= 3
+                ? MinionManager.GetMinions(1000).OrderBy(x => x.Distance(center.Position)).FirstOrDefault()
+                : null;
+        }
         public static void ForceSkill()
         {
             if (_forceQ && _qtarget != null && _qtarget.IsValidTarget(Spells._e.Range + Program.Player.BoundingRadius + 70) &&

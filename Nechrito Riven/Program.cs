@@ -27,8 +27,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 52 (Date: 3/28-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Ignite KS & More Classes</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 53 (Date: 3/30-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Classes, Burst & Ult</font></b>");
             
             var ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
             if (ignite != null)
@@ -115,7 +115,7 @@ namespace NechritoRiven
                             Spells._e.Cast(minions);
 
                         if (Spells._q.IsReady() && MenuConfig.LaneQ)
-                            Spells._q.Cast(Modes.GetCenterMinion());
+                            Spells._q.Cast(Logic.GetCenterMinion());
                       
                         if (Spells._w.IsReady() && MenuConfig.LaneW)
                             Spells._w.Cast();
@@ -134,33 +134,8 @@ namespace NechritoRiven
 
             if (args.Target is Obj_AI_Minion)
             {
-                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-                {
-                    var mobs = MinionManager.GetMinions(Player.Position, 600f, MinionTypes.All,
-                        MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
-                  
-                        if (Spells._e.IsReady() && !Orbwalking.InAutoAttackRange(Modes.GetCenterMinion()))
-                        {
-                            Spells._e.Cast(mobs);
-                        }
-
-                        if (HasTitan())
-                        {
-                            CastTitan();
-                            return;
-                        }
-                        if (Spells._q.IsReady())
-                        {
-                            Logic.ForceItem();
-                            Spells._q.Cast(mobs);
-                        }
-                        if (Spells._w.IsReady())
-                        {
-                        Logic.ForceItem();
-                            Spells._w.Cast(mobs);
-                        }
-                    }
-                }
+                Lane.LaneLogic();
+             }
             
                 
             var @base = args.Target as Obj_AI_Turret;
@@ -287,22 +262,22 @@ namespace NechritoRiven
             switch (MenuConfig._orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
-                    Modes.DoCombo();
+                    Combo.ComboLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
-                    Modes.Jungleclear();
+                    Jungle.JungleLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    Modes.Harass();
+                    Harass.HarassLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.FastHarass:
-                    Modes.FastHarass();
+                    FastHarass.FastHarassLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.Burst:
-                    Modes.DoBurst();
+                    Burst.BurstLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.Flee:
-                    Modes.Flee();
+                    Flee.FleeLogic();
                     break;
             }
         }
@@ -397,8 +372,8 @@ namespace NechritoRiven
                         : System.Drawing.Color.IndianRed);
             if (MenuConfig.DrawAlwaysR)
             {
-                Drawing.DrawText(heropos.X - 15, heropos.Y + 20, System.Drawing.Color.DodgerBlue, "Use R  (     )");
-                Drawing.DrawText(heropos.X + 40, heropos.Y + 20,
+                Drawing.DrawText(heropos.X - 15, heropos.Y + 20, System.Drawing.Color.DodgerBlue, "Force R  (     )");
+                Drawing.DrawText(heropos.X + 53, heropos.Y + 20,
                     MenuConfig.AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, MenuConfig.AlwaysR ? "On" : "Off");
             }
 
@@ -470,19 +445,13 @@ namespace NechritoRiven
             }
         }
 
-       
-
         private static void Reset()
         {
             if (MenuConfig.QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;  
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-
         }
-
-
-        
 
         private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
@@ -499,21 +468,19 @@ namespace NechritoRiven
 
                             if (args.Target.NetworkId == Player.NetworkId)
                             {
-                                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit &&
+                                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
                                     !args.SData.Name.Contains("NasusW"))
                                 {
                                     if (Spells._e.IsReady()) Spells._e.Cast(epos);
                                 }
                             }
-
                             break;
                         case SpellDataTargetType.SelfAoe:
 
-                            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
+                            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                             {
                                 if (Spells._e.IsReady()) Spells._e.Cast(epos);
                             }
-
                             break;
                     }
                     if (args.SData.Name.Contains("IreliaEquilibriumStrike"))
@@ -618,13 +585,6 @@ namespace NechritoRiven
                             else if (Spells._e.IsReady()) Spells._e.Cast();
                         }
                     }
-                    if (args.SData.Name.Contains("YasuoDash"))
-                    {
-                        if (args.Target.NetworkId == Player.NetworkId)
-                        {
-                            if (Spells._e.IsReady()) Spells._e.Cast();
-                        }
-                    }
                     if (args.SData.Name.Contains("KatarinaE"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
@@ -646,21 +606,6 @@ namespace NechritoRiven
                             if (Spells._e.IsReady()) Spells._e.Cast();
                             else if (Spells._w.IsReady()) Spells._w.Cast();
                         }
-                    }
-                    if (args.SData.Name.Contains("MonkeyKingQAttack"))
-                    {
-                        if (args.Target.NetworkId == Player.NetworkId)
-                            if (Spells._e.IsReady()) Spells._e.Cast();
-                    }
-                    if (args.SData.Name.Contains("MonkeyKingQAttack"))
-                    {
-                        if (args.Target.NetworkId == Player.NetworkId)
-                            if (Spells._e.IsReady()) Spells._e.Cast();
-                    }
-                    if (args.SData.Name.Contains("MonkeyKingQAttack"))
-                    {
-                        if (args.Target.NetworkId == Player.NetworkId)
-                            if (Spells._e.IsReady()) Spells._e.Cast();
                     }
                 }
             }
