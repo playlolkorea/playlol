@@ -30,18 +30,19 @@ namespace NechritoRiven
                 }
                 // Burst
                 if (Spells._e.IsReady() && Spells._w.IsReady() &&
-                        (Program.Player.Distance(target.Position) <= Spells._e.Range + Program.Player.AttackRange))
+                        (Program.Player.Distance(target.Position) <= Spells._e.Range + Program.Player.AttackRange - 20))
                 {
                     Spells._e.Cast(target.ServerPosition);
                     Logic.ForceR();
                     Logic.CastYoumoo();
                     Logic.ForceItem();
                     Program.CastTitan();
-                    Logic.ForceW();
+                    Spells._w.Cast(target);
                     Utility.DelayAction.Add(60, () => Logic.ForceCastQ(target));
                     Spells._r.Cast(target.ServerPosition);
                     
                 }
+                
             }
         }
         
