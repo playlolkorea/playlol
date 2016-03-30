@@ -28,7 +28,7 @@ namespace NechritoRiven
         {
             if (Player.ChampionName != "Riven") return;
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 54 (Date: 3/30-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Killsteal ER2(misc menu)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Killsteal ER2</font></b>");
             
            
             Timer =
@@ -293,6 +293,7 @@ namespace NechritoRiven
         {
             if (Spells._q.IsReady())
             {
+                // R range because auto-gapclose! (Yes, i'm smart. Give Contrib pls)
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
@@ -311,14 +312,6 @@ namespace NechritoRiven
                         Utility.DelayAction.Add(60, () => Spells._r.Cast(target));
                     }
                         
-                }
-            }
-            {
-                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
-                foreach (var target in targets)
-                {
-                    if (target.Health < Spells._q.GetDamage(target) && Logic.InQRange(target))
-                        Spells._q.Cast(target);
                 }
             }
             if (Spells._w.IsReady())
