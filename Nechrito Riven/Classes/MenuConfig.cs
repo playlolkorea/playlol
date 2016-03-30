@@ -71,8 +71,6 @@ namespace NechritoRiven
             Config.AddToMainMenu();
         }
 
-        public static bool RKill => Config.Item("RKill").GetValue<bool>();
-        public static bool ER2 => Config.Item("ER2").GetValue<bool>();
         public static bool QReset => Config.Item("qReset").GetValue<bool>();
         public static bool Dind => Config.Item("Dind").GetValue<bool>();
         public static bool DrawCb => Config.Item("DrawCB").GetValue<bool>();

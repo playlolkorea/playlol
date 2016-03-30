@@ -120,7 +120,7 @@ namespace NechritoRiven
                           var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
                         foreach (var m in minion)
                         {
-                            if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2)
+                            if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2 || minion.Count >= 1 && !Orbwalking.Attack)
                                 Spells._w.Cast(m);
                         }
                     }
@@ -301,7 +301,7 @@ namespace NechritoRiven
                         Spells._q.Cast(target);
                 }
             }
-            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsFirstR && MenuConfig.ER2)
+            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsSecondR)
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range + Spells._e.Range) && !x.IsZombie);
                 foreach (var target in targets)
