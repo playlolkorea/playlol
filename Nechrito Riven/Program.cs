@@ -100,11 +100,11 @@ namespace NechritoRiven
             {
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var minions = MinionManager.GetMinions(Player.ServerPosition, Spells._q.Range).FirstOrDefault();
+                    var minions = MinionManager.GetMinions(Player.ServerPosition, 600f).FirstOrDefault();
                     if (minions == null)
                         return;
-                    
-                        if (HasTitan())
+
+                    if (HasTitan())
                         {
                            CastTitan();
                             return;
@@ -116,7 +116,17 @@ namespace NechritoRiven
                             Spells._q.Cast(Logic.GetCenterMinion());
                       
                         if (Spells._w.IsReady() && MenuConfig.LaneW)
-                            Spells._w.Cast();
+                    {
+                          var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
+                        foreach (var m in minion)
+                        {
+                            if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2)
+                                Spells._w.Cast(m);
+                        }
+                    }
+                      
+                          
+                           
                     }
                 }
             }
@@ -298,7 +308,7 @@ namespace NechritoRiven
                     if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= 1870) && (Player.Distance(target.Position) >= 1600))
                     {
                         Spells._e.Cast(target);
-                        Spells._r.Cast(target);
+                        Utility.DelayAction.Add(60, () => Spells._r.Cast(target));
                     }
                         
                 }

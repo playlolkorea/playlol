@@ -30,7 +30,7 @@ namespace NechritoRiven
                 }
                 // Burst
                 if (Spells._e.IsReady() && Spells._w.IsReady() &&
-                        (Program.Player.Distance(target.Position) <= Spells._e.Range))
+                        (Program.Player.Distance(target.Position) <= Spells._e.Range + Program.Player.AttackRange))
                 {
                     Spells._e.Cast(target.ServerPosition);
                     Logic.ForceR();
