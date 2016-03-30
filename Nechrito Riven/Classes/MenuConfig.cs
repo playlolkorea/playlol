@@ -48,6 +48,7 @@ namespace NechritoRiven
             Config.AddSubMenu(lane);
 
             var misc = new Menu("Misc", "Misc");
+            misc.AddItem(new MenuItem("ER2", "Killsteal E R2 (BETA)").SetValue(true));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
@@ -72,6 +73,7 @@ namespace NechritoRiven
         }
 
         public static bool RKill => Config.Item("RKill").GetValue<bool>();
+        public static bool ER2 => Config.Item("ER2").GetValue<bool>();
         public static bool QReset => Config.Item("qReset").GetValue<bool>();
         public static bool Dind => Config.Item("Dind").GetValue<bool>();
         public static bool DrawCb => Config.Item("DrawCB").GetValue<bool>();

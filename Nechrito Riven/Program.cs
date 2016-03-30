@@ -17,7 +17,7 @@ namespace NechritoRiven
         public static int _qstack = 1;
         public static Render.Text Timer, Timer2;
         private static bool _forceItem;
-        public static Spell Ignite = new Spell(SpellSlot.Unknown, 600);
+       
 
         public static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
@@ -27,12 +27,10 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 53 (Date: 3/30-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Classes, Burst & Ult</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 54 (Date: 3/30-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Killsteal ER2(misc menu)</font></b>");
             
-            var ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
-            if (ignite != null)
-                Ignite.Slot = ignite.Slot;
+           
             Timer =
                 new Render.Text(
                     "Q Expiry =>  " + ((double)(Logic._lastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0"),
@@ -258,7 +256,6 @@ namespace NechritoRiven
                 !Player.InFountain() && MenuConfig.KeepQ &&
                 !Player.Spellbook.IsChanneling &&
                 Spells._q.IsReady()) Spells._q.Cast(Game.CursorPos);
-
             switch (MenuConfig._orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -282,8 +279,6 @@ namespace NechritoRiven
             }
         }
 
-       
-
         private static void Killsteal()
         {
             if (Spells._q.IsReady())
@@ -295,18 +290,26 @@ namespace NechritoRiven
                         Spells._q.Cast(target);
                 }
             }
-            if(Ignite.Slot != SpellSlot.Unknown)
+            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsFirstR && MenuConfig.ER2)
             {
-                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Ignite.Range) && !x.IsZombie);
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range + Spells._e.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health < Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) && Player.Distance(target) <= Ignite.Range && !target.IsDead && target.IsValidTarget())
+                    if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= 1870) && (Player.Distance(target.Position) >= 1600))
                     {
-                        Ignite.Cast(target, true);
-                        return;
+                        Spells._e.Cast(target);
+                        Spells._r.Cast(target);
                     }
+                        
                 }
-
+            }
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health < Spells._q.GetDamage(target) && Logic.InQRange(target))
+                        Spells._q.Cast(target);
+                }
             }
             if (Spells._w.IsReady())
             {

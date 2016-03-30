@@ -19,7 +19,7 @@ namespace NechritoRiven
             _w = new Spell(SpellSlot.W, 250f);
             _e = new Spell(SpellSlot.E, 270);
             _r = new Spell(SpellSlot.R, 900);
-            _r.SetSkillshot(0.25f, (float)(45 * 0.5), 1600, false, SkillshotType.SkillshotCircle);
+            _r.SetSkillshot(0.25f, (float)(45 * 0.5), 1600, false, SkillshotType.SkillshotCone);
             Ignite = Player.GetSpellSlot("SummonerDot");
             Flash = Player.GetSpellSlot("SummonerFlash");
 
