@@ -48,6 +48,7 @@ namespace NechritoRiven
             Config.AddSubMenu(lane);
 
             var misc = new Menu("Misc", "Misc");
+            misc.AddItem(new MenuItem("IreliaLogic", "Irelia Logic (Flash Q3)").SetValue(false));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
@@ -70,7 +71,7 @@ namespace NechritoRiven
 
             Config.AddToMainMenu();
         }
-
+        public static bool IreliaLogic=> Config.Item("IreliaLogic").GetValue<bool>();
         public static bool QReset => Config.Item("qReset").GetValue<bool>();
         public static bool Dind => Config.Item("Dind").GetValue<bool>();
         public static bool DrawCb => Config.Item("DrawCB").GetValue<bool>();

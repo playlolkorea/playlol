@@ -24,6 +24,16 @@ namespace NechritoRiven
         public static bool InWRange(AttackableUnit t) => t != null && t.IsValidTarget(WRange);
 
 
+        public static void IreliaLogic()
+        {
+            // Boxbox troll stuff
+            var target = TargetSelector.GetSelectedTarget();
+            if (MenuConfig.IreliaLogic && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange -20) && target.Health < Dmg.Totaldame(target))
+            {
+                Program.Player.Spellbook.CastSpell(Spells.Flash, Program.Player.Position - 260f);
+            }
+        }
+
         public static bool InQRange(GameObject target)
         {
             return target != null && (Program.Player.HasBuff("RivenFengShuiEngine")

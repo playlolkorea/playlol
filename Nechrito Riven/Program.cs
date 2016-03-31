@@ -68,6 +68,7 @@ namespace NechritoRiven
             }
         }
             
+        
         private static void Drawing_OnEndScene(EventArgs args)
         {
             foreach (
@@ -120,7 +121,7 @@ namespace NechritoRiven
                           var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
                         foreach (var m in minion)
                         {
-                            if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2 || minion.Count >= 2 && !Orbwalking.Attack)
+                            if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2)
                                 Spells._w.Cast(m);
                         }
                     }
@@ -453,7 +454,7 @@ namespace NechritoRiven
             if (MenuConfig.QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;  
             Player.IssueOrder(GameObjectOrder.MoveTo,
-                 Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
+                 Player.Position - 30);
         }
 
         private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
