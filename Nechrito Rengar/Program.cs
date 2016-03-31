@@ -17,8 +17,8 @@ namespace Nechrito_Rengar
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Rengar") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: Release (Date: 3/31-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Release </font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: ALPHA Release (Date: 3/31-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> ALPHA Release </font></b>");
            
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -55,10 +55,10 @@ namespace Nechrito_Rengar
                     if (Spells._q.IsReady())
                         Spells._q.Cast(target);
 
-                    if (Spells._e.IsReady() && (Player.Distance(target.Position) <= Spells._e.Range))
+                    if (Spells._e.IsReady())
                         Spells._e.Cast(target.ServerPosition);
 
-                    if (Spells._w.IsReady())
+                    if (Spells._w.IsReady())    
                         Spells._w.Cast(target);
 
                     if (Logic.HasTitan())
@@ -77,19 +77,9 @@ namespace Nechrito_Rengar
                 {
 
                     var minions = MinionManager.GetMinions(Player.ServerPosition, 600f).FirstOrDefault();
-                    {
-                            
-
-                        foreach (var x in Player.Buffs)
-                            Game.PrintChat(x.Name);
+                    {  
                         if (minions == null || Player.Mana == 5 && MenuConfig.Passive)
                                 return;
-
-                        if (Logic.HasTitan())
-                        {
-                            Logic.CastTitan();
-                            return;
-                        }
 
                         if (Spells._q.IsReady())
                             Spells._q.Cast(minions);
@@ -99,8 +89,6 @@ namespace Nechrito_Rengar
 
                             if (Spells._w.IsReady())
                                 Spells._w.Cast(minions);
-                        
-                       
                     }
                 }
             }
