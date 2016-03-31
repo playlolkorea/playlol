@@ -17,7 +17,7 @@ namespace Nechrito_Rengar
                               (float)Program.Player.GetAutoAttackDamage(enemy);
                 if (Spells._q.IsReady() && Program.Player.Mana == 5) damage = damage + Spells._q.GetDamage(enemy) +
                               (float)Program.Player.GetAutoAttackDamage(enemy);
-                damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy);
+                damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy)*3;
                 return damage;
             }
             return 0;

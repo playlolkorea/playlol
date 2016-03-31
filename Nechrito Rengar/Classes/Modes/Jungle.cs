@@ -23,17 +23,16 @@ namespace Nechrito_Rengar
                 if (Spells._q.IsReady())
                     Spells._q.Cast(mobs[0]);
 
-                if (Logic.HasTitan())
-                {
-                    Logic.CastTitan();
-                    return;
-                }
 
                 if (Spells._e.IsReady() && Program.Player.Mana < 5)
                     Spells._e.Cast(mobs[0]);
 
                 if (Spells._w.IsReady())
+                {
                     Spells._w.Cast(mobs[0]);
+                    Logic.CastHydra();
+                }
+                   
 
             }
         }

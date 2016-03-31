@@ -1,5 +1,4 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
+﻿using LeagueSharp.Common;
 
 namespace Nechrito_Rengar
 {
@@ -22,13 +21,9 @@ namespace Nechrito_Rengar
             Config.AddSubMenu(orbwalker);
 
 
-            var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("GankCombo", "Gank Combo")).SetValue(false);
-            combo.AddItem(new MenuItem("OneShot", "OneShot Combo")).SetValue(true);
-            Config.AddSubMenu(combo);
-
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("Passive", "Save Passive")).SetValue(new KeyBind('G', KeyBindType.Toggle));
+            misc.AddItem(new MenuItem("QAA", "Q AA Reset")).SetValue(true);
             Config.AddSubMenu(misc);
 
 
@@ -40,6 +35,7 @@ namespace Nechrito_Rengar
         }
         public static bool Passive => Config.Item("Passive").GetValue<KeyBind>().Active;
         public static bool dind => Config.Item("dind").GetValue<bool>();
+        public static bool QAA => Config.Item("QAA").GetValue<bool>();
         public static bool GankCombo => Config.Item("GankCombo").GetValue<bool>();
         public static bool OneShot => Config.Item("OneShot").GetValue<bool>();
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using LeagueSharp.Common;
-
+using SPrediction;
 
 namespace Nechrito_Rengar
 {
@@ -15,31 +15,32 @@ namespace Nechrito_Rengar
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Spells._q.IsReady() && Spells._w.IsReady() && Spells._e.IsReady() && Program.Player.Mana == 5 && MenuConfig.OneShot)
+                if (Program.Player.Mana <= 4)
                 {
-                    Logic.CastYoumoo();
-                    Spells._q.Cast(target);
-                    Spells._e.Cast(target);
-                    Spells._w.Cast(target);
+                    if (Spells._q.IsReady())
+                        Spells._q.Cast(target);
 
-
+                    if (Spells._w.IsReady())
+                    {
+                        Spells._w.Cast(target);
+                        Logic.CastHydra();
+                    }
+                    if (Spells._e.IsReady())
+                        Spells._e.Cast(target);
                 }
-                if (Spells._q.IsReady() && Spells._w.IsReady() && Spells._e.IsReady() && Program.Player.Mana <= 4 && MenuConfig.GankCombo)
+                if (Program.Player.Mana == 5)
                 {
-                    Logic.CastYoumoo();
-                    Spells._w.Cast(target);
-                    Spells._e.Cast(target);
-                    Spells._q.Cast(target);
-
-
-                }
-                if (Spells._q.IsReady() && Spells._w.IsReady() && Spells._e.IsReady() && Program.Player.Mana == 5 && MenuConfig.GankCombo)
-                {
-                    Logic.CastYoumoo();
-                    Spells._e.Cast(target);
-                    Spells._q.Cast(target);
-                    Spells._w.Cast(target);
-
+                    if (Spells._q.IsReady())
+                        Spells._q.Cast(target);
+                    if (Spells._w.IsReady())
+                    {
+                        Spells._w.Cast(target);
+                        Logic.CastHydra();
+                    }
+                    if (Spells._e.IsReady())
+                        Spells._e.Cast(target);
+                    if (Spells._e.IsReady())
+                        Spells._e.Cast(target);
                 }
             }
         }
