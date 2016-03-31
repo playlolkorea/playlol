@@ -17,17 +17,10 @@ namespace Nechrito_Rengar
             {
                 Spells._q.Cast(target);
                 Spells._e.Cast(target);
-                Logic.CastTitan();
-                Logic.ForceItem();
                 Spells._w.Cast(target);
                 Spells._q.Cast(target);
 
             }
-           else if(Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range) && (Program.Player.Distance(target.Position) >= Program.Player.AttackRange))
-            {
-                Spells._e.Cast(target.ServerPosition);
-            }
-
 
         }
         

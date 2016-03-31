@@ -54,13 +54,7 @@ namespace Nechrito_Rengar
                     if (Spells._e.IsReady() && (Player.Distance(target.Position) <= Spells._e.Range))
                         Spells._e.Cast(target.ServerPosition);
 
-                    if (Logic.HasItem())
-                    {
-                        Logic.CastTitan();
-                        return;
-                    }
-
-                    if (Spells._w.IsReady() && Player.Mana < 5)
+                    if (Spells._w.IsReady())
                         Spells._w.Cast(target);
 
                     if (Spells._q.IsReady())
