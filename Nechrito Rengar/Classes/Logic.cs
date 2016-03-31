@@ -15,8 +15,11 @@ namespace Nechrito_Rengar
             if (Items.HasItem(3748) && Items.CanUseItem(3748))
             {
                 Items.UseItem(3748);
-                Orbwalking.LastAATick = 0;
             }
+        }
+        public static void CastYoumoo()
+        {
+            if (ItemData.Youmuus_Ghostblade.GetItem().IsReady()) ItemData.Youmuus_Ghostblade.GetItem().Cast();
         }
         public static bool _forceItem;
         public static int Item

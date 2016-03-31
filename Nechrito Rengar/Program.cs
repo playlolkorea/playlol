@@ -51,14 +51,21 @@ namespace Nechrito_Rengar
             {
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
+
+                    if (Spells._q.IsReady())
+                        Spells._q.Cast(target);
+
                     if (Spells._e.IsReady() && (Player.Distance(target.Position) <= Spells._e.Range))
                         Spells._e.Cast(target.ServerPosition);
 
                     if (Spells._w.IsReady())
                         Spells._w.Cast(target);
 
-                    if (Spells._q.IsReady())
-                        Spells._q.Cast(target);
+                    if (Logic.HasTitan())
+                    {
+                        Logic.CastTitan();
+                        return;
+                    }
                 }
             }
         }
@@ -78,13 +85,13 @@ namespace Nechrito_Rengar
                         if (minions == null || Player.Mana == 5 && MenuConfig.Passive)
                                 return;
 
-                        if(Logic.HasTitan())
+                        if (Logic.HasTitan())
                         {
                             Logic.CastTitan();
                             return;
                         }
 
-                            if (Spells._q.IsReady())
+                        if (Spells._q.IsReady())
                             Spells._q.Cast(minions);
 
                             if (Spells._e.IsReady())
