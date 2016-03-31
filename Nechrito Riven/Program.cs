@@ -101,7 +101,7 @@ namespace NechritoRiven
             {
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var minions = MinionManager.GetMinions(Player.ServerPosition, 600f).FirstOrDefault();
+                    var minions = MinionManager.GetMinions(Player.ServerPosition, 600f);
                     if (minions == null)
                         return;
 
@@ -111,7 +111,7 @@ namespace NechritoRiven
                             return;
                         }
                         if (Spells._e.IsReady() && MenuConfig.LaneE)
-                            Spells._e.Cast(minions);
+                            Spells._e.Cast(minions[0]);
 
                         if (Spells._q.IsReady() && MenuConfig.LaneQ)
                             Spells._q.Cast(Logic.GetCenterMinion());
