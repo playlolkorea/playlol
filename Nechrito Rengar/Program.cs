@@ -3,7 +3,6 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
-using SPrediction;
 
 namespace Nechrito_Rengar
 {
@@ -12,7 +11,10 @@ namespace Nechrito_Rengar
         public static readonly Obj_AI_Hero Player = ObjectManager.Player;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
         private static float lastQ;
+        public static SpellSlot Smite;
+        public static readonly int[] BlueSmite = { 3706, 1400, 1401, 1402, 1403 };
 
+        public static readonly int[] RedSmite = { 3715, 1415, 1414, 1413, 1412 };
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
         private static void OnGameLoad(EventArgs args)
         {
@@ -30,10 +32,26 @@ namespace Nechrito_Rengar
        
 
         }
+        protected static void SmiteCombo()
+        {
+            if (BlueSmite.Any(id => Items.HasItem(id)))
+            {
+                Smite = Player.GetSpellSlot("s5_summonersmiteplayerganker");
+                return;
+            }
+
+            if (RedSmite.Any(id => Items.HasItem(id)))
+            {
+                Smite = Player.GetSpellSlot("s5_summonersmiteduel");
+                return;
+            }
+
+            Smite = Player.GetSpellSlot("summonersmite");
+        }
         private static void OnTick(EventArgs args)
         {
             Killsteal._Killsteal();
-
+            SmiteCombo();
             switch (MenuConfig._orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -52,6 +70,9 @@ namespace Nechrito_Rengar
         }
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            var spellName = args.SData.Name;
+            if (!sender.IsMe || !Orbwalking.IsAutoAttack(spellName)) return;
+
             var hero = args.Target as Obj_AI_Hero;
             if (hero == null) return;
             var target = hero;

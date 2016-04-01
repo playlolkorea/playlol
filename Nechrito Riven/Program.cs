@@ -55,6 +55,7 @@ namespace NechritoRiven
             Obj_AI_Base.OnPlayAnimation += OnPlay;
             Obj_AI_Base.OnProcessSpellCast += OnCasting;
             Interrupter2.OnInterruptableTarget += Interrupt;
+            Game.OnNotify += OnNotify;
         }
         
         public static bool HasTitan() => Items.HasItem(3748) && Items.CanUseItem(3748);
@@ -254,6 +255,7 @@ namespace NechritoRiven
         }
         private static void OnTick(EventArgs args)
         {
+           
             Timer.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
             Timer.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 43;
             Timer2.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
@@ -612,6 +614,18 @@ namespace NechritoRiven
                         }
                     }
                 }
+            }
+        }
+        // TY jQuery LOL you fkn troll :^)
+        private static void OnNotify(GameNotifyEventArgs args)
+        {
+            if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Mastery)
+            {
+                Game.Say("/masterybadge");
+            }
+            if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Laugh)
+            {
+                Game.Say("/l");
             }
         }
     }
