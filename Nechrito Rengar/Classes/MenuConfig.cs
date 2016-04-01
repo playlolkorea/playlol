@@ -23,7 +23,6 @@ namespace Nechrito_Rengar
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("Passive", "Save Passive")).SetValue(new KeyBind('G', KeyBindType.Toggle));
-            misc.AddItem(new MenuItem("QAA", "Q AA Reset")).SetValue(true);
             Config.AddSubMenu(misc);
 
 

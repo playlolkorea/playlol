@@ -17,8 +17,8 @@ namespace Nechrito_Rengar
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Rengar") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: ALPHA Release (Date: 3/31-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> ALPHA Release </font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 2 (Date: 4/1-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Much Better Combo </font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -27,7 +27,7 @@ namespace Nechrito_Rengar
             Obj_AI_Base.OnDoCast += OnDoCastLC;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            Spellbook.OnCastSpell += OnPlay;
+       
 
         }
         private static void OnTick(EventArgs args)
@@ -38,6 +38,12 @@ namespace Nechrito_Rengar
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo.ComboLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Burst:
+                    Burst.BurstLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    Harass.HarassLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Jungle.JungleLogic();
@@ -52,17 +58,13 @@ namespace Nechrito_Rengar
             {
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
-                    if (Spells._e.IsReady() && !Orbwalking.InAutoAttackRange(target))
+                    if (Spells._e.IsReady())
                         Spells._e.Cast(target);
+                }
+                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
+                {
                     if (Spells._q.IsReady())
-                    {
                         Spells._q.Cast(target);
-                        Logic.CastHydra();
-                    }
-
-                    else if (Spells._w.IsReady())
-                        Spells._w.Cast(target);
-
                 }
             }
         }
@@ -77,19 +79,20 @@ namespace Nechrito_Rengar
                     {
                         if (minions == null || Player.Mana == 5 && MenuConfig.Passive)
                             return;
-
-                        if (Spells._e.IsReady())
-                            Spells._e.Cast(minions);
-
-                        if (Spells._q.IsReady())
-                            Spells._q.Cast(minions);
-
-                        else if (Spells._w.IsReady())
+                        if(Player.Mana <= 5)
                         {
-                            Logic.CastHydra();
-                            Spells._w.Cast(minions);
-                        }
-                           
+                            if (Spells._e.IsReady() && Player.Mana < 5)
+                                Spells._e.Cast(minions);
+
+                            if (Spells._q.IsReady() && !Orbwalking.CanAttack())
+                                Spells._q.Cast(minions);
+
+                            if (Spells._w.IsReady())
+                            {
+                                Logic.CastHydra();
+                                Spells._w.Cast(minions);
+                            }
+                        }  
                     }
                 }
             }
@@ -126,7 +129,7 @@ namespace Nechrito_Rengar
                 }
             }
         }
-        private static void OnPlay(Spellbook sender, SpellbookCastSpellEventArgs args) { if (args.Slot == SpellSlot.Q && MenuConfig.QAA) Orbwalking.LastAATick = 0; }
+       
 
 
 

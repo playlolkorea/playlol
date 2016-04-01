@@ -6,7 +6,7 @@ namespace Nechrito_Rengar
     class Spells
     {
         private static Obj_AI_Hero Player = ObjectManager.Player;
-        public static SpellSlot Ignite, Flash;
+        public static SpellSlot Ignite, Smite;
         public static Spell _q, _w, _e, _r;
         public static void Initialise()
         {
@@ -16,7 +16,7 @@ namespace Nechrito_Rengar
             _e.SetSkillshot(0.25f, 70, 1500f, true, SkillshotType.SkillshotLine);
             _r = new Spell(SpellSlot.R);
             Ignite = Player.GetSpellSlot("SummonerDot");
-            Flash = Player.GetSpellSlot("SummonerFlash");
+            
 
         }
 
