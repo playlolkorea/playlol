@@ -59,12 +59,20 @@ namespace Nechrito_Rengar
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
                     if (Spells._e.IsReady())
+                    {
                         Spells._e.Cast(target);
+                      
+                    }
+                      
                 }
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
                 {
                     if (Spells._q.IsReady())
+                    {
                         Spells._q.Cast(target);
+                       
+                    }
+                       
                 }
             }
         }

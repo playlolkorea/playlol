@@ -17,17 +17,15 @@ namespace Nechrito_Rengar
                 {
                     if (Program.Player.Mana == 5)
                     {
-                        if (Spells._e.IsReady())
-                            Spells._e.Cast(target);
-                        if (Spells._e.IsReady())
-                            Spells._e.Cast(target);
                         if (Spells._q.IsReady())
-                            Spells._q.Cast(target);
-                        if (Spells._w.IsReady())
                         {
-                            Spells._w.Cast(target);
+                            Spells._q.Cast(target);
                             Logic.CastHydra();
                         }
+                        if (Spells._q.IsReady())
+                            Spells._q.Cast(target);
+                        if (Spells._q.IsReady())
+                            Spells._q.Cast(target);
                     }
                     if (Program.Player.Mana <= 4)
                     {

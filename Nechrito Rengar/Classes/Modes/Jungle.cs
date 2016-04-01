@@ -1,6 +1,7 @@
 ﻿using System;
 using LeagueSharp.Common;
 using System.Linq;
+using LeagueSharp;
 
 namespace Nechrito_Rengar
 {
@@ -36,6 +37,8 @@ namespace Nechrito_Rengar
                     if (Spells._e.IsReady())
                         Spells._e.Cast(mobs[0]);
                 }
+
+               
             }
         }
 

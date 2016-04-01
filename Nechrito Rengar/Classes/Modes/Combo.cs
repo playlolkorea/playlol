@@ -25,7 +25,7 @@ namespace Nechrito_Rengar
                     {
                         Spells._q.Cast(target);
                         Logic.CastHydra();
-                        Logic.SmiteLogic();
+                    //  Logic.SmiteCombo();
                     }
                     if (Spells._w.IsReady())
                         Spells._w.Cast(target);
@@ -36,6 +36,7 @@ namespace Nechrito_Rengar
                     if (Spells._q.IsReady() && (Program.Player.Distance(target.Position) <= Spells._q.Range))
                     {
                         Spells._q.Cast(target);
+                        
                         Logic.CastHydra();
                     }
                     if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Spells._q.Range))

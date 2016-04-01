@@ -14,7 +14,7 @@ namespace Nechrito_Rengar
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Program.Player.Mana == 5 &&(Program.Player.Distance(target.Position) <= 600f))
+                if (Program.Player.Mana <= 5 &&(Program.Player.Distance(target.Position) <= 600f))
                     {
                     if (Spells._q.IsReady())
                         Spells._q.Cast(target);
