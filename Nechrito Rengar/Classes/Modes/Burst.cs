@@ -15,7 +15,7 @@ namespace Nechrito_Rengar
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Player.Mana <= 5 && (Player.Distance(target.Position) <= 900f))
+                if (Player.Mana <= 5 && (Player.Distance(target.Position) <= 850f))
                 {
                     if (Spells._q.IsReady())
                     {
@@ -26,11 +26,11 @@ namespace Nechrito_Rengar
                     if (Smite != SpellSlot.Unknown
                    && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready && !target.IsZombie)
                         Player.Spellbook.CastSpell(Smite, target);
-                    if (Spells._w.IsReady())
-                    {
+                    if ((Player.Distance(target.Position) <= 170f))
                         CastHydra();
+                    if (Spells._w.IsReady())   
                         Spells._w.Cast(target);
-                    }
+                    
                     if (Player.Mana <= 4)
                     {
                         if (Spells._e.IsReady())
@@ -43,11 +43,11 @@ namespace Nechrito_Rengar
                         {
                             Player.Spellbook.CastSpell(Smite, target);
                         }
-                        if (Spells._w.IsReady())
-                        {
+                        if ((Player.Distance(target.Position) <= 170f))
                             CastHydra();
+                        if (Spells._w.IsReady())
                             Spells._w.Cast(target);
-                        }
+
                     }
                 }
             }

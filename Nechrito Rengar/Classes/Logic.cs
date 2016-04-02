@@ -56,7 +56,6 @@ namespace Nechrito_Rengar
                     {
                         if (damage >= minion.Health)
                       Player.Spellbook.CastSpell(Smite, minion);
-                        
                     }
                 }
 
