@@ -3,7 +3,7 @@ using LeagueSharp.Common;
 
 namespace Nechrito_Rengar
 {
-    class Harass
+    class Harass : Logic
     {
         private static void Game_OnUpdate(EventArgs args)
         {
@@ -11,26 +11,26 @@ namespace Nechrito_Rengar
         }
         public static void HarassLogic()
         {
-            var target = TargetSelector.GetTarget(375f + Program.Player.AttackRange + 70, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(375f + Player.AttackRange + 70, TargetSelector.DamageType.Physical);
             {
                 if (target != null && target.IsValidTarget() && !target.IsZombie)
                 {
-                    if (Program.Player.Mana == 5)
+                    if (Player.Mana == 5)
                     {
                         if (Spells._q.IsReady())
                         {
                             Spells._q.Cast(target);
-                            Logic.CastHydra();
+                            CastHydra();
                         }
                     }
-                    if (Program.Player.Mana <= 4)
+                    if (Player.Mana <= 4)
                     {
 
                         if (Spells._q.IsReady())
                             Spells._q.Cast(target);
                         if (Spells._w.IsReady())
                         {
-                            Logic.CastHydra();
+                            CastHydra();
                             Spells._w.Cast(target);
                         }
                         if (Spells._e.IsReady())

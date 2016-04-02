@@ -671,7 +671,6 @@ namespace Nechrito_Rengar
                 }
             }
         }
-
         /// <summary>
         /// This class allows you to add an instance of "Orbwalker" to your assembly in order to control the orbwalking in an
         /// easy way.
@@ -791,7 +790,7 @@ namespace Nechrito_Rengar
                     new MenuItem("Burst", "Burst").SetShared().SetValue(new KeyBind('T', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("FastHarass", "Fast Harass").SetShared().SetValue(new KeyBind('Y', KeyBindType.Press)));
+                    new MenuItem("FastHarass", "Ap Combo").SetShared().SetValue(new KeyBind('Y', KeyBindType.Press)));
 
                 _config.AddItem(
                     new MenuItem("StillCombo", "Combo without moving").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));

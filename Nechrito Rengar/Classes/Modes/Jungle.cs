@@ -1,11 +1,9 @@
 ﻿using System;
 using LeagueSharp.Common;
-using System.Linq;
-using LeagueSharp;
 
 namespace Nechrito_Rengar
 {
-    class Jungle
+    class Jungle : Logic
     {
         private static void Game_OnUpdate(EventArgs args)
         {
@@ -16,25 +14,21 @@ namespace Nechrito_Rengar
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
 
-                var mobs = MinionManager.GetMinions(190 + Program.Player.AttackRange, MinionTypes.All, MinionTeam.Neutral,
+                var mobs = MinionManager.GetMinions(190 + Player.AttackRange, MinionTypes.All, MinionTeam.Neutral,
            MinionOrderTypes.MaxHealth);
 
-                if (mobs.Count <= 0 || Program.Player.Mana == 5 && MenuConfig.Passive)
+                if (mobs.Count <= 0 || Player.Mana == 5 && MenuConfig.Passive)
                     return;
-                if(Program.Player.Mana <= 5)
+                if(Player.Mana <= 5)
                 {
-                    if (Spells._q.IsReady() && !Orbwalking.CanAttack())
+                    if (Spells._w.IsReady())
+                        Spells._w.Cast(mobs[0]);
+                    if (Spells._q.IsReady())
                     {
                         Spells._q.Cast(mobs[0]);
                         Logic.CastHydra();
-                    }
-                       
-                    if (Spells._w.IsReady())
-                        Spells._w.Cast(mobs[0]);
-                       
-                    if (Spells._e.IsReady())
-                        Spells._e.Cast(mobs[0]);
-                    if (Spells._e.IsReady())
+                    }  
+                    if (Spells._e.IsReady() && Player.Mana < 5)
                         Spells._e.Cast(mobs[0]);
                 }
 

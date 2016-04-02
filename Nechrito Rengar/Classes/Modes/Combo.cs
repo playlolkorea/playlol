@@ -1,9 +1,10 @@
 ﻿using System;
 using LeagueSharp.Common;
+using LeagueSharp;
 
 namespace Nechrito_Rengar
 {
-    class Combo
+    class Combo : Logic
     {
         private static void Game_OnUpdate(EventArgs args)
         {
@@ -11,42 +12,42 @@ namespace Nechrito_Rengar
         }
         public static void ComboLogic()
         {
-            var target = TargetSelector.GetTarget(Spells._e.Range - 50, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Spells._e.Range - 80, TargetSelector.DamageType.Physical);
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Program.Player.Mana == 5)
+                if (Player.Mana == 5)
                 {
                     if (Spells._e.IsReady())
                         Spells._e.Cast(target);
                        Logic.CastYoumoo();
                     if (Spells._e.IsReady())
                         Spells._e.Cast(target);
-                    if (Spells._q.IsReady() && !Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange))
+                    if (Smite != SpellSlot.Unknown
+                    && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready && !target.IsZombie)
                     {
-                        Program.Player.Spellbook.CastSpell(Program.Smite, target);
-                        Spells._q.Cast(target);
-                        Logic.CastHydra();
+                        Player.Spellbook.CastSpell(Smite, target);
                     }
-                    if (Spells._w.IsReady())
+                    if (Spells._q.IsReady() && !Spells._e.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange + 30) && (target != null && target.IsValidTarget() && !target.IsZombie))
+                        Spells._q.Cast(target);
+                    if (Spells._w.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange + 30) && (target != null && target.IsValidTarget() && !target.IsZombie))
+                    {
+                        CastHydra();
                         Spells._w.Cast(target);
+                    }       
                 }
-                if (Program.Player.Mana <= 4)
+                if (Player.Mana <= 4)
                 {
-                    if (Spells._q.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange))
-                    {
-                        Program.Player.Spellbook.CastSpell(Program.Smite, target);
+                    if (Spells._q.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange) && (target != null && target.IsValidTarget() && !target.IsZombie))
                         Spells._q.Cast(target);
-                        Logic.CastHydra();
-                    }
-                    if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange))
+                    if (Spells._w.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange + 30) && (target != null && target.IsValidTarget() && !target.IsZombie))
+                    {
+                        CastHydra();
                         Spells._w.Cast(target);
-                    
-                    if (Spells._e.IsReady())
+                    }
+                    if (Spells._e.IsReady() && (target != null && target.IsValidTarget() && !target.IsZombie))
                         Spells._e.Cast(target);
                 }
-               
             }
         }
-        
     }
 }

@@ -6,12 +6,11 @@ using SharpDX;
 
 namespace Nechrito_Rengar
 {
-    class Program
+    class Program : Logic
     {
-        public static readonly Obj_AI_Hero Player = ObjectManager.Player;
+       
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
         private static float lastQ;
-        public static SpellSlot Smite;
         public static readonly int[] BlueSmite = { 3706, 1400, 1401, 1402, 1403 };
 
         public static readonly int[] RedSmite = { 3715, 1415, 1414, 1413, 1412 };
@@ -19,8 +18,8 @@ namespace Nechrito_Rengar
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Rengar") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 2 (Date: 4/1-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Much Better Combo </font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 3 (Date: 4/2-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Smite,jngl sustain & Apcombo</font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -32,26 +31,10 @@ namespace Nechrito_Rengar
        
 
         }
-        protected static void SmiteCombo()
-        {
-            if (BlueSmite.Any(id => Items.HasItem(id)))
-            {
-                Smite = Player.GetSpellSlot("s5_summonersmiteplayerganker");
-                return;
-            }
-
-            if (RedSmite.Any(id => Items.HasItem(id)))
-            {
-                Smite = Player.GetSpellSlot("s5_summonersmiteduel");
-                return;
-            }
-
-            Smite = Player.GetSpellSlot("summonersmite");
-        }
         private static void OnTick(EventArgs args)
         {
-            Killsteal._Killsteal();
             SmiteCombo();
+            Killsteal._Killsteal();
             switch (MenuConfig._orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -65,6 +48,9 @@ namespace Nechrito_Rengar
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Jungle.JungleLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.FastHarass:
+                    ApCombo.ApComboLogic();
                     break;
             }
         }
@@ -93,7 +79,12 @@ namespace Nechrito_Rengar
                         Spells._q.Cast(target);
                        
                     }
-                       
+                  else  if (Spells._e.IsReady())
+                    {
+                        Spells._e.Cast(target);
+
+                    }
+
                 }
             }
         }
@@ -110,17 +101,15 @@ namespace Nechrito_Rengar
                             return;
                         if(Player.Mana <= 5)
                         {
-                            if (Spells._e.IsReady() && Player.Mana < 5)
-                                Spells._e.Cast(minions);
-
-                            if (Spells._q.IsReady() && !Orbwalking.CanAttack())
-                                Spells._q.Cast(minions);
-
                             if (Spells._w.IsReady())
                             {
-                                Logic.CastHydra();
+                                CastHydra();
                                 Spells._w.Cast(minions);
                             }
+                            if (Spells._e.IsReady() && Player.Mana < 5)
+                                Spells._e.Cast(minions);
+                            if (Spells._q.IsReady())
+                                Spells._q.Cast(minions);
                         }  
                     }
                 }
