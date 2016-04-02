@@ -33,6 +33,7 @@ namespace Nechrito_Rengar
         }
         private static void OnTick(EventArgs args)
         {
+            SmiteJungle();
             SmiteCombo();
             Killsteal._Killsteal();
             switch (MenuConfig._orbwalker.ActiveMode)
@@ -74,15 +75,9 @@ namespace Nechrito_Rengar
                 }
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
                 {
-                    if (Spells._q.IsReady())
-                    {
-                        Spells._q.Cast(target);
-                       
-                    }
-                  else  if (Spells._e.IsReady())
+                   if (Spells._e.IsReady())
                     {
                         Spells._e.Cast(target);
-
                     }
 
                 }
@@ -102,14 +97,16 @@ namespace Nechrito_Rengar
                         if(Player.Mana <= 5)
                         {
                             if (Spells._w.IsReady())
-                            {
-                                CastHydra();
                                 Spells._w.Cast(minions);
-                            }
+                            
                             if (Spells._e.IsReady() && Player.Mana < 5)
                                 Spells._e.Cast(minions);
                             if (Spells._q.IsReady())
+                            {
                                 Spells._q.Cast(minions);
+                                CastHydra();
+                            }
+                                
                         }  
                     }
                 }

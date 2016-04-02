@@ -24,6 +24,8 @@ namespace Nechrito_Rengar
             if (ItemData.Youmuus_Ghostblade.GetItem().IsReady()) ItemData.Youmuus_Ghostblade.GetItem().Cast();
         }
         public static bool HasItem() => ItemData.Tiamat_Melee_Only.GetItem().IsReady() || ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady();
+
+        // Thanks jQuery for letting me use this! Great guy.
         protected static void SmiteCombo()
         {
             if (BlueSmite.Any(id => Items.HasItem(id)))
@@ -40,8 +42,28 @@ namespace Nechrito_Rengar
 
             Smite = Player.GetSpellSlot("summonersmite");
         }
+         
+        protected static void SmiteJungle()
+        {
+            foreach (var minion in MinionManager.GetMinions(900f, MinionTypes.All, MinionTeam.Neutral))
+            {
+                var damage = Player.Spellbook.GetSpell(Smite).State == SpellState.Ready
+                    ? (float)Player.GetSummonerSpellDamage(minion, Damage.SummonerSpell.Smite)
+                    : 0;
+                if (minion.Distance(Player.ServerPosition) <= 550)
+                {
+                    if ((minion.CharData.BaseSkinName.Contains("Dragon") || minion.CharData.BaseSkinName.Contains("Baron")))
+                    {
+                        if (damage >= minion.Health)
+                      Player.Spellbook.CastSpell(Smite, minion);
+                        
+                    }
+                }
+
+            }
 
 
 
+        }
     }
 }

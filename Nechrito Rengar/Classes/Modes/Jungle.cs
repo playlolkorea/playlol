@@ -1,5 +1,6 @@
 ﻿using System;
 using LeagueSharp.Common;
+using LeagueSharp;
 
 namespace Nechrito_Rengar
 {
@@ -23,13 +24,12 @@ namespace Nechrito_Rengar
                 {
                     if (Spells._w.IsReady())
                         Spells._w.Cast(mobs[0]);
+                    CastHydra();
                     if (Spells._q.IsReady())
-                    {
                         Spells._q.Cast(mobs[0]);
-                        Logic.CastHydra();
-                    }  
                     if (Spells._e.IsReady() && Player.Mana < 5)
                         Spells._e.Cast(mobs[0]);
+                    SmiteJungle();
                 }
 
                
