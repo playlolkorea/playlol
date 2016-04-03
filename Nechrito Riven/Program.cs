@@ -17,7 +17,7 @@ namespace NechritoRiven
         public static int _qstack = 1;
         public static Render.Text Timer, Timer2;
         private static bool _forceItem;
-       
+
 
         public static int GetWRange => Player.HasBuff("RivenFengShuiEngine") ? 330 : 265;
 
@@ -29,8 +29,8 @@ namespace NechritoRiven
             if (Player.ChampionName != "Riven") return;
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 56 (Date: 4/3-16)</font></b>");
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">KS Ignite, Mastery etc.</font></b>");
-            
-           
+
+
             Timer =
                 new Render.Text(
                     "Q Expiry =>  " + ((double)(Logic._lastQ - Utils.GameTimeTickCount + 3800) / 1000).ToString("0.0"),
@@ -57,7 +57,7 @@ namespace NechritoRiven
             Interrupter2.OnInterruptableTarget += Interrupt;
             Game.OnNotify += OnNotify;
         }
-        
+
         public static bool HasTitan() => Items.HasItem(3748) && Items.CanUseItem(3748);
 
         public static void CastTitan()
@@ -68,8 +68,8 @@ namespace NechritoRiven
                 Orbwalking.LastAATick = 0;
             }
         }
-            
-        
+
+
         private static void Drawing_OnEndScene(EventArgs args)
         {
             foreach (
@@ -107,34 +107,28 @@ namespace NechritoRiven
                         return;
 
                     if (HasTitan())
-                        {
-                           CastTitan();
-                            return;
-                        }
-                        if (Spells._e.IsReady() && MenuConfig.LaneE)
-                            Spells._e.Cast(minions[0]);
-
-                        if (Spells._q.IsReady() && MenuConfig.LaneQ)
-                            Spells._q.Cast(Logic.GetCenterMinion());
-                      
-                        if (Spells._w.IsReady() && MenuConfig.LaneW)
                     {
-                          var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
+                        CastTitan();
+                        return;
+                    }
+                    if (Spells._e.IsReady() && MenuConfig.LaneE)
+                        Spells._e.Cast(minions[0]);
+
+                    if (Spells._q.IsReady() && MenuConfig.LaneQ)
+                        Spells._q.Cast(Logic.GetCenterMinion());
+
+                    if (Spells._w.IsReady() && MenuConfig.LaneW)
+                    {
+                        var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
                         foreach (var m in minion)
                         {
                             if (m.Health < Spells._w.GetDamage(m) && minion.Count > 2)
                                 Spells._w.Cast(m);
                         }
                     }
-                      
-                          
-                           
-                    }
                 }
             }
-        
-    
-
+        }
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
@@ -145,9 +139,9 @@ namespace NechritoRiven
             if (args.Target is Obj_AI_Minion)
             {
                 Lane.LaneLogic();
-             }
-            
-                
+            }
+
+
             var @base = args.Target as Obj_AI_Turret;
             if (@base != null)
                 if (@base.IsValid && args.Target != null && Spells._q.IsReady() && MenuConfig.LaneQ &&
@@ -189,7 +183,7 @@ namespace NechritoRiven
             }
 
 
-                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass)
+            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass)
             {
                 if (HasTitan())
                 {
@@ -255,7 +249,7 @@ namespace NechritoRiven
         }
         private static void OnTick(EventArgs args)
         {
-           
+
             Timer.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
             Timer.Y = (int)Drawing.WorldToScreen(Player.Position).Y + 43;
             Timer2.X = (int)Drawing.WorldToScreen(Player.Position).X - 60;
@@ -311,7 +305,7 @@ namespace NechritoRiven
                         Spells._e.Cast(target);
                         Utility.DelayAction.Add(60, () => Spells._r.Cast(target));
                     }
-                        
+
                 }
             }
             if (Spells._w.IsReady())
@@ -332,7 +326,7 @@ namespace NechritoRiven
                         Spells._r.Cast(target.Position);
                 }
             }
-            if(Spells.Ignite.IsReady())
+            if (Spells.Ignite.IsReady())
             {
                 var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
                 if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health)
@@ -460,7 +454,7 @@ namespace NechritoRiven
         private static void Reset()
         {
             if (MenuConfig.QReset) Game.Say("/d");
-            Orbwalking.LastAATick = 0;  
+            Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position - 30);
         }
@@ -625,13 +619,16 @@ namespace NechritoRiven
         // TY jQuery LOL you fkn troll :^)
         private static void OnNotify(GameNotifyEventArgs args)
         {
+            var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
             if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Mastery)
             {
-                Game.Say("/masterybadge");
+                if (Player.Distance(target.Position) <= 600f && MenuConfig.Mastery)
+                    Game.Say("/masterybadge");
             }
             if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Laugh)
             {
-                Game.Say("/l");
+                if (Player.Distance(target.Position) <= 600f && MenuConfig.Laugh)
+                    Game.Say("/l");
             }
         }
     }

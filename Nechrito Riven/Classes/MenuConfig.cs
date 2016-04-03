@@ -1,6 +1,4 @@
-﻿
-using LeagueSharp;
-using LeagueSharp.Common;
+﻿using LeagueSharp.Common;
 
 namespace NechritoRiven
 {
