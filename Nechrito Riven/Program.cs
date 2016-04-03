@@ -41,8 +41,8 @@ namespace NechritoRiven
                     "R Expiry =>  " + (((double)Logic._lastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0"),
                     (int)Drawing.WorldToScreen(Player.Position).X - 60,
                     (int)Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
+            Spells.Ignite = Player.GetSpellSlot("summonerdot");
 
-            
             MenuConfig.LoadMenu();
             Spells.Initialise();
 
@@ -332,8 +332,14 @@ namespace NechritoRiven
                         Spells._r.Cast(target.Position);
                 }
             }
-          
-
+            if(Spells.Ignite.IsReady())
+            {
+                var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
+                if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health)
+                {
+                    Player.Spellbook.CastSpell(Spells.Ignite, target);
+                }
+            }
         }
 
         private static void Drawing_OnDraw(EventArgs args)

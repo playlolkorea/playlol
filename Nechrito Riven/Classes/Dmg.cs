@@ -5,6 +5,14 @@ namespace NechritoRiven
 {
     class Dmg
     {
+        public static float IgniteDamage(Obj_AI_Hero target)
+        {
+            if (Spells.Ignite == SpellSlot.Unknown || Program.Player.Spellbook.CanUseSpell(Spells.Ignite) != SpellState.Ready)
+            {
+                return 0f;
+            }
+            return (float)Program.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
+        }
         public static double Basicdmg(Obj_AI_Base target)
         {
             if (target != null)
