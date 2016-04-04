@@ -58,11 +58,11 @@ namespace Nechrito_Gragas
                     {
                         if (minions == null)
                             return;
-                        if (Spells._w.IsReady())
+                        if (Spells._w.IsReady() && MenuConfig.LaneW)
                             Spells._w.Cast();
-                        if (Spells._e.IsReady())
+                        if (Spells._e.IsReady() && MenuConfig.LaneE)
                             Spells._e.Cast(GetCenterMinion());
-                        if (Spells._q.IsReady())
+                        if (Spells._q.IsReady() && MenuConfig.LaneQ)
                             Spells._q.Cast(GetCenterMinion());
                     }
                    

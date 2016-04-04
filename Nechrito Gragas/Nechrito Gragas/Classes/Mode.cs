@@ -16,15 +16,14 @@ namespace Nechrito_Gragas
                 {
                     Player.Spellbook.CastSpell(Spells.Smite, target);
                 }
-                if (Spells._e.IsReady() && !target.IsDashing())
-                if (Spells._q.IsReady() && !target.IsDashing())
-                   Spells._q.Cast(Player.Position.Extend(target.Position, Player.Distance(target)));
-                   Spells._e.Cast(target);
-                if (Spells._r.IsReady())
-                    Spells._r.Cast(Player.Position.Extend(target.Position, Player.Distance(target) + 100f));
-              else  if (Spells._w.IsReady())
-                    Spells._w.Cast();
-
+                 if (Spells._e.IsReady() && !target.IsDashing())
+                     Spells._e.Cast(target);
+                 if (Spells._r.IsReady())
+                     Spells._r.Cast(Player.Position.Extend(target.Position, Player.Distance(target) + 100f));
+                 if (Spells._q.IsReady() && !target.IsDashing())
+                     Spells._q.Cast(Player.Position.Extend(target.Position, Player.Distance(target)));
+           else  if (Spells._w.IsReady())
+                     Spells._w.Cast();
             }
         }
         public static void InsecLogic()

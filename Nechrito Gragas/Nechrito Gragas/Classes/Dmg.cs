@@ -14,10 +14,8 @@ namespace Nechrito_Gragas
                 if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy);
                 if (Spells._q.IsReady()) damage = damage + Spells._q.GetDamage(enemy) +
                               (float)Program.Player.GetAutoAttackDamage(enemy);
-                if (Spells._q.IsReady() && Program.Player.Mana == 5) damage = damage + Spells._q.GetDamage(enemy) +
+                if (Spells._r.IsReady()) damage = damage + Spells._r.GetDamage(enemy) +
                               (float)Program.Player.GetAutoAttackDamage(enemy);
-                if (Program.Player.Mana == 5)
-                    damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy) * 3;
                 return damage;
             }
             return 0;
