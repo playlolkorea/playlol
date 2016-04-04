@@ -37,6 +37,7 @@ namespace NechritoRiven
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("KAPPA", "Force R OFF Will use R when killable"));
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
@@ -56,6 +57,7 @@ namespace NechritoRiven
 
             var draw = new Menu("Draw", "Draw");
             draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
+            draw.AddItem(new MenuItem("DrawForceFlash", "Flash Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawTimer1", "Draw Q Expiry Time").SetValue(false));
             draw.AddItem(new MenuItem("DrawTimer2", "Draw R Expiry Time").SetValue(false));
@@ -71,6 +73,8 @@ namespace NechritoRiven
 
             Config.AddToMainMenu();
         }
+        public static bool AlwaysF => Config.Item("AlwaysF").GetValue<KeyBind>().Active;
+        public static bool ForceFlash => Config.Item("DrawForceFlash").GetValue<bool>();
         public static bool Laugh => Config.Item("Mastery").GetValue<bool>();
         public static bool Mastery => Config.Item("Mastery").GetValue<bool>();
         public static bool IreliaLogic=> Config.Item("IreliaLogic").GetValue<bool>();

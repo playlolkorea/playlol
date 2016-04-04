@@ -15,6 +15,18 @@ namespace NechritoRiven
 
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
+                if ((Program.Player.Distance(target.Position) <= 750) && (Program.Player.Distance(target.Position) >= 550) && Program.Player.Spellbook.GetSpell(Spells.Flash).IsReady() && Spells._r.IsReady() && Spells._e.IsReady() && Spells._w.IsReady() && MenuConfig.AlwaysF)
+                {
+                    Spells._e.Cast(target.Position);
+                    Logic.ForceR();
+                    Logic.CastYoumoo();
+                    Utility.DelayAction.Add(35, () => Program.Player.Spellbook.CastSpell(Spells.Flash, target.Position));
+                    Utility.DelayAction.Add(0, Logic.ForceItem);
+                    Utility.DelayAction.Add(0, Program.CastTitan);
+                    Utility.DelayAction.Add(0, Logic.ForceW);
+                    Spells._r.Cast(target.ServerPosition);
+                    Utility.DelayAction.Add(60, () => Logic.ForceCastQ(target));
+                }
                 // Flash
                 if ((Program.Player.Distance(target.Position) <= 700) && (Program.Player.Distance(target.Position) >= 600) && Program.Player.Spellbook.GetSpell(Spells.Flash).IsReady() && Spells._r.IsReady() && Spells._e.IsReady() && Spells._w.IsReady() && target.Health < Dmg.Totaldame(target))
                 {
