@@ -11,18 +11,17 @@ namespace Nechrito_Gragas
             {
                 float damage = 0;
                 // if (Logic.HasItem()) damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy) * 0.7f;
-                if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy);
-                if (Spells._q.IsReady()) damage = damage + Spells._q.GetDamage(enemy) +
+                if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy) +
                               (float)Program.Player.GetAutoAttackDamage(enemy);
-                if (Spells._r.IsReady()) damage = damage + Spells._r.GetDamage(enemy) +
-                              (float)Program.Player.GetAutoAttackDamage(enemy);
+                if (Spells._q.IsReady()) damage = damage + Spells._q.GetDamage(enemy);
+                if (Spells._r.IsReady()) damage = damage + Spells._r.GetDamage(enemy);
                 return damage;
             }
             return 0;
         }
         public static bool IsLethal(Obj_AI_Base unit)
         {
-            return ComboDmg(unit) / 1.65 >= unit.Health;
+            return ComboDmg(unit) / 1.75 >= unit.Health;
         }
     
 }

@@ -21,7 +21,14 @@ namespace Nechrito_Gragas
             Config.AddSubMenu(orbwalker);
 
             //COMBOS ETC HERE
-            var Lane = new Menu("Draw", "Draw");
+            /*
+            var combo = new Menu("Combo", "Combo");
+            combo.AddItem(new MenuItem("RegCombo", "Regular Combo")).SetValue(true);
+            combo.AddItem(new MenuItem("FlashCombo", "Flash Combo")).SetValue(true);
+            Config.AddSubMenu(combo);
+            */
+
+            var Lane = new Menu("Lane", "Lane");
             Lane.AddItem(new MenuItem("LaneQ", "Use Q")).SetValue(true);
             Lane.AddItem(new MenuItem("LaneW", "Use W")).SetValue(true);
             Lane.AddItem(new MenuItem("LaneE", "Use E")).SetValue(true);
@@ -33,6 +40,8 @@ namespace Nechrito_Gragas
 
             Config.AddToMainMenu();
         }
+        public static bool FlashCombo => Config.Item("FlashCombo").GetValue<bool>();
+        public static bool RegCombo => Config.Item("RegCombo").GetValue<bool>();
         public static bool LaneQ => Config.Item("LaneQ").GetValue<bool>();
         public static bool LaneW => Config.Item("LaneW").GetValue<bool>();
         public static bool LaneE => Config.Item("LaneE").GetValue<bool>();

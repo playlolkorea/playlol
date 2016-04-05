@@ -11,7 +11,7 @@ namespace Nechrito_Gragas
         public static readonly int[] BlueSmite = { 3706, 1400, 1401, 1402, 1403 };
 
         public static readonly int[] RedSmite = { 3715, 1415, 1414, 1413, 1412 };
-        public static GameObject Barrel;
+        
         private static Orbwalking.Orbwalker _orbwalker;
         public static Obj_AI_Hero Player => ObjectManager.Player;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
@@ -80,7 +80,20 @@ namespace Nechrito_Gragas
         }
         private static void Killsteal()
         {
+            if(Spells._q.IsReady() && Spells._r.IsReady())
             if (Spells._q.IsReady())
+                {
+                    var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._q.Range) && !x.IsZombie);
+                    foreach (var target in targets)
+                    {
+                        if (target.Health < Spells._q.GetDamage(target) + Spells._q.GetDamage(target))
+                            
+                        {
+                            Spells._q.Cast(target);
+                            Spells._r.Cast(target);
+                        }
+                    }
+                }
             {
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._q.Range) && !x.IsZombie);
                 foreach (var target in targets)
@@ -95,7 +108,7 @@ namespace Nechrito_Gragas
                 foreach (var target in targets)
                 {
                     if (target.Health < Spells._e.GetDamage(target))
-                        Spells._q.Cast(target);
+                        Spells._e.Cast(target);
                 }
             }
             if (Spells._r.IsReady())
