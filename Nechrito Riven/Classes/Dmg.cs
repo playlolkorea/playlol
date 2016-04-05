@@ -33,7 +33,6 @@ namespace NechritoRiven
                     passivenhan = 0.25;
                 else
                     passivenhan = 0.2;
-                if (Logic.HasItem()) dmg = dmg + Program.Player.GetAutoAttackDamage(target) * 0.7;
                 if (Spells._w.IsReady()) dmg = dmg + Spells._w.GetDamage(target);
                 if (Spells._q.IsReady())
                 {
@@ -67,7 +66,7 @@ namespace NechritoRiven
                     passivenhan = 0.25f;
                 else
                     passivenhan = 0.2f;
-                if (Logic.HasItem()) damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy) * 0.7f;
+                
                 if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy);
                 if (Spells._q.IsReady())
                 {
@@ -111,7 +110,7 @@ namespace NechritoRiven
                 passivenhan = 0.25;
             else
                 passivenhan = 0.2;
-            if (Logic.HasItem()) dmg = dmg + Program.Player.GetAutoAttackDamage(target) * 0.7;
+            
             if (Spells._w.IsReady()) dmg = dmg + Spells._w.GetDamage(target);
             if (Spells._q.IsReady())
             {

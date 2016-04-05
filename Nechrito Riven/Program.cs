@@ -27,8 +27,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 57 (Date: 4/4-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Gapcloser & Flash</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 58 (Date: 5/4-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Q AA burst</font></b>");
 
 
             Timer =
@@ -50,11 +50,11 @@ namespace NechritoRiven
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
             Obj_AI_Base.OnProcessSpellCast += Logic.OnCast;
+            Obj_AI_Base.OnProcessSpellCast += OnCasting;
             Obj_AI_Base.OnDoCast += OnDoCast;
             Obj_AI_Base.OnDoCast += OnDoCastLc;
             Obj_AI_Base.OnPlayAnimation += OnPlay;
             Interrupter2.OnInterruptableTarget += Interrupt;
-            AntiGapcloser.OnEnemyGapcloser += gapcloser;
             Game.OnNotify += OnNotify;
         }
 
@@ -464,17 +464,6 @@ namespace NechritoRiven
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position - 30);
         }
-        public static void gapcloser(ActiveGapcloser gapcloser)
-        {
-            var target = gapcloser.Sender;
-            if (target.IsEnemy && target.IsValidTarget() && !target.IsZombie)
-            {
-                if (Spells._w.IsReady() && target.IsValidTarget(Spells._w.Range + Player.BoundingRadius + target.BoundingRadius))
-                    Spells._w.Cast(target);
-                else if (Spells._e.IsReady() && target.IsValidTarget(Spells._e.Range + Player.BoundingRadius + target.BoundingRadius))
-                    Spells._e.Cast(target.ServerPosition/2);
-            }
-        }
         private static void OnNotify(GameNotifyEventArgs args)
         {
             var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
@@ -487,6 +476,163 @@ namespace NechritoRiven
             {
                 if (Player.Distance(target.Position) <= 600f && MenuConfig.Laugh)
                     Game.Say("/l");
+            }
+        }
+        private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsEnemy && sender.Type == Player.Type)
+            {
+                var epos = Player.ServerPosition +
+                           (Player.ServerPosition - sender.ServerPosition).Normalized() * 300;
+
+                if (Player.Distance(sender.ServerPosition) <= args.SData.CastRange)
+                {
+                    switch (args.SData.TargettingType)
+                    {
+                        case SpellDataTargetType.Unit:
+
+                            if (args.Target.NetworkId == Player.NetworkId)
+                            {
+                                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
+                                    !args.SData.Name.Contains("NasusW"))
+                                {
+                                    if (Spells._e.IsReady()) Spells._e.Cast(epos);
+                                }
+                            }
+                            break;
+                        case SpellDataTargetType.SelfAoe:
+
+                            if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                            {
+                                if (Spells._e.IsReady()) Spells._e.Cast(epos);
+                            }
+                            break;
+                    }
+                    if (args.SData.Name.Contains("IreliaEquilibriumStrike"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady() && Logic.InWRange(sender)) Spells._w.Cast();
+                            else if (Spells._e.IsReady()) Spells._e.Cast(epos);
+                        }
+                    }
+                    if (args.SData.Name.Contains("TalonCutthroat"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady()) Spells._w.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("RenektonPreExecute"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady()) Spells._w.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("GarenRPreCast"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast(epos);
+                        }
+                    }
+
+                    if (args.SData.Name.Contains("GarenQAttack"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+
+                    if (args.SData.Name.Contains("XenZhaoThrust3"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady()) Spells._w.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("RengarQ"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("RengarPassiveBuffDash"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("RengarPassiveBuffDashAADummy"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("TwitchEParticle"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("FizzPiercingStrike"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("HungeringStrike"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("YasuoDash"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("KatarinaRTrigger"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady() && Logic.InWRange(sender)) Spells._w.Cast();
+                            else if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("KatarinaE"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._w.IsReady()) Spells._w.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("MonkeyKingQAttack"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                        }
+                    }
+                    if (args.SData.Name.Contains("MonkeyKingSpinToWin"))
+                    {
+                        if (args.Target.NetworkId == Player.NetworkId)
+                        {
+                            if (Spells._e.IsReady()) Spells._e.Cast();
+                            else if (Spells._w.IsReady()) Spells._w.Cast();
+                        }
+                    }
+                }
             }
         }
     }

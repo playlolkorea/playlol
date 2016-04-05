@@ -33,7 +33,15 @@ namespace NechritoRiven
             emoteMenu.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
             animation.AddSubMenu(emoteMenu);
             Config.AddSubMenu(animation);
-            
+
+
+            // STRINGLIST PLS
+            /*
+            var burst = new Menu("Burst", "Burst");
+            burst.AddItem(new MenuItem("Shy", "Shy Burst").SetValue(false));
+            burst.AddItem(new MenuItem("Doublecast", "DoubleCast").SetValue(false));
+            Config.AddSubMenu(burst);
+            */
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("KAPPA", "Force R OFF Will use R when killable"));
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
