@@ -45,13 +45,13 @@ namespace Nechrito_Rengar
                     Burst.BurstLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    Harass.HarassLogic();
+                    ApCombo.ApComboLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Jungle.JungleLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.FastHarass:
-                    ApCombo.ApComboLogic();
+                    TripleQ.TripleQLogic();
                     break;
             }
         }
@@ -94,7 +94,7 @@ namespace Nechrito_Rengar
                     {
                         if (minions == null || Player.Mana == 5 && MenuConfig.Passive)
                             return;
-                        if(Player.Mana <= 5)
+                        if(Player.Mana == 5)
                         {
                             if (Spells._w.IsReady())
                                 Spells._w.Cast(minions);
@@ -105,9 +105,21 @@ namespace Nechrito_Rengar
                             {
                                 Spells._q.Cast(minions);
                                 CastHydra();
-                            }
-                                
+                            }   
                         }  
+                        if(Player.Mana <= 4)
+                        {
+                            if (Spells._w.IsReady())
+                                Spells._w.Cast(minions);
+
+                            if (Spells._e.IsReady() && Player.Mana < 5)
+                                Spells._e.Cast(minions);
+                            if (Spells._q.IsReady())
+                            {
+                                Spells._q.Cast(minions);
+                                CastHydra();
+                            }
+                        }
                     }
                 }
             }

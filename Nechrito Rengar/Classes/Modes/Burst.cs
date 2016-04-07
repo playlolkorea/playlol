@@ -15,7 +15,7 @@ namespace Nechrito_Rengar
             var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Player.Mana <= 5 && (Player.Distance(target.Position) <= 850f))
+                if (Player.Mana == 5 && (Player.Distance(target.Position) <= 850f))
                 {
                     if (Spells._q.IsReady())
                     {
