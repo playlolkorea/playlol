@@ -28,7 +28,7 @@ namespace NechritoRiven
         {
             // Boxbox troll stuff
             var target = TargetSelector.GetSelectedTarget();
-            if (MenuConfig.IreliaLogic && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange -20) && target.Health < Dmg.Totaldame(target))
+            if (MenuConfig.IreliaLogic && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange - 20) && target.Health < Dmg.Totaldame(target))
             {
                 Program.Player.Spellbook.CastSpell(Spells.Flash, Program.Player.Position - 260f);
             }

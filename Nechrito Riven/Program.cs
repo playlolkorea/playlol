@@ -329,7 +329,7 @@ namespace NechritoRiven
             if (Spells.Ignite.IsReady())
             {
                 var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
-                if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health)
+                if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health && !Spells._q.IsReady())
                 {
                     Player.Spellbook.CastSpell(Spells.Ignite, target);
                 }
@@ -457,12 +457,12 @@ namespace NechritoRiven
             }
         }
 
-        private static void Reset()
+        private static void Reset() 
         {
             if (MenuConfig.QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
-                 Player.Position - 30);
+                 Player.Position - 115);
         }
         private static void OnNotify(GameNotifyEventArgs args)
         {

@@ -37,7 +37,6 @@ namespace NechritoRiven
                     if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !Logic.InWRange(targetR))
                     {
                         Spells._e.Cast(targetR.Position);
-                        Utility.DelayAction.Add(10, Logic.ForceItem);
                         if (Logic.InWRange(targetR))
                         Utility.DelayAction.Add(100, Logic.ForceW);
                         Utility.DelayAction.Add(30, () => Logic.ForceCastQ(targetR));

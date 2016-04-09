@@ -90,7 +90,6 @@ namespace NechritoRiven
                    Basicdmg(target) <= target.Health;
         }
 
-
         public static double Totaldame(Obj_AI_Base target)
         {
             if (target == null) return 0;
