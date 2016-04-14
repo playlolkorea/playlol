@@ -25,8 +25,8 @@ namespace NechritoRiven
 
             var animation = new Menu("Animation", "Animation");
             var emoteMenu = new Menu("Emote", "Emote");
-            animation.AddItem(new MenuItem("qReset", "Fast & Legit Q").SetValue(true));
-            emoteMenu.AddItem(new MenuItem("Qstrange", "Animation (Troll!) | Enables Below").SetValue(false));
+            animation.AddItem(new MenuItem("qReset", "Fast & Legit Q").SetValue(true)).SetTooltip("Uses dance in animation, off will not dance & look more legit");
+            emoteMenu.AddItem(new MenuItem("Qstrange", "Enable").SetValue(false)).SetTooltip("Enables Emote");
             emoteMenu.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
             emoteMenu.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
             emoteMenu.AddItem(new MenuItem("animTalk", "Joke").SetValue(false));
@@ -35,13 +35,6 @@ namespace NechritoRiven
             Config.AddSubMenu(animation);
 
 
-            // STRINGLIST PLS
-            /*
-            var burst = new Menu("Burst", "Burst");
-            burst.AddItem(new MenuItem("Shy", "Shy Burst").SetValue(false));
-            burst.AddItem(new MenuItem("Doublecast", "DoubleCast").SetValue(false));
-            Config.AddSubMenu(burst);
-            */
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
