@@ -44,7 +44,7 @@ namespace NechritoRiven
             */
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("KAPPA", "Force R OFF Will use R when killable"));
-            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("OFF will only use R when target is killable");
             combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle)));
             Config.AddSubMenu(combo);
 

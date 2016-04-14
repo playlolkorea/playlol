@@ -463,6 +463,7 @@ namespace NechritoRiven
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position - 115);
+            Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
         }
         private static void OnNotify(GameNotifyEventArgs args)
         {
@@ -542,7 +543,7 @@ namespace NechritoRiven
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (Spells._e.IsReady()) Spells._e.Cast();
+                            if (Spells._e.IsReady()) Spells._e.Cast(Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10)));
                         }
                     }
 
@@ -585,7 +586,7 @@ namespace NechritoRiven
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (Spells._e.IsReady()) Spells._e.Cast();
+                            if (Spells._e.IsReady()) Spells._e.Cast(Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10)));
                         }
                     }
                     if (args.SData.Name.Contains("HungeringStrike"))
@@ -607,7 +608,7 @@ namespace NechritoRiven
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
                             if (Spells._w.IsReady() && Logic.InWRange(sender)) Spells._w.Cast();
-                            else if (Spells._e.IsReady()) Spells._e.Cast();
+                            else if (Spells._e.IsReady()) Spells._e.Cast(Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10)));
                         }
                     }
                     if (args.SData.Name.Contains("KatarinaE"))
@@ -628,7 +629,7 @@ namespace NechritoRiven
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (Spells._e.IsReady()) Spells._e.Cast();
+                            if (Spells._e.IsReady()) Spells._e.Cast(Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10)));
                             else if (Spells._w.IsReady()) Spells._w.Cast();
                         }
                     }

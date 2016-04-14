@@ -95,7 +95,13 @@ namespace NechritoRiven
             _qtarget = target;
         }
 
-
+        public static void CastHydra()
+        {
+            if (ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady())
+                ItemData.Ravenous_Hydra_Melee_Only.GetItem().Cast();
+            else if (ItemData.Tiamat_Melee_Only.GetItem().IsReady())
+                ItemData.Tiamat_Melee_Only.GetItem().Cast();
+        }
 
         public static bool HasItem()
             => ItemData.Tiamat_Melee_Only.GetItem().IsReady() || ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady();
