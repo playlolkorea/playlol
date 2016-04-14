@@ -43,9 +43,9 @@ namespace NechritoRiven
             Config.AddSubMenu(burst);
             */
             var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("KAPPA", "Force R OFF Will use R when killable"));
-            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("OFF will only use R when target is killable");
-            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle)));
+            combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
+            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
+            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use R when target is killable");
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
@@ -55,8 +55,8 @@ namespace NechritoRiven
             Config.AddSubMenu(lane);
 
             var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("Laugh", "Laugh On Kill").SetValue(true));
-            misc.AddItem(new MenuItem("Mastery", "Mastery Badge On Kill").SetValue(true));
+            misc.AddItem(new MenuItem("Laugh", "Laugh On Kill").SetValue(false));
+            misc.AddItem(new MenuItem("Mastery", "Mastery Badge On Kill").SetValue(false));
             misc.AddItem(new MenuItem("IreliaLogic", "Irelia Logic (Flash Q3)").SetValue(false));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
@@ -82,6 +82,7 @@ namespace NechritoRiven
             Config.AddToMainMenu();
         }
         public static bool AlwaysF => Config.Item("AlwaysF").GetValue<KeyBind>().Active;
+        public static bool ignite => Config.Item("ignite").GetValue<bool>();
         public static bool ForceFlash => Config.Item("DrawForceFlash").GetValue<bool>();
         public static bool Laugh => Config.Item("Mastery").GetValue<bool>();
         public static bool Mastery => Config.Item("Mastery").GetValue<bool>();

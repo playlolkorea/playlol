@@ -303,7 +303,7 @@ namespace NechritoRiven
                     if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= 1870) && (Player.Distance(target.Position) >= 1600))
                     {
                         Spells._e.Cast(target);
-                        Utility.DelayAction.Add(60, () => Spells._r.Cast(target));
+                        Utility.DelayAction.Add(90, () => Spells._r.Cast(target));
                     }
 
                 }
@@ -326,7 +326,7 @@ namespace NechritoRiven
                         Spells._r.Cast(target.Position);
                 }
             }
-            if (Spells.Ignite.IsReady())
+            if (Spells.Ignite.IsReady() && MenuConfig.ignite)
             {
                 var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
                 if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health && !Spells._q.IsReady())
