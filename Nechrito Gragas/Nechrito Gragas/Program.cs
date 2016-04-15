@@ -43,9 +43,6 @@ namespace Nechrito_Gragas
                 case Orbwalking.OrbwalkingMode.Mixed:
                     Mode.HarassLogic();
                     break;
-                case Orbwalking.OrbwalkingMode.CustomMode:
-                    Mode.InsecLogic();
-                    break;
             }
         }
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
