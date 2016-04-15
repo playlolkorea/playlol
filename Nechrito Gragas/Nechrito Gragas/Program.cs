@@ -69,6 +69,7 @@ namespace Nechrito_Gragas
                 }
             }
         }
+        
         public static Obj_AI_Base GetCenterMinion()
         {
             var minionposition = MinionManager.GetMinions(300 + Spells._q.Range).Select(x => x.Position.To2D()).ToList();

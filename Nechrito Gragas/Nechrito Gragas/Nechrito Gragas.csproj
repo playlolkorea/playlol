@@ -60,7 +60,6 @@
     <Compile Include="Classes\Dmg.cs" />
     <Compile Include="Classes\MenuConfig.cs" />
     <Compile Include="Classes\Mode.cs" />
-    <Compile Include="Classes\Prediction.cs" />
     <Compile Include="Classes\Spells.cs" />
     <Compile Include="Classes\HpBarIndicator.cs" />
     <Compile Include="Program.cs" />
