@@ -19,7 +19,7 @@ namespace Nechrito_Rengar
                     {
                         if (Spells._q.IsReady())
                         {
-                            CastHydra();
+                           
                             Spells._q.Cast(target);
                         }
 
@@ -31,7 +31,7 @@ namespace Nechrito_Rengar
 
                         else if (Spells._e.IsReady() && (Player.Distance(target.Position) <= 270))
                         {
-                            CastHydra();
+                           
                             Spells._e.Cast(target);
                         }
 
@@ -46,7 +46,7 @@ namespace Nechrito_Rengar
 
                         if (Spells._q.IsReady())
                         {
-                            CastHydra();
+                           
                             Spells._q.Cast(target);
                         }
                             
@@ -58,7 +58,7 @@ namespace Nechrito_Rengar
 
                       else  if (Spells._e.IsReady() && (Player.Distance(target.Position) <= 270))
                         {
-                            CastHydra();
+                            
                             Spells._e.Cast(target);
                         }
                             
