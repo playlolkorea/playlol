@@ -33,20 +33,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="clipper_library">
+      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\clipper_library.dll</HintPath>
+    </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\Software\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\Software\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\Software\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\Software\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
-    </Reference>
-    <Reference Include="SPrediction">
-      <HintPath>C:\Software\LeagueSharp\System\SPrediction.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,7 +65,6 @@
     <Compile Include="Classes\Logic.cs" />
     <Compile Include="Classes\MenuConfig.cs" />
     <Compile Include="Classes\Modes\ApCombo.cs" />
-    <Compile Include="Classes\Modes\Burst.cs" />
     <Compile Include="Classes\Modes\Combo.cs" />
     <Compile Include="Classes\Modes\Harass.cs" />
     <Compile Include="Classes\Modes\Jungle.cs" />

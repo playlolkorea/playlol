@@ -19,22 +19,54 @@ namespace Nechrito_Rengar
                     {
                         if (Spells._q.IsReady())
                         {
-                            Spells._q.Cast(target);
                             CastHydra();
+                            Spells._q.Cast(target);
+                        }
+
+                        else if (Spells._w.IsReady() && (Player.Distance(target.Position) <= 300))
+                        {
+                            CastHydra();
+                            Spells._w.Cast(target);
+                        }
+
+                        else if (Spells._e.IsReady() && (Player.Distance(target.Position) <= 270))
+                        {
+                            CastHydra();
+                            Spells._e.Cast(target);
+                        }
+
+                        else if (Spells._q.IsReady())
+                        {
+                            CastHydra();
+                            Spells._q.Cast(target);
                         }
                     }
                     if (Player.Mana <= 4)
                     {
 
                         if (Spells._q.IsReady())
+                        {
+                            CastHydra();
                             Spells._q.Cast(target);
-                        if (Spells._w.IsReady())
+                        }
+                            
+                      else  if (Spells._w.IsReady() && (Player.Distance(target.Position) <= 300))
                         {
                             CastHydra();
                             Spells._w.Cast(target);
                         }
-                        if (Spells._e.IsReady())
+
+                      else  if (Spells._e.IsReady() && (Player.Distance(target.Position) <= 270))
+                        {
+                            CastHydra();
                             Spells._e.Cast(target);
+                        }
+                            
+                       else if (Spells._q.IsReady())
+                        {
+                            CastHydra();
+                            Spells._q.Cast(target);
+                        }
                     }
 
                 }

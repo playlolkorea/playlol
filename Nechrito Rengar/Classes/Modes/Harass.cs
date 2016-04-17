@@ -4,53 +4,46 @@ using LeagueSharp;
 
 namespace Nechrito_Rengar
 {
-    class ApCombo : Logic
+    class Burst : Logic
     {
         private static void Game_OnUpdate(EventArgs args)
         {
-            ApComboLogic();
+           BurstLogic();
         }
-        public static void ApComboLogic()
+        public static void BurstLogic()
         {
-            var target = TargetSelector.GetTarget(Spells._e.Range - 80, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetSelectedTarget();
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (Player.Mana == 5)
+                if (Player.Mana == 5 && target.IsValidTarget(Spells._q.Range))
                 {
-                    if (Spells._q.IsReady())
-                        Spells._q.Cast(target);
-                    if (Spells._w.IsReady())
-                        Spells._w.Cast(target);
-                    if (Smite != SpellSlot.Unknown
-                   && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready && !target.IsZombie)
-                    {
-                        Player.Spellbook.CastSpell(Smite, target);
-                    }
-                    if (Spells._w.IsReady())
-                        Spells._w.Cast(target);
-                    if (Spells._e.IsReady())
-                        Spells._e.Cast(target);
+                    CastYoumoo();
+                    Spells._q.Cast(target);
+                    Player.Spellbook.CastSpell(Smite, target);
+                    Spells._e.Cast(target);
+                    CastHydra();
+                    Spells._w.Cast(target);
                 }
-                if (Player.Mana <= 4)
+                if (Player.Mana == 4 && target.IsValidTarget(Spells._q.Range))
                 {
-                    if (Spells._q.IsReady())
-                        Spells._q.Cast(target);
-                    if (Smite != SpellSlot.Unknown
-                   && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready && !target.IsZombie)
-                    {
-                        Player.Spellbook.CastSpell(Smite, target);
-                    }
-                    if (Spells._w.IsReady())
-                        Spells._w.Cast(target);
-                    if (Spells._w.IsReady())
-                        Spells._w.Cast(target);
-                    if (Spells._e.IsReady())
-                        Spells._e.Cast(target);
-
+                    CastYoumoo();
+                    Spells._e.Cast(target);
+                    CastHydra();
+                    Spells._q.Cast(target);
+                    Player.Spellbook.CastSpell(Smite, target);
+                    Spells._w.Cast(target);
+                }
+                if (Player.Mana <= 3 && target.IsValidTarget(Spells._q.Range))
+                {
+                    Spells._w.Cast(target);
+                    CastHydra();
+                    CastYoumoo();
+                    Spells._e.Cast(target);
+                    Spells._q.Cast(target);
+                    Player.Spellbook.CastSpell(Smite, target);
 
                 }
             }
         }
-
     }
 }

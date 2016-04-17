@@ -18,8 +18,8 @@ namespace Nechrito_Rengar
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Rengar") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 3 (Date: 4/2-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Smite,jngl sustain & Apcombo</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 4 (Date: 4/17-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Triple Q</font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -41,17 +41,14 @@ namespace Nechrito_Rengar
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo.ComboLogic();
                     break;
-                case Orbwalking.OrbwalkingMode.Burst:
-                    Burst.BurstLogic();
-                    break;
-                case Orbwalking.OrbwalkingMode.Mixed:
-                    ApCombo.ApComboLogic();
-                    break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Jungle.JungleLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.FastHarass:
                     TripleQ.TripleQLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    Burst.BurstLogic();
                     break;
             }
         }
@@ -73,11 +70,46 @@ namespace Nechrito_Rengar
                     }
                       
                 }
-                if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
+                if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
                 {
-                   if (Spells._e.IsReady())
+                    var targetR = TargetSelector.GetSelectedTarget();
+                    if (targetR != null && targetR.IsValidTarget() && !targetR.IsZombie)
                     {
-                        Spells._e.Cast(target);
+                        if (Player.Mana == 5 && (Player.Distance(targetR.Position) <= 1000))
+                        {
+                            CastYoumoo();
+                            if (Spells._q.IsReady())
+                                Spells._q.Cast(targetR);
+                            if (Smite != SpellSlot.Unknown
+                          && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready && !target.IsZombie)
+                                Player.Spellbook.CastSpell(Smite, targetR);
+                            if (Spells._e.IsReady())
+                                Spells._e.Cast(targetR);
+                            if (Spells._w.IsReady())
+                                Spells._w.Cast(targetR);
+                            if (Spells._w.IsReady())
+                                Spells._w.Cast(targetR);
+
+                            if (Player.Mana <= 4)
+                            {
+                                CastYoumoo();
+                                if (Spells._e.IsReady())
+                                    Spells._e.Cast(targetR);
+                                if (Spells._q.IsReady())
+                                    Spells._q.Cast(targetR);
+                                if (Smite != SpellSlot.Unknown
+                               && Player.Spellbook.CanUseSpell(Smite) == SpellState.Ready)
+                                    Player.Spellbook.CastSpell(Smite, target);
+                                if (Spells._w.IsReady())
+                                    Spells._w.Cast(targetR);
+                            }
+                           else if (Spells._q.IsReady())
+                                Spells._q.Cast(target);
+                           else if (Spells._e.IsReady())
+                                Spells._e.Cast(target);
+                           else if (Spells._w.IsReady())
+                               Spells._w.Cast(target);
+                        }
                     }
 
                 }
@@ -94,14 +126,15 @@ namespace Nechrito_Rengar
                     {
                         if (minions == null || Player.Mana == 5 && MenuConfig.Passive)
                             return;
+
                         if(Player.Mana == 5)
                         {
-                            if (Spells._w.IsReady())
+                            if (Spells._w.IsReady() && minions.IsValidTarget(Spells._w.Range - 100))
                                 Spells._w.Cast(minions);
                             
-                            if (Spells._e.IsReady() && Player.Mana < 5)
+                            if (Spells._e.IsReady() && Player.Mana < 5 && minions.IsValidTarget(Spells._e.Range))
                                 Spells._e.Cast(minions);
-                            if (Spells._q.IsReady())
+                            if (Spells._q.IsReady() && minions.IsValidTarget(Spells._q.Range - 70))
                             {
                                 Spells._q.Cast(minions);
                                 CastHydra();
@@ -109,12 +142,12 @@ namespace Nechrito_Rengar
                         }  
                         if(Player.Mana <= 4)
                         {
-                            if (Spells._w.IsReady())
+                            if (Spells._w.IsReady() && minions.IsValidTarget(Spells._w.Range - 100))
                                 Spells._w.Cast(minions);
 
-                            if (Spells._e.IsReady() && Player.Mana < 5)
+                            if (Spells._e.IsReady() && Player.Mana < 5 && minions.IsValidTarget(Spells._e.Range))
                                 Spells._e.Cast(minions);
-                            if (Spells._q.IsReady())
+                            if (Spells._q.IsReady() && minions.IsValidTarget(Spells._q.Range - 70))
                             {
                                 Spells._q.Cast(minions);
                                 CastHydra();

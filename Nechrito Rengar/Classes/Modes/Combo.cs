@@ -19,7 +19,7 @@ namespace Nechrito_Rengar
                 {
                     if (Spells._e.IsReady())
                         Spells._e.Cast(target);
-                       Logic.CastYoumoo();
+                       CastYoumoo();
                     if (Spells._e.IsReady())
                         Spells._e.Cast(target);
                     if (Smite != SpellSlot.Unknown
