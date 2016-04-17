@@ -27,8 +27,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 59 (Date: 14/4-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Q-AA Burst, Hydra & Ignite</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 60 (Date: 17/4-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Burst Fixed</font></b>");
 
 
             Timer =
@@ -106,17 +106,15 @@ namespace NechritoRiven
                     if (minions == null)
                         return;
 
-                    if (HasTitan())
-                    {
-                        CastTitan();
-                        return;
-                    }
                     if (Spells._e.IsReady() && MenuConfig.LaneE)
                         Spells._e.Cast(minions[0]);
 
                     if (Spells._q.IsReady() && MenuConfig.LaneQ)
+                    {
                         Spells._q.Cast(Logic.GetCenterMinion());
-
+                        Logic.CastHydra();
+                    }
+                       
                     if (Spells._w.IsReady() && MenuConfig.LaneW)
                     {
                         var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
@@ -221,24 +219,28 @@ namespace NechritoRiven
                 }
             }
 
-            if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst) return;
-
-            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsFirstR) Logic.ForceR();
-
-            if (Spells._e.IsReady() && Player.Distance(target.Position) <= Spells._e.Range + 50)
-                Spells._e.Cast(target.Position);
-
-            if (Spells._q.IsReady())
+            if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Burst)
             {
-                Logic.ForceItem();
-                Utility.DelayAction.Add(1, () => Logic.ForceCastQ(target));
+                if (HasTitan())
+                {
+                    CastTitan();
+                    return;
+                }
+                if(Spells._w.IsReady())
+                {
+                    Spells._w.Cast(target.Position);
+                }
+                if (Spells._r.IsReady() && Spells._r.Instance.Name == IsSecondR)
+                {
+                    Logic.ForceItem();
+                    Utility.DelayAction.Add(1, Logic.ForceR2);
+                }
+                else if (Spells._q.IsReady())
+                {
+                    Logic.ForceItem();
+                    Utility.DelayAction.Add(1, () => Logic.ForceCastQ(target));
+                }
             }
-
-            if (Spells._w.IsReady() && Logic.InWRange(target))
-                Spells._w.Cast();
-
-            if (Spells._r.IsReady() && Spells._r.Instance.Name == IsSecondR)
-                Spells._r.Cast(target.Position);
         }
         private static void Interrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
