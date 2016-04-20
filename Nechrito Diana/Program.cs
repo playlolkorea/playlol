@@ -11,10 +11,7 @@ namespace Nechrito_Diana
     {
         /// <summary>
         /// To Do
-        /// Interrupt Tp Etc.
         /// Auto Zhonyas
-        /// Auto Shield
-        /// Add JungleLogic, Laneclear Etc.
         /// 
         /// </summary>
         public static readonly Obj_AI_Hero Player = ObjectManager.Player;
@@ -43,7 +40,11 @@ namespace Nechrito_Diana
                     Modes.ComboLogic();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
+                    Modes.LaneLogic();
                     Modes.JungleLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    Modes.HarassLogic();
                     break;
             }
         }
@@ -51,11 +52,65 @@ namespace Nechrito_Diana
         {
             if (Player.IsRecalling())
                 return;
-            // HEAL CODE HERE!!!
+           if(Player.HealthPercent <= MenuConfig.AutoW.MinValue && Spells._w.IsReady())
+            {
+                Spells._w.Cast();
+            }
         }
 
-
-
+        public static void Killsteal()
+        {
+            if (Spells._q.IsReady() && MenuConfig.ksQ)
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._q.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= Spells._q.Range))
+                    {
+                        Spells._q.Cast(target);
+                    }
+                }
+            }
+            if(Spells._r.IsReady() && MenuConfig.ksR)
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= Spells._q.Range))
+                    {
+                        Spells._r.Cast(target);
+                    }
+                }
+            }
+            if (Spells._r.IsReady() && Spells._q.IsReady() && MenuConfig.ksR && MenuConfig.ksQ)
+            {
+                var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._r.Range) && !x.IsZombie);
+                foreach (var target in targets)
+                {
+                    if (target.Health < Spells._r.GetDamage(target) + Spells._q.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= Spells._q.Range))
+                    {
+                        Spells._q.Cast(target);
+                        Spells._r.Cast(target);
+                    }
+                }
+            }
+            if (Spells.Ignite.IsReady() && MenuConfig.ignite)
+            {
+                var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
+                if (target.IsValidTarget(600f) && Dmg.IgniteDamage(target) >= target.Health)
+                {
+                    Player.Spellbook.CastSpell(Spells.Ignite, target);
+                }
+            }
+            if (Logic.Smite.IsReady() && MenuConfig.ksSmite)
+            {
+                var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
+                if (target.IsValidTarget(600f) && Dmg.SmiteDamage(target) >= target.Health)
+                {
+                    Player.Spellbook.CastSpell(Logic.Smite, target);
+                }
+            }
+        }
 
         private static void interrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {

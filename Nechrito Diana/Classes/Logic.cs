@@ -11,7 +11,7 @@ namespace Nechrito_Diana
         private static readonly int[] BlueSmite = { 3706, 1400, 1401, 1402, 1403 };
 
         private static readonly int[] RedSmite = { 3715, 1415, 1414, 1413, 1412 };
-        protected static SpellSlot Smite;
+        public static SpellSlot Smite;
         public static void CastHydra()
         {
             if (ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady())
