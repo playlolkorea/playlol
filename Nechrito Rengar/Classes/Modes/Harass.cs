@@ -21,8 +21,8 @@ namespace Nechrito_Rengar
                     Spells._q.Cast(target);
                     Player.Spellbook.CastSpell(Smite, target);
                     Spells._e.Cast(target);
-                    Spells._w.Cast(target);
                     CastHydra();
+                    Spells._w.Cast(target);
                 }
                 if (Player.Mana == 4 && target.IsValidTarget(Spells._q.Range))
                 {

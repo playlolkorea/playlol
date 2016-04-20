@@ -39,13 +39,13 @@ namespace Nechrito_Rengar
                 {
                     if (Spells._q.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange) && (target != null && target.IsValidTarget() && !target.IsZombie))
                         Spells._q.Cast(target);
-                    if (Spells._e.IsReady() && (target != null && target.IsValidTarget() && !target.IsZombie))
-                        Spells._e.Cast(target);
                     if (Spells._w.IsReady() && (Player.Distance(target.Position) <= Player.AttackRange + 30) && (target != null && target.IsValidTarget() && !target.IsZombie))
                     {
                         CastHydra();
                         Spells._w.Cast(target);
                     }
+                    if (Spells._e.IsReady() && (target != null && target.IsValidTarget() && !target.IsZombie))
+                        Spells._e.Cast(target);
                 }
             }
         }
