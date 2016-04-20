@@ -37,7 +37,6 @@ namespace Nechrito_Diana
         {
             Logic.SmiteCombo();
             Logic.SmiteJungle();
-            Killsteal();
             // Killsteal, Switch to ComboMode Etc.
             switch(MenuConfig._orbwalker.ActiveMode)
             {

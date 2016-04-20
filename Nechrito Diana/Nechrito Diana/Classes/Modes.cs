@@ -69,19 +69,23 @@ namespace Nechrito_Diana
                 if (mobs.Count == 0)
                     return;
 
-                if (Spells._q.IsReady() && Spells._r.IsReady())
+                if (Spells._q.IsReady())
                 {
                     var m = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
-                    if (m != null && MenuConfig.jnglQR && (Program.Player.Distance(m.Position) <= 750f) && (Program.Player.Distance(m.Position) >= 600f))
+                    if (m != null)
                     {
                         Spells._q.SPredictionCast(m, HitChance.High);
-                        Spells._r.SPredictionCast(m, HitChance.High);
                     }
+                }
+                if (Spells._q.IsReady() && Spells._r.IsReady() && (Program.Player.Distance(mobs[0].Position) <= 750f) && (Program.Player.Distance(mobs[0].Position) >= 600f) && MenuConfig.jnglQR)
+                {
+                    Spells._q.Cast(mobs[0].ServerPosition);
+                    Spells._r.Cast(mobs[0].ServerPosition);
                 }
                  if (Spells._w.IsReady() && (Program.Player.Distance(mobs[0].Position) <= 300f) && MenuConfig.jnglW)
                     Spells._w.Cast(mobs[0].ServerPosition);
 
-                if (Spells._e.IsReady())
+                if(Spells._e.IsReady())
                 {
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._e.Range);
                     foreach (var m in mobs)
@@ -96,22 +100,21 @@ namespace Nechrito_Diana
         {
             if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                var minions = MinionManager.GetMinions(600f).FirstOrDefault();
+                var minions = MinionManager.GetMinions(Program.Player.ServerPosition, 600f);
                 if (minions == null)
                     return;
 
-                if (Spells._w.IsReady() && MenuConfig.LaneW && (Program.Player.Distance(minions.Position) <= 250f))
+                if (Spells._w.IsReady() && MenuConfig.LaneW)
                 {
-                    Spells._w.Cast();
+                    Spells._w.Cast(minions[0]);
                 }
-
-                if (Spells._q.IsReady() && MenuConfig.LaneQ && Program.Player.ManaPercent <= 45 && (Program.Player.Distance(minions.Position) <= 550f))
+                if (Spells._q.IsReady() && MenuConfig.LaneQ && Program.Player.ManaPercent <= 45)
                 {
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._w.Range);
                     foreach (var m in minion)
                     {
                         if (m.Health < Spells._q.GetDamage(m) && minion.Count > 2)
-                            Spells._q.Cast(m);
+                            Spells._w.Cast(m);
                     }
                 }
             }

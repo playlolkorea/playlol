@@ -33,11 +33,13 @@ namespace Nechrito_Diana
                 Smite = Player.GetSpellSlot("s5_summonersmiteplayerganker");
                 return;
             }
+
             if (RedSmite.Any(id => Items.HasItem(id)))
             {
                 Smite = Player.GetSpellSlot("s5_summonersmiteduel");
                 return;
             }
+
             Smite = Player.GetSpellSlot("summonersmite");
         }
 
@@ -45,6 +47,7 @@ namespace Nechrito_Diana
         {
             foreach (var minion in MinionManager.GetMinions(900f, MinionTypes.All, MinionTeam.Neutral))
             {
+                
                 var StealDmg = Player.Spellbook.GetSpell(Smite).State == SpellState.Ready
                     ? (float)Player.GetSummonerSpellDamage(minion, Damage.SummonerSpell.Smite)
                     : 0;
