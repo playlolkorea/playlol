@@ -19,18 +19,12 @@ namespace Nechrito_Diana
         /// </summary>
         public static readonly Obj_AI_Hero Player = ObjectManager.Player;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
-        public   static Orbwalking.Orbwalker Orbwalker;
-        static void Main(string[] args)
-        {
-            if (Game.Mode == GameMode.Running)
-            {
-                Game_OnGameLoad(null);
-            }
-            CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
-        }
+        private static Orbwalking.Orbwalker _orbwalker;
+        public static Menu Menu;
+        private static void Main() => CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         static void Game_OnGameLoad(EventArgs args)
         {
-            if (Player.ChampionName != "Diven") return;
+            if (Player.ChampionName != "Diana") return;
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 1</font></b>");
             //Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">UPDATE HERE</font></b>");
             MenuConfig.LoadMenu();
@@ -59,9 +53,6 @@ namespace Nechrito_Diana
                 return;
             // HEAL CODE HERE!!!
         }
-
-
-
 
 
 

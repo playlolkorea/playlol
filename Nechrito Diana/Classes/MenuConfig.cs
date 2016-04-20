@@ -27,7 +27,6 @@ namespace Nechrito_Diana
             jungle.AddItem(new MenuItem("jnglQR", "QR Gapclose").SetValue(true)).SetTooltip("At 700~ units will throw QR to mob position");
             jungle.AddItem(new MenuItem("jnglE", "E Interrupt").SetValue(new Slider(15, 0))).SetTooltip("Interrupt Mob With E");
             jungle.AddItem(new MenuItem("jnglW", "Use W").SetValue(true)).SetTooltip("Try to use W + Passive in jungle only");
-            
             Config.AddSubMenu(jungle);
 
             var misc = new Menu("Misc", "Misc");

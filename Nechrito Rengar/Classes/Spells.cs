@@ -13,7 +13,7 @@ namespace Nechrito_Rengar
             _q = new Spell(SpellSlot.Q);
             _w = new Spell(SpellSlot.W, 300);
             _e = new Spell(SpellSlot.E, 900f);
-            _e.SetSkillshot(0.125f, 70, 1500f, true, SkillshotType.SkillshotLine);
+            _e.SetSkillshot(0.25f, 70, 1500f, true, SkillshotType.SkillshotLine);
             _r = new Spell(SpellSlot.R);
             Ignite = Player.GetSpellSlot("SummonerDot");
         }
