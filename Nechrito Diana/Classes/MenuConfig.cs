@@ -17,13 +17,11 @@ namespace Nechrito_Diana
             var orbwalker = new Menu("Orbwalker", "rorb");
             _orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Config.AddSubMenu(orbwalker);
-
-            /*
+            
             var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("ComboE", "Smart E").SetValue(true)).SetTooltip("Don't use E unless killable or have R2  ");
+            combo.AddItem(new MenuItem("Misaya", "Force Misaya").SetValue(false)).SetTooltip("Else Auto Misaya Combo if target is killable");
             Config.AddSubMenu(combo);
-            */
-
+            
             var lane = new Menu("Lane", "Lane");
             lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(false)).SetTooltip("Uses Q in laneclear");
             lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true)).SetTooltip("Uses W in laneclear");
@@ -61,6 +59,7 @@ namespace Nechrito_Diana
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
+        public static bool Misaya => Config.Item("Misaya").GetValue<bool>();
         public static bool LaneQ => Config.Item("LaneQ").GetValue<bool>();
         public static bool LaneW => Config.Item("LaneW").GetValue<bool>();
         public static bool ksSmite => Config.Item("ksSmite").GetValue<bool>();

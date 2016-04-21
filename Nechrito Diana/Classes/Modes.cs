@@ -13,13 +13,16 @@ namespace Nechrito_Diana
             var target = TargetSelector.GetTarget(850, TargetSelector.DamageType.Magical);
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if((Program.Player.Distance(target.Position) <= 800f) && (Program.Player.Distance(target.Position) >= 680f) && Spells._q.IsReady() && Spells._r.IsReady())
+                if (target.Health < Dmg.ComboDmg(target) || MenuConfig.Misaya)
                 {
-                    var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
-                    if(t != null)
+                    if ((Program.Player.Distance(target.Position) <= 800f) && (Program.Player.Distance(target.Position) >= 680f) && Spells._q.IsReady() && Spells._r.IsReady())
                     {
-                        Spells._r.SPredictionCast(t, HitChance.High);
-                        Spells._q.SPredictionCast(t, HitChance.High);
+                        var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
+                        if (t != null)
+                        {
+                            Spells._r.SPredictionCast(t, HitChance.High);
+                            Spells._q.SPredictionCast(t, HitChance.VeryHigh);
+                        }
                     }
                 }
                 else if (Spells._q.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
@@ -27,7 +30,7 @@ namespace Nechrito_Diana
                     var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
                     if (t != null)
                     {
-                        Spells._q.SPredictionCast(t, HitChance.High);
+                        Spells._q.SPredictionCast(t, HitChance.VeryHigh);
                     }
                 }
                 else if (Spells._r.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
@@ -40,7 +43,7 @@ namespace Nechrito_Diana
                 }
                 else if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange))
                         Spells._w.Cast(target);
-                else if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range && (Program.Player.Distance(target.Position) >= 100)))
+                else if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range && (Program.Player.Distance(target.Position) >= 150)) || target.CountEnemiesInRange(Spells._e.Range) > 1)
                         Spells._e.Cast(target);  
             }
         }
@@ -107,7 +110,7 @@ namespace Nechrito_Diana
                     Spells._w.Cast();
                 }
 
-                if (Spells._q.IsReady() && MenuConfig.LaneQ && Program.Player.ManaPercent <= 45 && (Program.Player.Distance(minions.Position) <= 550f))
+                if (Spells._q.IsReady() && MenuConfig.LaneQ && Program.Player.ManaPercent >= 45 && (Program.Player.Distance(minions.Position) <= 550f))
                 {
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._w.Range);
                     foreach (var m in minion)
@@ -126,44 +129,38 @@ namespace Nechrito_Diana
             }
             else Program.Player.SetSkin(Program.Player.CharData.BaseSkinName, Program.Player.BaseSkinId);
         }
-        public static void Flee() // Sends Error
+        public static void Flee()
         {
-            if(MenuConfig.FleeMouse)
-                try
+            try
             {
-                Program.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                if (MenuConfig.FleeMouse)
+                {
+                    Program.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-                    var mob = MinionManager.GetMinions(800, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
-                    var m = MinionManager.GetMinions(800, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
-                    if (m[0].Distance(Game.CursorPos) <= 750 && m[0].Distance(Program.Player) >= 650 && m != null)
-                    {
-                    if(Spells._q.IsReady() && Spells._r.IsReady())
-                        {
-                            Spells._q.Cast(m[0].ServerPosition);
-                            Spells._r.Cast(m[0].ServerPosition);
-                        }
-                    if(Spells._r.IsReady())
-                        {
-                            Spells._r.Cast(m[0].ServerPosition);
-                        }
-                    }
-                    if (mob[0].Distance(Game.CursorPos) <= 750 && mob[0].Distance(Program.Player) >= 650 && mob != null)
+                    var mobs = MinionManager.GetMinions(800, MinionTypes.All, MinionTeam.NotAlly);
+
+                    if (!mobs.Any()) { return; }
+
+                    var mob = mobs.MaxOrDefault(x => x.MaxHealth);
+
+                    if (mob != null && mob.Distance(Game.CursorPos) <= 750 && mob.Distance(Program.Player) >= 650)
                     {
                         if (Spells._q.IsReady() && Spells._r.IsReady())
                         {
-                            Spells._q.Cast(mob[0].ServerPosition);
-                            Spells._r.Cast(mob[0].ServerPosition);
+                            Spells._q.Cast(mob.ServerPosition);
+                            Spells._r.Cast(mob);
                         }
-                        if (Spells._r.IsReady())
+                       else if (Spells._r.IsReady())
                         {
-                            Spells._r.Cast(mob[0].ServerPosition);
+                            Spells._r.Cast(mob);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
-        }
+    }
     }
