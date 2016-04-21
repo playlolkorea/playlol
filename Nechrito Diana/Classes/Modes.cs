@@ -140,6 +140,7 @@ namespace Nechrito_Diana
                     if(Spells._q.IsReady() && Spells._r.IsReady())
                         {
                             Spells._q.Cast(m[0].ServerPosition);
+                            Spells._r.Cast(m[0].ServerPosition);
                         }
                     if(Spells._r.IsReady())
                         {
@@ -151,6 +152,7 @@ namespace Nechrito_Diana
                         if (Spells._q.IsReady() && Spells._r.IsReady())
                         {
                             Spells._q.Cast(mob[0].ServerPosition);
+                            Spells._r.Cast(mob[0].ServerPosition);
                         }
                         if (Spells._r.IsReady())
                         {
