@@ -1,6 +1,7 @@
-﻿using LeagueSharp.Common;
+﻿using LeagueSharp;
+using LeagueSharp.Common;
 using SPrediction;
-
+using System;
 using System.Linq;
 
 namespace Nechrito_Diana
@@ -71,11 +72,12 @@ namespace Nechrito_Diana
 
                 if (Spells._q.IsReady() && Spells._r.IsReady())
                 {
-                    var m = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
-                    if (m != null && MenuConfig.jnglQR && (Program.Player.Distance(m.Position) <= 750f) && (Program.Player.Distance(m.Position) >= 600f))
+                    var m = MinionManager.GetMinions(800 + Program.Player.AttackRange, MinionTypes.All, MinionTeam.Neutral,
+          MinionOrderTypes.MaxHealth);
+                    if (m != null && MenuConfig.jnglQR && (Program.Player.Distance(m[0].Position) <= 700f) && (Program.Player.Distance(m[0].Position) >= 400f))
                     {
-                        Spells._q.SPredictionCast(m, HitChance.High);
-                        Spells._r.SPredictionCast(m, HitChance.High);
+                        Spells._q.Cast(m[0]);
+                        Spells._r.Cast(m[0]);
                     }
                 }
                  if (Spells._w.IsReady() && (Program.Player.Distance(mobs[0].Position) <= 300f) && MenuConfig.jnglW)
@@ -116,5 +118,50 @@ namespace Nechrito_Diana
                 }
             }
         }
+        public static void Game_OnUpdate(EventArgs args)
+        {
+            if (MenuConfig.UseSkin)
+            {
+                Program.Player.SetSkin(Program.Player.CharData.BaseSkinName, MenuConfig.Config.Item("Skin").GetValue<StringList>().SelectedIndex);
+            }
+            else Program.Player.SetSkin(Program.Player.CharData.BaseSkinName, Program.Player.BaseSkinId);
+        }
+        public static void Flee() // Sends Error
+        {
+            if(MenuConfig.FleeMouse)
+                try
+            {
+                Program.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+
+                    var mob = MinionManager.GetMinions(800, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+                    var m = MinionManager.GetMinions(800, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
+                    if (m[0].Distance(Game.CursorPos) <= 750 && m[0].Distance(Program.Player) >= 650 && m != null)
+                    {
+                    if(Spells._q.IsReady() && Spells._r.IsReady())
+                        {
+                            Spells._q.Cast(m[0].ServerPosition);
+                        }
+                    if(Spells._r.IsReady())
+                        {
+                            Spells._r.Cast(m[0].ServerPosition);
+                        }
+                    }
+                    if (mob[0].Distance(Game.CursorPos) <= 750 && mob[0].Distance(Program.Player) >= 650 && mob != null)
+                    {
+                        if (Spells._q.IsReady() && Spells._r.IsReady())
+                        {
+                            Spells._q.Cast(mob[0].ServerPosition);
+                        }
+                        if (Spells._r.IsReady())
+                        {
+                            Spells._r.Cast(mob[0].ServerPosition);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+        }
+        }
     }
-}

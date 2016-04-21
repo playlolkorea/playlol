@@ -1,6 +1,4 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
-using SPrediction;
+﻿using LeagueSharp.Common;
 
 namespace Nechrito_Diana
 {
@@ -51,6 +49,15 @@ namespace Nechrito_Diana
             misc.AddItem(new MenuItem("AutoSmite", "Auto Smite").SetValue(true)).SetTooltip("Auto Smite target");
             Config.AddSubMenu(misc);
 
+            var skin = new Menu("SkinChanger", "SkinChanger");
+            skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
+            skin.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[]{ "Default", "Dark Valkyrie Diana", "Lunar Goddess Diana", "Infernal Diana"})));
+            Config.AddSubMenu(skin);
+
+            var flee = new Menu("Flee", "Flee");
+            flee.AddItem(new MenuItem("FleeMouse", "Flee").SetValue(new KeyBind('A', KeyBindType.Press))).SetTooltip("Will Flee To Mouse");
+            Config.AddSubMenu(flee);
+
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
@@ -65,6 +72,8 @@ namespace Nechrito_Diana
         public static bool jnglQR => Config.Item("jnglQR").GetValue<bool>();
         public static bool ignite => Config.Item("ignite").GetValue<bool>();
         public static bool AutoSmite => Config.Item("AutoSmite").GetValue<bool>();
+        public static bool UseSkin => Config.Item("UseSkin").GetValue<bool>();
+        public static bool FleeMouse => Config.Item("FleeMouse").GetValue<KeyBind>().Active;
         public static Slider AutoW => Config.Item("AutoW").GetValue<Slider>();
         public static Slider jnglE => Config.Item("jnglE").GetValue<Slider>();
     }

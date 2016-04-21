@@ -27,7 +27,7 @@ namespace Nechrito_Diana
             MenuConfig.LoadMenu();
             Spells.Initialise();
             Spells.Ignite = Player.GetSpellSlot("summonerdot");
-
+            Game.OnUpdate += Modes.Game_OnUpdate;
             Game.OnUpdate += OnTick;
             Interrupter2.OnInterruptableTarget += interrupt;
             AntiGapcloser.OnEnemyGapcloser += gapcloser;
@@ -35,6 +35,7 @@ namespace Nechrito_Diana
         }
         private static void OnTick(EventArgs args)
         {
+            Modes.Flee();
             Logic.SmiteCombo();
             Logic.SmiteJungle();
             Killsteal();

@@ -26,13 +26,18 @@ namespace Nechrito_Diana
             if (enemy != null)
             {
                 float damage = 0;
-                if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy);
-                if(Program.Player.HasBuff("dianamoonlight"))
+                if (Program.Player.Masteries.Equals("thunderlordsdecree")) damage += (float)Program.Player.GetAutoAttackDamage(enemy) * (1.15f);
+                // dianapassivebuff or dianamoonlight, cba to actually check yet
+                if (Program.Player.HasBuff("dianamoonlight"))
                 {
-                    if (Spells._r.IsReady() && Spells._q.IsReady()) damage = damage + Spells._q.GetDamage(enemy) + Spells._r.GetDamage(enemy) + Spells._r.GetDamage(enemy) + (float)Program.Player.GetAutoAttackDamage(enemy);
+                    if (Spells._r.IsReady() && Spells._q.IsReady())
+                        damage += Spells._q.GetDamage(enemy) + Spells._r.GetDamage(enemy) +
+                            Spells._r.GetDamage(enemy) + (float)Program.Player.GetAutoAttackDamage(enemy);
                 }
-                if (Spells._q.IsReady()) damage = damage + Spells._q.GetDamage(enemy);
-                if(Spells._r.IsReady()) damage = damage + Spells._r.GetDamage(enemy)*2 + (float)Program.Player.GetAutoAttackDamage(enemy);
+                damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy);
+                if (Spells._q.IsReady()) damage += Spells._q.GetDamage(enemy);
+                if (Spells._w.IsReady()) damage += Spells._w.GetDamage(enemy);
+                if (Spells._r.IsReady()) damage += Spells._r.GetDamage(enemy);
                 return damage;
             }
             return 0;
