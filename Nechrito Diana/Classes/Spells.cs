@@ -10,10 +10,10 @@ namespace Nechrito_Diana
         private static Obj_AI_Hero Player = ObjectManager.Player;
         public static void Initialise()
         {
-            _q = new Spell(SpellSlot.Q, 830f);
-            _q.SetSkillshot(0.25f, 500, 1600, false, SkillshotType.SkillshotCone);
+            _q = new Spell(SpellSlot.Q, 825f);
+             _q.SetSkillshot(0.25f, 185, 1640, false, SkillshotType.SkillshotCircle);
             _w = new Spell(SpellSlot.W);
-            _e = new Spell(SpellSlot.E, 200);
+            _e = new Spell(SpellSlot.E, 450);
             _r = new Spell(SpellSlot.R, 825);
 
             Ignite = Player.GetSpellSlot("SummonerDot");

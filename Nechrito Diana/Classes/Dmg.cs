@@ -26,15 +26,18 @@ namespace Nechrito_Diana
             if (enemy != null)
             {
                 float damage = 0;
-                if (Program.Player.Masteries.Equals("thunderlordsdecree")) damage += (float)Program.Player.GetAutoAttackDamage(enemy) * (1.15f);
-                // dianapassivebuff or dianamoonlight, cba to actually check yet
-                if (Program.Player.HasBuff("dianamoonlight"))
+                
+                if (Program.Player.Masteries.Equals("thunderlordsdecree")) damage += (float)Program.Player.GetAutoAttackDamage(enemy) * (1.05f);
+                // dianapassivebuff or dianamoonlight, cba to actually check yet. Also showing too much dmg on dmg indicator, like 30% too much
+
+                if (Program.Player.HasBuff("dianapassivebuff"))
                 {
                     if (Spells._r.IsReady() && Spells._q.IsReady())
                         damage += Spells._q.GetDamage(enemy) + Spells._r.GetDamage(enemy) +
                             Spells._r.GetDamage(enemy) + (float)Program.Player.GetAutoAttackDamage(enemy);
                 }
                 damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy);
+
                 if (Spells._q.IsReady()) damage += Spells._q.GetDamage(enemy);
                 if (Spells._w.IsReady()) damage += Spells._w.GetDamage(enemy);
                 if (Spells._r.IsReady()) damage += Spells._r.GetDamage(enemy);
@@ -44,7 +47,7 @@ namespace Nechrito_Diana
         }
         public static bool IsLethal(Obj_AI_Base unit)
         {
-            return ComboDmg(unit) / 1.75 >= unit.Health;
+            return ComboDmg(unit) / 1.65 >= unit.Health;
         }
     }
 }

@@ -4,6 +4,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SPrediction;
 using SharpDX;
+using System.Collections.Generic;
 
 namespace Nechrito_Diana
 {
@@ -12,7 +13,7 @@ namespace Nechrito_Diana
         /// <summary>
         /// To Do
         /// Auto Zhonyas
-        /// 
+        /// Suggestions?
         /// </summary>
         public static readonly Obj_AI_Hero Player = ObjectManager.Player;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
@@ -23,7 +24,7 @@ namespace Nechrito_Diana
         {
             if (Player.ChampionName != "Diana") return;
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 1</font></b>");
-            //Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">UPDATE HERE</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Almost Release!</font></b>");
             MenuConfig.LoadMenu();
             Spells.Initialise();
             Spells.Ignite = Player.GetSpellSlot("summonerdot");
@@ -31,6 +32,7 @@ namespace Nechrito_Diana
             Game.OnUpdate += OnTick;
             Interrupter2.OnInterruptableTarget += interrupt;
             AntiGapcloser.OnEnemyGapcloser += gapcloser;
+            Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
         }
         private static void OnTick(EventArgs args)
@@ -39,7 +41,8 @@ namespace Nechrito_Diana
             Logic.SmiteCombo();
             Logic.SmiteJungle();
             Killsteal();
-            // Killsteal, Switch to ComboMode Etc.
+            
+
             switch(MenuConfig._orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -52,15 +55,6 @@ namespace Nechrito_Diana
                 case Orbwalking.OrbwalkingMode.Mixed:
                     Modes.HarassLogic();
                     break;
-            }
-        }
-        public static void Heal()
-        {
-            if (Player.IsRecalling())
-                return;
-           if(Player.HealthPercent <= MenuConfig.AutoW.MinValue && Spells._w.IsReady())
-            {
-                Spells._w.Cast();
             }
         }
         public static void Killsteal()
@@ -112,8 +106,34 @@ namespace Nechrito_Diana
                 var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
                 if (target.IsValidTarget(600f) && Dmg.SmiteDamage(target) >= target.Health)
                 {
-                    Player.Spellbook.CastSpell(Logic.Smite, target);
+                    Player.Spellbook.CastSpell(Logic.Smite,  target);
                 }
+            }
+        }
+       public static readonly List<Vector3> JunglePos = new List<Vector3>()
+        {
+          new Vector3(6271.479f, 12181.25f, 56.47668f),new Vector3(6971.269f, 10839.12f, 55.2f),new Vector3(8006.336f, 9517.511f, 52.31763f),new Vector3(10995.34f, 8408.401f, 61.61731f),
+          new Vector3(10895.08f, 7045.215f, 51.72278f),new Vector3(12665.45f, 6466.962f, 51.70544f),new Vector3(4966.042f, 10475.51f, 71.24048f),new Vector3(39000.529f, 7901.832f, 51.84973f),
+          new Vector3(2106.111f, 8388.643f, 51.77686f),new Vector3(3753.737f, 6454.71f, 52.46301f),new Vector3(6776.247f, 5542.872f, 55.27625f),new Vector3(7811.688f, 4152.602f, 53.79456f),
+          new Vector3(8528.921f, 2822.875f, 50.92188f),new Vector3(9850.102f, 4432.272f, 71.24072f),new Vector3(3926f, 7918f, 51.74162f)
+        };
+        private static void Drawing_OnDraw(EventArgs args)
+        {
+            if (Player.IsDead)
+                return;
+            
+            if(MenuConfig.EscapeSpot)
+            {
+              foreach(var pos in JunglePos)
+                if(pos.Distance(Player.Position) < 1200)
+                {
+                    Render.Circle.DrawCircle(pos, 100, Spells._r.IsReady() ? System.Drawing.Color.White : System.Drawing.Color.Red);
+                    }
+            }
+            if(MenuConfig.EngageDraw)
+            {
+                Render.Circle.DrawCircle(Player.Position, 800,
+                    Spells._q.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
             }
         }
 

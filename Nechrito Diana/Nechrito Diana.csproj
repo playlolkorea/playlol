@@ -64,6 +64,7 @@
     <Compile Include="Classes\Logic.cs" />
     <Compile Include="Classes\MenuConfig.cs" />
     <Compile Include="Classes\Modes.cs" />
+    <Compile Include="Classes\QPred.cs" />
     <Compile Include="Classes\Spells.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

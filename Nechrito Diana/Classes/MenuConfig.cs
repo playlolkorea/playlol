@@ -19,7 +19,8 @@ namespace Nechrito_Diana
             Config.AddSubMenu(orbwalker);
             
             var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("Misaya", "Force Misaya").SetValue(false)).SetTooltip("Else Auto Misaya Combo if target is killable");
+            combo.AddItem(new MenuItem("Misaya", "Force Misaya").SetValue(false)).SetTooltip("Else Auto Misaya Combo if target is killable, Misaya will RQ instead of QR");
+            combo.AddItem(new MenuItem("AutoSmite", "Use Smite").SetValue(true)).SetTooltip("Auto Smite target");
             Config.AddSubMenu(combo);
             
             var lane = new Menu("Lane", "Lane");
@@ -28,8 +29,8 @@ namespace Nechrito_Diana
             Config.AddSubMenu(lane);
 
             var jungle = new Menu("Jungle", "Jungle");
-            jungle.AddItem(new MenuItem("jnglQR", "QR Gapclose").SetValue(true)).SetTooltip("At 700~ units will throw QR to mob position");
-            jungle.AddItem(new MenuItem("jnglE", "E Interrupt").SetValue(new Slider(15, 0))).SetTooltip("Interrupt Mob With E");
+            jungle.AddItem(new MenuItem("jnglQR", "QR Gapclose").SetValue(true)).SetTooltip("At 400-700~ units will throw QR to mob position");
+            jungle.AddItem(new MenuItem("jnglE", "E Interrupt").SetValue(new Slider(15, 0, 50))).SetTooltip("Interrupt Mob With E");
             jungle.AddItem(new MenuItem("jnglW", "Use W").SetValue(true)).SetTooltip("Use W and passive in Jungle");
             Config.AddSubMenu(jungle);
 
@@ -41,24 +42,29 @@ namespace Nechrito_Diana
             Config.AddSubMenu(killsteal);
 
             var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("AutoW", "Shield").SetValue(new Slider(15, 0))).SetTooltip("Shields With W");
             misc.AddItem(new MenuItem("Gapcloser", "Gapcloser").SetValue(true)).SetTooltip("Gapclose with E");
             misc.AddItem(new MenuItem("Interrupt", "Interrupt").SetValue(true)).SetTooltip("Interrupt with E");
-            misc.AddItem(new MenuItem("AutoSmite", "Auto Smite").SetValue(true)).SetTooltip("Auto Smite target");
             Config.AddSubMenu(misc);
+
+            var draw = new Menu("Draw", "Draw");
+            draw.AddItem(new MenuItem("EngageDraw", "Engage Range").SetValue(true)).SetTooltip("Draws QR Range");
+            draw.AddItem(new MenuItem("EscapeSpot", "Escape Spot").SetValue(true)).SetTooltip("Draws Jungle Camp Spots");
+            Config.AddSubMenu(draw);
+
+            var flee = new Menu("Flee", "Flee");
+            flee.AddItem(new MenuItem("FleeMouse", "Flee").SetValue(new KeyBind('A', KeyBindType.Press))).SetTooltip("Will Flee To Mouse");
+            Config.AddSubMenu(flee);
 
             var skin = new Menu("SkinChanger", "SkinChanger");
             skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
             skin.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[]{ "Default", "Dark Valkyrie Diana", "Lunar Goddess Diana", "Infernal Diana"})));
             Config.AddSubMenu(skin);
 
-            var flee = new Menu("Flee", "Flee");
-            flee.AddItem(new MenuItem("FleeMouse", "Flee").SetValue(new KeyBind('A', KeyBindType.Press))).SetTooltip("Will Flee To Mouse");
-            Config.AddSubMenu(flee);
-
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
+        public static bool EscapeSpot => Config.Item("EscapeSpot").GetValue<bool>();
+        public static bool EngageDraw => Config.Item("EngageDraw").GetValue<bool>();
         public static bool Misaya => Config.Item("Misaya").GetValue<bool>();
         public static bool LaneQ => Config.Item("LaneQ").GetValue<bool>();
         public static bool LaneW => Config.Item("LaneW").GetValue<bool>();
