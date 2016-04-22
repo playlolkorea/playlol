@@ -142,7 +142,7 @@ namespace Nechrito_Diana
 
                     foreach (var pos in Program.JunglePos)
                     {
-                        if(pos.Distance(Program.Player.Position) <= 830 && Spells._q.IsReady() && Spells._r.IsReady())
+                        if(pos.Distance(Game.CursorPos) <= 400 && Spells._q.IsReady() && Spells._r.IsReady())
                         {
                             Spells._q.Cast(pos);
                             Spells._r.Cast(pos);

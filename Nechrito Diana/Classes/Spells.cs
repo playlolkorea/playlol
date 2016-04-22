@@ -11,7 +11,7 @@ namespace Nechrito_Diana
         public static void Initialise()
         {
             _q = new Spell(SpellSlot.Q, 825f);
-             _q.SetSkillshot(0.25f, 185, 1640, false, SkillshotType.SkillshotCircle);
+             _q.SetSkillshot(0.25f, 185, 1640, false, SkillshotType.SkillshotLine);
             _w = new Spell(SpellSlot.W);
             _e = new Spell(SpellSlot.E, 450);
             _r = new Spell(SpellSlot.R, 825);
