@@ -27,8 +27,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 61 (Date: 23/4-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Skinchanger and more</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 62 (Date: 23/4-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Skinchanger and Flash Burst</font></b>");
 
 
             Timer =
@@ -258,7 +258,7 @@ namespace NechritoRiven
             Logic.ForceSkill();
             Killsteal();
             if (Utils.GameTimeTickCount - Logic._lastQ >= 3650 && _qstack != 1 && !Player.IsRecalling() &&
-                !Player.InFountain() && MenuConfig.KeepQ &&
+                !Player.InFountain() && MenuConfig.KeepQ && Player.HasBuff("RivenTriCleave") &&
                 !Player.Spellbook.IsChanneling &&
                 Spells._q.IsReady()) Spells._q.Cast(Game.CursorPos);
             switch (MenuConfig._orbwalker.ActiveMode)
