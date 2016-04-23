@@ -23,8 +23,8 @@ namespace Nechrito_Diana
         static void Game_OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Diana") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 1</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Release!</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 2</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Menu, Fixes & Q Prediction</font></b>");
             MenuConfig.LoadMenu();
             Spells.Initialise();
             Spells.Ignite = Player.GetSpellSlot("summonerdot");
@@ -119,7 +119,7 @@ namespace Nechrito_Diana
         };
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Player.IsDead)
+            if (Player.IsDead || Player.Level < 6)
                 return;
             
             if(MenuConfig.EscapeSpot)

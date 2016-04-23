@@ -17,32 +17,41 @@ namespace Nechrito_Diana
             {
                 if (target.Health < Dmg.ComboDmg(target) || MenuConfig.Misaya)
                 {
-                    if ((Program.Player.Distance(target.Position) <= 800f) && (Program.Player.Distance(target.Position) >= 680f) && Spells._q.IsReady() && Spells._r.IsReady())
+                    if ((Program.Player.Distance(target.Position) <= 800f) && (Program.Player.Distance(target.Position) >= 680f))
                     {
                         var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
                         if (t != null)
                         {
-                            
-                            Spells._r.SPredictionCast(t, HitChance.High);
-                            Spells._q.SPredictionCast(t, HitChance.VeryHigh);
+                            if(Spells._r.IsReady() && !MenuConfig.ComboR)
+                            {
+                                Spells._r.SPredictionCast(t, HitChance.High);
+                            }
+                           else if (Spells._q.IsReady())
+                            {
+                                var pos = Spells._q.GetSPrediction(target).CastPosition;
+                                Spells._q.Cast(pos);
+                            }
                         }
                     }
                 }
-                 if (Spells._q.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
+                 if (Spells._q.IsReady() && Spells._q.GetPrediction(target).Hitchance >= HitChance.High && (Program.Player.Distance(target.Position) <= 700f))
                 {
                     var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
                     if (t != null)
                     {
-                        Spells._q.SPredictionCastArc(t, HitChance.VeryHigh);
+                      var pos = Spells._q.GetSPrediction(target).CastPosition;
+                      Spells._q.Cast(pos);
                     }
                 }
                  if (Spells._r.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
                 {
                     var t = TargetSelector.GetTarget(Spells._r.Range, TargetSelector.DamageType.Magical);
-                    if (t != null)
+                    if (t != null && t.HasBuff("dianamoonlight") && MenuConfig.ComboR)
                     {
-                        Spells._r.SPredictionCast(t, HitChance.High);
+                        Spells._r.Cast(t);
                     }
+                    else if(!MenuConfig.ComboR && t != null)
+                    { Utility.DelayAction.Add(60, () => Spells._r.Cast(t)); }
                 }   
                  if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange + 30))
                         Spells._w.Cast(target);
@@ -93,11 +102,11 @@ namespace Nechrito_Diana
                     Spells._w.Cast(mobs[0].ServerPosition);
 
                 if (Spells._e.IsReady())
-                {
+                {   
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._e.Range);
                     foreach (var m in mobs)
                     {
-                        if (m.IsAttackingPlayer && Program.Player.HealthPercent <= MenuConfig.jnglE.MaxValue)
+                        if (m.IsAttackingPlayer && Program.Player.HealthPercent <= MenuConfig.jnglE.Value)
                             Spells._e.Cast(m);
                     }
                 }

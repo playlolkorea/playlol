@@ -19,6 +19,7 @@ namespace Nechrito_Diana
             Config.AddSubMenu(orbwalker);
             
             var combo = new Menu("Combo", "Combo");
+            combo.AddItem(new MenuItem("ComboR", "Only R if hit by Q").SetValue(false)).SetTooltip("Save R for Q R reset");
             combo.AddItem(new MenuItem("ComboE", "Smart E").SetValue(false)).SetTooltip("Else use E to interrupt etc. But not in actual combo");
             combo.AddItem(new MenuItem("Misaya", "Force Misaya").SetValue(false)).SetTooltip("Else Auto Misaya Combo if target is killable, Misaya will RQ instead of QR");
             combo.AddItem(new MenuItem("AutoSmite", "Use Smite").SetValue(true)).SetTooltip("Auto Smite target");
@@ -64,7 +65,8 @@ namespace Nechrito_Diana
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
-        public static bool ComboE => Config.Item("EscapeSpot").GetValue<bool>();
+        public static bool ComboR => Config.Item("ComboR").GetValue<bool>();
+        public static bool ComboE => Config.Item("ComboE").GetValue<bool>();
         public static bool EscapeSpot => Config.Item("EscapeSpot").GetValue<bool>();
         public static bool EngageDraw => Config.Item("EngageDraw").GetValue<bool>();
         public static bool Misaya => Config.Item("Misaya").GetValue<bool>();
