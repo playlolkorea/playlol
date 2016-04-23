@@ -23,8 +23,8 @@ namespace Nechrito_Diana
                         if (t != null)
                         {
                             
-                            Spells._r.SPredictionCast(t, HitChance.VeryHigh);
-                            Spells._q.SPredictionCast(t, HitChance.High);
+                            Spells._r.SPredictionCast(t, HitChance.High);
+                            Spells._q.SPredictionCast(t, HitChance.VeryHigh);
                         }
                     }
                 }
@@ -44,10 +44,13 @@ namespace Nechrito_Diana
                         Spells._r.SPredictionCast(t, HitChance.High);
                     }
                 }   
-                 if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange))
+                 if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange + 30))
                         Spells._w.Cast(target);
-                 if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range && (Program.Player.Distance(target.Position) >= 200)) || target.CountEnemiesInRange(Spells._e.Range) > 1 || target.IsDashing() || !target.IsFacing(Program.Player))
-                        Spells._e.Cast(target);  
+                 if(MenuConfig.ComboE)
+                {
+                    if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range && (Program.Player.Distance(target.Position) >= 200)) || target.CountEnemiesInRange(Spells._e.Range) > 1 || target.IsDashing() || !target.IsFacing(Program.Player))
+                        Spells._e.Cast(target);
+                }
             }
         }
         public static void HarassLogic()
