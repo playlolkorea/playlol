@@ -16,8 +16,6 @@ namespace NechritoRiven
                 if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && MenuConfig.AlwaysR &&
                     targetR != null) Logic.ForceR();
 
-                Logic.IreliaLogic();
-
                 if (Spells._w.IsReady() && Logic.InWRange(targetR) && targetR != null) Spells._w.Cast();
                 if (Spells._r.IsReady() && Spells._r.Instance.Name == Program.IsFirstR && Spells._w.IsReady() && targetR != null &&
                     Spells._e.IsReady() &&

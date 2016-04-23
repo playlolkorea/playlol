@@ -34,6 +34,11 @@ namespace NechritoRiven
             animation.AddSubMenu(emoteMenu);
             Config.AddSubMenu(animation);
 
+            /*
+            var burst = new Menu("Burst", "burst");
+            burst.AddItem(new MenuItem("OneShot", "OneShot Burst").SetValue(true)).SetTooltip("E R1 Tiamat AA W Q AA R2 Q");
+            Config.AddSubMenu(burst);
+            */
 
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
@@ -48,9 +53,6 @@ namespace NechritoRiven
             Config.AddSubMenu(lane);
 
             var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("Laugh", "Laugh On Kill").SetValue(false));
-            misc.AddItem(new MenuItem("Mastery", "Mastery Badge On Kill").SetValue(false));
-            misc.AddItem(new MenuItem("IreliaLogic", "Irelia Logic (Flash Q3)").SetValue(false));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
@@ -68,17 +70,21 @@ namespace NechritoRiven
             draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
             Config.AddSubMenu(draw);
 
+            var skin = new Menu("SkinChanger", "SkinChanger");
+            skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
+            skin.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Redeemed", "Crimson Elite", "Battle Bunny", "Championship", "Dragonblade", "Arcade" })));
+            Config.AddSubMenu(skin);
+
             var credit = new Menu("Credit", "Credit");
             credit.AddItem(new MenuItem("nechrito", "Originally made by Hoola, completely re-written By Nechrito"));
             Config.AddSubMenu(credit);
 
             Config.AddToMainMenu();
         }
+        public static bool UseSkin => Config.Item("UseSkin").GetValue<bool>();
         public static bool AlwaysF => Config.Item("AlwaysF").GetValue<KeyBind>().Active;
         public static bool ignite => Config.Item("ignite").GetValue<bool>();
         public static bool ForceFlash => Config.Item("DrawForceFlash").GetValue<bool>();
-        public static bool Laugh => Config.Item("Mastery").GetValue<bool>();
-        public static bool Mastery => Config.Item("Mastery").GetValue<bool>();
         public static bool IreliaLogic=> Config.Item("IreliaLogic").GetValue<bool>();
         public static bool QReset => Config.Item("qReset").GetValue<bool>();
         public static bool Dind => Config.Item("Dind").GetValue<bool>();

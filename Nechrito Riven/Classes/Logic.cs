@@ -2,11 +2,20 @@
 using LeagueSharp.Common;
 using ItemData = LeagueSharp.Common.Data.ItemData;
 using System.Linq;
+using System;
 
 namespace NechritoRiven
 {
     class Logic
     {
+        public static void Game_OnUpdate(EventArgs args)
+        {
+            if (MenuConfig.UseSkin)
+            {
+                Program.Player.SetSkin(Program.Player.CharData.BaseSkinName, MenuConfig.Config.Item("Skin").GetValue<StringList>().SelectedIndex);
+            }
+            else Program.Player.SetSkin(Program.Player.CharData.BaseSkinName, Program.Player.BaseSkinId);
+        }
         public const string IsFirstR = "RivenFengShuiEngine";
         public const string IsSecondR = "RivenIzunaBlade";
         public static bool _forceQ;
@@ -22,17 +31,6 @@ namespace NechritoRiven
             : 265;
 
         public static bool InWRange(AttackableUnit t) => t != null && t.IsValidTarget(WRange);
-
-
-        public static void IreliaLogic()
-        {
-            // Boxbox troll stuff
-            var target = TargetSelector.GetSelectedTarget();
-            if (MenuConfig.IreliaLogic && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange - 20) && target.Health < Dmg.Totaldame(target))
-            {
-                Program.Player.Spellbook.CastSpell(Spells.Flash, Program.Player.Position - 260f);
-            }
-        }
 
         public static bool InQRange(GameObject target)
         {

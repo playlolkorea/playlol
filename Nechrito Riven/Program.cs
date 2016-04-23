@@ -45,7 +45,7 @@ namespace NechritoRiven
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
-
+            Game.OnUpdate += Logic.Game_OnUpdate;
             Game.OnUpdate += OnTick;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
@@ -55,7 +55,6 @@ namespace NechritoRiven
             Obj_AI_Base.OnDoCast += OnDoCastLc;
             Obj_AI_Base.OnPlayAnimation += OnPlay;
             Interrupter2.OnInterruptableTarget += Interrupt;
-            Game.OnNotify += OnNotify;
         }
 
         public static bool HasTitan() => Items.HasItem(3748) && Items.CanUseItem(3748);
@@ -114,7 +113,7 @@ namespace NechritoRiven
                         Spells._q.Cast(Logic.GetCenterMinion());
                         Logic.CastHydra();
                     }
-                       
+
                     if (Spells._w.IsReady() && MenuConfig.LaneW)
                     {
                         var minion = MinionManager.GetMinions(Player.Position, Spells._w.Range);
@@ -226,7 +225,7 @@ namespace NechritoRiven
                     CastTitan();
                     return;
                 }
-                if(Spells._w.IsReady())
+                if (Spells._w.IsReady())
                 {
                     Spells._w.Cast(target.Position);
                 }
@@ -459,28 +458,14 @@ namespace NechritoRiven
             }
         }
 
-        private static void Reset() 
+        private static void Reset()
         {
             if (MenuConfig.QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;
             Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position - 115);
-            
-        }
-        private static void OnNotify(GameNotifyEventArgs args)
-        {
-            var target = TargetSelector.GetTarget(600f, TargetSelector.DamageType.True);
-            if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Mastery)
-            {
-                if (Player.Distance(target.Position) <= 600f && MenuConfig.Mastery)
-                    Game.Say("/masterybadge");
-            }
-            if (args.EventId == GameEventId.OnChampionKill && MenuConfig.Laugh)
-            {
-                if (Player.Distance(target.Position) <= 600f && MenuConfig.Laugh)
-                    Game.Say("/l");
-            }
+
         }
         private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
