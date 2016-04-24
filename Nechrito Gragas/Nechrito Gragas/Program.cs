@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using SPrediction;
 
 namespace Nechrito_Gragas
 {
@@ -19,9 +20,10 @@ namespace Nechrito_Gragas
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Gragas") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 1 (Date: 4/2-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 2 (Date: 24/4-16)</font></b>");
             MenuConfig.LoadMenu();
             Spells.Initialise();
+            Game.OnUpdate += Mode.Game_OnUpdate;
             Game.OnUpdate += OnTick;
             Obj_AI_Base.OnDoCast += OnDoCast;
             Drawing.OnDraw += Drawing_OnDraw;
@@ -84,11 +86,12 @@ namespace Nechrito_Gragas
                     var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells._q.Range) && !x.IsZombie);
                     foreach (var target in targets)
                     {
-                        if (target.Health < Spells._q.GetDamage(target) + Spells._q.GetDamage(target))
-                            
+                        if (target.Health < Spells._q.GetDamage(target) + Spells._q.GetDamage(target))   
                         {
-                            Spells._q.Cast(target);
-                            Spells._r.Cast(target);
+                            var pos = Spells._r.GetSPrediction(target).CastPosition + 60;
+                          
+                            Spells._q.Cast(pos);
+                            Spells._r.Cast(pos);
                         }
                     }
                 }
@@ -97,7 +100,10 @@ namespace Nechrito_Gragas
                 foreach (var target in targets)
                 {
                     if (target.Health < Spells._q.GetDamage(target))
-                        Spells._q.Cast(target);
+                    {
+                        var pos = Spells._q.GetSPrediction(target).CastPosition;
+                        Spells._q.Cast(pos);
+                    }
                 }
             }
             if (Spells._e.IsReady())
@@ -106,7 +112,10 @@ namespace Nechrito_Gragas
                 foreach (var target in targets)
                 {
                     if (target.Health < Spells._e.GetDamage(target))
-                        Spells._e.Cast(target);
+                    {
+                        var pos = Spells._e.GetSPrediction(target).CastPosition;
+                        Spells._e.Cast(pos);
+                    }
                 }
             }
             if (Spells._r.IsReady())
@@ -116,8 +125,9 @@ namespace Nechrito_Gragas
                 {
                     if (target.Health < Spells._r.GetDamage(target) && !target.IsInvulnerable && (Player.Distance(target.Position) <= Spells._e.Range) && (Player.Distance(target.Position) >= Spells._r.Range))
                     {
+                        var pos = Spells._r.GetSPrediction(target).CastPosition + 60;
                         Spells._e.Cast(target);
-                        Utility.DelayAction.Add(60, () => Spells._r.Cast(target));
+                        Spells._r.Cast(pos);
                     }
                 }
             }
