@@ -47,10 +47,17 @@ namespace NechritoRiven
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
+            lane.AddItem(new MenuItem("FastC", "Fast Laneclear").SetValue(false)).SetTooltip("Will Q AA waveclear faster than usual");
             lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
             lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
             lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
             Config.AddSubMenu(lane);
+
+            var jngl = new Menu("Jungle", "Jungle");
+            jngl.AddItem(new MenuItem("JungleQ", "Use Q").SetValue(true));
+            jngl.AddItem(new MenuItem("JungleW", "Use W").SetValue(true));
+            jngl.AddItem(new MenuItem("JungleE", "Use E").SetValue(true));
+            Config.AddSubMenu(jngl);
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
@@ -59,6 +66,7 @@ namespace NechritoRiven
             Config.AddSubMenu(misc);
 
             var draw = new Menu("Draw", "Draw");
+            draw.AddItem(new MenuItem("FleeSpot", "Draw Flee Spots").SetValue(true));
             draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
             draw.AddItem(new MenuItem("DrawForceFlash", "Flash Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
@@ -69,6 +77,10 @@ namespace NechritoRiven
             draw.AddItem(new MenuItem("DrawFH", "FastHarass Engage").SetValue(false));
             draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
             Config.AddSubMenu(draw);
+
+          //   var flee = new Menu("Flee", "Flee");
+         //    flee.AddItem(new MenuItem("WallFlee", "WallJump in Flee").SetValue(true).SetTooltip("Jumps over walls in flee mode"));
+        //    Config.AddSubMenu(flee);
 
             var skin = new Menu("SkinChanger", "SkinChanger");
             skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
@@ -81,6 +93,12 @@ namespace NechritoRiven
 
             Config.AddToMainMenu();
         }
+        public static bool FastC => Config.Item("FastC").GetValue<bool>();
+        public static bool FleeSpot => Config.Item("FleeSpot").GetValue<bool>();
+        public static bool WallFlee => Config.Item("WallFlee").GetValue<bool>();
+        public static bool jnglQ => Config.Item("JungleQ").GetValue<bool>();
+        public static bool jnglW => Config.Item("JungleW").GetValue<bool>();
+        public static bool jnglE => Config.Item("JungleE").GetValue<bool>();
         public static bool UseSkin => Config.Item("UseSkin").GetValue<bool>();
         public static bool AlwaysF => Config.Item("AlwaysF").GetValue<KeyBind>().Active;
         public static bool ignite => Config.Item("ignite").GetValue<bool>();

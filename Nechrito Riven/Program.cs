@@ -3,11 +3,20 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using System.Collections.Generic;
 
 namespace NechritoRiven
 {
     public class Program
     {
+        public static readonly Dictionary<string, Vector3> JumpPos = new Dictionary<string, Vector3>()
+        {
+            { "mid_Dragon" , new Vector3 (9122f, 4058f, 53.95995f) },
+            { "left_dragon" , new Vector3 (9088f, 4544f, 52.24316f) },
+            { "baron" , new Vector3 (5774f, 10706f, 55.77578F) },
+            { "red_wolves" , new Vector3 (11772f, 8856f, 50.30728f) },
+            { "blue_wolves" , new Vector3 (3046f, 6132f, 57.04655f) },
+        };
         public const string IsFirstR = "RivenFengShuiEngine";
         public const string IsSecondR = "RivenIzunaBlade";
         public static Menu Menu;
@@ -27,8 +36,8 @@ namespace NechritoRiven
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Riven") return;
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 62 (Date: 23/4-16)</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Skinchanger and Flash Burst</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 63 (Date: 25/4-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\">Fast Laneclear + Jungle</font></b>");
 
 
             Timer =
@@ -42,6 +51,8 @@ namespace NechritoRiven
                     (int)Drawing.WorldToScreen(Player.Position).X - 60,
                     (int)Drawing.WorldToScreen(Player.Position).Y + 10, 30, Color.DodgerBlue, "calibri");
             Spells.Ignite = Player.GetSpellSlot("summonerdot");
+
+           
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -101,17 +112,22 @@ namespace NechritoRiven
             {
                 if (MenuConfig._orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
-                    var minions = MinionManager.GetMinions(Player.ServerPosition, 600f);
+                    var minions = MinionManager.GetMinions(800f).FirstOrDefault();
                     if (minions == null)
                         return;
 
                     if (Spells._e.IsReady() && MenuConfig.LaneE)
-                        Spells._e.Cast(minions[0]);
+                        Spells._e.Cast(minions.ServerPosition);
 
-                    if (Spells._q.IsReady() && MenuConfig.LaneQ)
+                    if (Spells._q.IsReady() && MenuConfig.LaneQ && !MenuConfig.FastC)
                     {
                         Spells._q.Cast(Logic.GetCenterMinion());
                         Logic.CastHydra();
+                    }
+                    if(Spells._q.IsReady() && MenuConfig.LaneQ && MenuConfig.FastC)
+                    {
+                        Logic.CastHydra();
+                        Utility.DelayAction.Add(1, () => Logic.ForceCastQ(minions));
                     }
 
                     if (Spells._w.IsReady() && MenuConfig.LaneW)
@@ -132,13 +148,10 @@ namespace NechritoRiven
 
             var spellName = args.SData.Name;
             if (!sender.IsMe || !Orbwalking.IsAutoAttack(spellName)) return;
-
             if (args.Target is Obj_AI_Minion)
             {
                 Lane.LaneLogic();
             }
-
-
             var @base = args.Target as Obj_AI_Turret;
             if (@base != null)
                 if (@base.IsValid && args.Target != null && Spells._q.IsReady() && MenuConfig.LaneQ &&
@@ -357,6 +370,14 @@ namespace NechritoRiven
                               (((double)Logic._lastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0") + "s";
                 Timer2.OnEndScene();
             }
+            /*if(MenuConfig.FleeSpot)
+            {
+                if(!Spells._q.IsReady())
+                { return; }
+                var spot = WallJump.GetNearest(Player.ServerPosition);
+                Render.Circle.DrawCircle(spot.Start, 100, _qstack == 3 ? System.Drawing.Color.White : System.Drawing.Color.Red);
+                Render.Circle.DrawCircle(spot.End, 100, _qstack == 3 ? System.Drawing.Color.White : System.Drawing.Color.Red);
+            }*/
 
             if (MenuConfig.DrawCb)
                 Render.Circle.DrawCircle(Player.Position, 250 + Player.AttackRange + 70,
@@ -460,12 +481,11 @@ namespace NechritoRiven
 
         private static void Reset()
         {
-            if (MenuConfig.QReset) Game.Say("/d");
             Orbwalking.LastAATick = 0;
+            if (MenuConfig.QReset) Game.Say("/d");
             Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
             Player.IssueOrder(GameObjectOrder.MoveTo,
                  Player.Position - 115);
-
         }
         private static void OnCasting(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
