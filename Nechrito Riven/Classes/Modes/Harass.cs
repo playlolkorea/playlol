@@ -17,13 +17,13 @@ namespace NechritoRiven
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
                     Logic.ForceCastQ(target);
-                    Spells._w.Cast(target);
+                    Utility.DelayAction.Add(1, Logic.ForceW);
                 }
             }
             if (Spells._q.IsReady() && Spells._e.IsReady() && Program._qstack == 3 && !Orbwalking.CanAttack() && Orbwalking.CanMove(5))
             {
                 var epos = Program.Player.ServerPosition +
-                           (Program.Player.ServerPosition - target.ServerPosition).Normalized() * 300;
+                          (Program.Player.ServerPosition - target.ServerPosition).Normalized() * 300;
                 Spells._e.Cast(epos);
                 Utility.DelayAction.Add(190, () => Spells._q.Cast(epos));
             }
