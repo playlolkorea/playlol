@@ -22,7 +22,7 @@ namespace Nechrito_Nidalee.Handlers
             // The full 1v1 rotation
             if ((Player.Distance(Target.Position) <= 1500) && Target != null && Target.IsValidTarget())
             {
-                if (CatForm() && Champion.Aspect.IsReady() && Target.Distance(Player) >= 400 && !Hunted && !Champion.Swipe.IsReady())
+                if (CatForm() && Champion.Aspect.IsReady() && !Hunted)
                 {
                     Champion.Aspect.Cast();
                 }
