@@ -33,12 +33,7 @@ namespace NechritoRiven
             emoteMenu.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
             animation.AddSubMenu(emoteMenu);
             Config.AddSubMenu(animation);
-
-            /*
-            var burst = new Menu("Burst", "burst");
-            burst.AddItem(new MenuItem("OneShot", "OneShot Burst").SetValue(true)).SetTooltip("E R1 Tiamat AA W Q AA R2 Q");
-            Config.AddSubMenu(burst);
-            */
+            
 
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");

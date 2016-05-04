@@ -12,59 +12,59 @@ namespace Nechrito_Diana
     {
         public static void ComboLogic()
         {
-            var target = TargetSelector.GetTarget(850, TargetSelector.DamageType.Magical);
+            var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
+            var test = Spells._q.GetArcSPrediction(t).CastPosition;
+            var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
                 if (target.Health < Dmg.ComboDmg(target) || MenuConfig.Misaya)
                 {
                     if ((Program.Player.Distance(target.Position) <= 800f) && (Program.Player.Distance(target.Position) >= 680f))
                     {
-                        var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
                         if (t != null)
                         {
-                            if(Spells._r.IsReady() && !MenuConfig.ComboR)
+                            if (Spells._r.IsReady())
                             {
-                                Spells._r.SPredictionCast(t, HitChance.High);
+                                Spells._r.Cast(t);
                             }
                            else if (Spells._q.IsReady())
                             {
                                 var pos = Spells._q.GetSPrediction(target).CastPosition;
-                                Spells._q.Cast(pos);
+                               Utility.DelayAction.Add(15, ()=> Spells._q.Cast(test));
                             }
+                            
                         }
                     }
                 }
-                 if (Spells._q.IsReady() && Spells._q.GetPrediction(target).Hitchance >= HitChance.High && (Program.Player.Distance(target.Position) <= 700f))
+                if (Spells._q.IsReady() && Spells._q.GetPrediction(target).Hitchance >= HitChance.High && (Program.Player.Distance(target.Position) <= 825f) && !MenuConfig.Misaya)
                 {
-                    var t = TargetSelector.GetTarget(Spells._q.Range, TargetSelector.DamageType.Magical);
                     if (t != null)
                     {
-                      var pos = Spells._q.GetSPrediction(target).CastPosition;
-                      Spells._q.Cast(pos);
+                        var pos = Spells._q.GetSPrediction(t).CastPosition;
+                        Spells._q.Cast(test);
                     }
                 }
-                 if (Spells._r.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
+                if (Spells._r.IsReady() && (Program.Player.Distance(target.Position) <= 800f))
                 {
-                    var t = TargetSelector.GetTarget(Spells._r.Range, TargetSelector.DamageType.Magical);
                     if (t != null && t.HasBuff("dianamoonlight") && MenuConfig.ComboR)
                     {
                         Spells._r.Cast(t);
                     }
-                    else if(!MenuConfig.ComboR && t != null)
+                    else if (!MenuConfig.ComboR && t != null)
                     { Utility.DelayAction.Add(60, () => Spells._r.Cast(t)); }
-                }   
-                 if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange + 30))
-                        Spells._w.Cast(target);
-                 if(MenuConfig.ComboE)
+                }
+                if (Spells._w.IsReady() && (Program.Player.Distance(target.Position) <= Program.Player.AttackRange + 30))
+                    Spells._w.Cast(target);
+                if (MenuConfig.ComboE && Program.Player.ManaPercent > 25)
                 {
-                    if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range && (Program.Player.Distance(target.Position) >= 200)) || target.CountEnemiesInRange(Spells._e.Range) > 1 || target.IsDashing() || !target.IsFacing(Program.Player))
+                    if (Spells._e.IsReady() && (Program.Player.Distance(target.Position) <= Spells._e.Range - 45 || target.CountEnemiesInRange(Spells._e.Range) > 1 || target.IsDashing() || !target.IsFacing(Program.Player)))
                         Spells._e.Cast(target);
                 }
             }
         }
         public static void HarassLogic()
         {
-            var target = TargetSelector.GetTarget(750, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(800, TargetSelector.DamageType.Magical);
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
                 if (Spells._q.IsReady() && (Program.Player.Distance(target.Position) <= 700f))
@@ -98,11 +98,11 @@ namespace Nechrito_Diana
                         Spells._r.Cast(m[0]);
                     }
                 }
-                 if (Spells._w.IsReady() && (Program.Player.Distance(mobs[0].Position) <= 300f) && MenuConfig.jnglW)
+                if (Spells._w.IsReady() && (Program.Player.Distance(mobs[0].Position) <= 300f) && MenuConfig.jnglW)
                     Spells._w.Cast(mobs[0].ServerPosition);
 
                 if (Spells._e.IsReady())
-                {   
+                {
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._e.Range);
                     foreach (var m in mobs)
                     {
@@ -130,7 +130,7 @@ namespace Nechrito_Diana
                     var minion = MinionManager.GetMinions(Program.Player.Position, Spells._w.Range);
                     foreach (var m in minion)
                     {
-                        if (m.Health < Spells._q.GetDamage(m) && minion.Count > 2)
+                        if (m.Health < Spells._q.GetDamage(m) && minion.Count > 2 && !MenuConfig._orbwalker.InAutoAttackRange(m))
                             Spells._q.Cast(m);
                     }
                 }
@@ -146,45 +146,61 @@ namespace Nechrito_Diana
         }
         public static void Flee()
         {
-            try
+            if (!MenuConfig.FleeMouse)
             {
-                if (MenuConfig.FleeMouse)
+                return;
+            }
+            
+            var jump = Program.JumpPos.Where(x => x.Value.Distance(Program.Player.Position) < 300f && x.Value.Distance(Game.CursorPos) < 700f).FirstOrDefault();
+            var monster = MinionManager.GetMinions(900f, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.Health).FirstOrDefault();
+            var mobs = MinionManager.GetMinions(900, MinionTypes.All, MinionTeam.NotAlly);
+            
+            if (jump.Value.IsValid())
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, jump.Value);
+
+                foreach (var junglepos in Program.JunglePos)
                 {
-                    Program.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-
-                    foreach (var pos in Program.JunglePos)
+                    if (Game.CursorPos.Distance(junglepos) <= 350 && ObjectManager.Player.Position.Distance(junglepos) <= 850 && Spells._q.IsReady() && Spells._r.IsReady())
                     {
-                        if(pos.Distance(Game.CursorPos) <= 400 && Spells._q.IsReady() && Spells._r.IsReady())
-                        {
-                            Spells._q.Cast(pos);
-                            Spells._r.Cast(pos);
-                        }
-                    }
-
-                        var mobs = MinionManager.GetMinions(900, MinionTypes.All, MinionTeam.NotAlly);
-
-                    if (!mobs.Any()) { return; }
-
-                    var mob = mobs.MaxOrDefault(x => x.MaxHealth);
-
-                    if (mob.Distance(Game.CursorPos) <= 750 && mob.Distance(Program.Player) >= 475)
-                    {
-                        if (Spells._q.IsReady() && Spells._r.IsReady() && Program.Player.Mana > Spells._r.ManaCost + Spells._q.ManaCost && mob.Health > Spells._q.GetDamage(mob))
-                        {
-                            Spells._q.Cast(mob.ServerPosition);
-                            Spells._r.Cast(mob);
-                        }
-                        else if (Spells._r.IsReady())
-                        {
-                            Spells._r.Cast(mob);
-                        }
+                        Spells._q.Cast(junglepos);
+                        Spells._r.Cast(monster);
                     }
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex);
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            }
+
+            foreach (var junglepos in Program.JunglePos)
+            {
+                if (Game.CursorPos.Distance(junglepos) <= 350 && ObjectManager.Player.Position.Distance(junglepos) <= 900 && Spells._q.IsReady() && Spells._r.IsReady())
+                {
+                    Spells._q.Cast(junglepos);
+                    Spells._r.Cast(monster);
+                }
+                else if (Spells._r.IsReady() && !Spells._q.IsReady() && monster.Distance(Program.Player.Position) > 600f && monster.Distance(Game.CursorPos) <= 350f)
+                {
+                    Spells._r.Cast(monster);
+                }
+            }
+            if (!mobs.Any()) { return; }
+
+            var mob = mobs.MaxOrDefault(x => x.MaxHealth);
+
+            if (mob.Distance(Game.CursorPos) <= 750 && mob.Distance(Program.Player) >= 475)
+            {
+                if (Spells._q.IsReady() && Spells._r.IsReady() && Program.Player.Mana > Spells._r.ManaCost + Spells._q.ManaCost && mob.Health > Spells._q.GetDamage(mob))
+                {
+                    Spells._q.Cast(mob);
+                    Spells._r.Cast(mob);
+                }
+                if (Spells._r.IsReady())
+                {
+                    Spells._r.Cast(mob);
+                }
             }
         }
     }
-    }
+}
