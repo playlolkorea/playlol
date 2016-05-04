@@ -69,7 +69,7 @@ namespace NechritoRiven
             {
                 var wallWidth = GetWallWidth(firstWallPoint, dashEndPos);
 
-                if (wallWidth > minWallWidth && wallWidth - firstWallPoint.Distance(dashEndPos) < wallWidth * 0.8)
+                if (wallWidth > minWallWidth && wallWidth - firstWallPoint.Distance(dashEndPos) < wallWidth * 0.83)
                 {
                     return true;
                 }

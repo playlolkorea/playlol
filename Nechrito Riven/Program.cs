@@ -355,14 +355,19 @@ namespace NechritoRiven
             if (Player.IsDead)
                 return;
             var heropos = Drawing.WorldToScreen(ObjectManager.Player.Position);
-            var IsWallDash = FleeLOGIC.IsWallDash(Player.ServerPosition, Spells._q.Range);
             var end = Player.ServerPosition.Extend(Game.CursorPos, Spells._q.Range);
+            var IsWallDash = FleeLOGIC.IsWallDash(end, Spells._q.Range);
+
+            var Eend = Player.ServerPosition.Extend(Game.CursorPos, Spells._e.Range);
+            var WallE = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, Eend);
             var WallPoint = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, end);
+
             if (IsWallDash)
             {
-                if (WallPoint.Distance(Player.ServerPosition) <= 1200)
+                if (WallPoint.Distance(Player.ServerPosition) <= 600)
                 {
                     Render.Circle.DrawCircle(WallPoint, 60, System.Drawing.Color.White);
+                    Render.Circle.DrawCircle(end, 60, System.Drawing.Color.Green);
                 }
             }
             if (_qstack != 1 && MenuConfig.DrawTimer1)

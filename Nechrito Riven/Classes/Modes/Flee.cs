@@ -14,43 +14,44 @@ namespace NechritoRiven
         }
         public static void FleeLogic()
         {
-            if(!MenuConfig.WallFlee)
+            if (!MenuConfig.WallFlee)
             {
                 return;
             }
-            var IsWallDash = FleeLOGIC.IsWallDash(Player.ServerPosition, 320);
-            var end = Player.ServerPosition.Extend(Game.CursorPos, 320);
-            var Eend = Player.ServerPosition.Extend(Game.CursorPos, 450);
+
+            var end = Player.ServerPosition.Extend(Game.CursorPos, Spells._q.Range);
+            var IsWallDash = FleeLOGIC.IsWallDash(end, Spells._q.Range);
+
+            var Eend = Player.ServerPosition.Extend(Game.CursorPos, Spells._e.Range);
             var WallE = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, Eend);
             var WallPoint = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, end);
 
             if (Spells._q.IsReady() && _qstack < 3)
             { Spells._q.Cast(Game.CursorPos); }
 
-            if (IsWallDash)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
-            }
+
             if (IsWallDash && _qstack == 3 && WallPoint.Distance(Player.ServerPosition) <= 800)
             {
-                if (WallPoint.Distance(Player.ServerPosition) <= 500)
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
+                if (WallPoint.Distance(Player.ServerPosition) <= 600)
                 {
                     ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
-                    if (Spells._q.IsReady() && WallPoint.Distance(Player.ServerPosition) < 50)
+                    if (WallPoint.Distance(Player.ServerPosition) < 55)
                     {
                         if (Spells._e.IsReady())
                         {
                             Spells._e.Cast(WallE);
                         }
-                        if(_qstack == 3)
+                        if (_qstack == 3)
                         {
+                            Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
                             Spells._q.Cast(WallPoint);
                         }
-                      
+
                     }
                 }
             }
-            
+
             if (!IsWallDash && !MenuConfig.WallFlee)
             {
                 var enemy =
