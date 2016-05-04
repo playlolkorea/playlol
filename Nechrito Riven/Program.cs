@@ -362,7 +362,7 @@ namespace NechritoRiven
             var WallE = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, Eend);
             var WallPoint = FleeLOGIC.GetFirstWallPoint(Player.ServerPosition, end);
 
-            if (IsWallDash)
+            if (IsWallDash && MenuConfig.FleeSpot)
             {
                 if (WallPoint.Distance(Player.ServerPosition) <= 600)
                 {
@@ -383,15 +383,7 @@ namespace NechritoRiven
                               (((double)Logic._lastR - Utils.GameTimeTickCount + 15000) / 1000).ToString("0.0") + "s";
                 Timer2.OnEndScene();
             }
-            /*if(MenuConfig.FleeSpot)
-            {
-                if(!Spells._q.IsReady())
-                { return; }
-                var spot = WallJump.GetNearest(Player.ServerPosition);
-                Render.Circle.DrawCircle(spot.Start, 100, _qstack == 3 ? System.Drawing.Color.White : System.Drawing.Color.Red);
-                Render.Circle.DrawCircle(spot.End, 100, _qstack == 3 ? System.Drawing.Color.White : System.Drawing.Color.Red);
-            }*/
-
+          
             if (MenuConfig.DrawCb)
                 Render.Circle.DrawCircle(Player.Position, 250 + Player.AttackRange + 70,
                     Spells._e.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
