@@ -3,19 +3,15 @@ using LeagueSharp.Common;
 
 namespace NechritoRiven
 {
-    class Dmg : Riven
+    class Dmg
     {
-        public static bool IsLethal(Obj_AI_Base unit)
-        {
-            return Dmg.Totaldame(unit) / 1.65 >= unit.Health;
-        }
         public static float IgniteDamage(Obj_AI_Hero target)
         {
-            if (Spells.Ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(Spells.Ignite) != SpellState.Ready)
+            if (Spells.Ignite == SpellSlot.Unknown || Program.Player.Spellbook.CanUseSpell(Spells.Ignite) != SpellState.Ready)
             {
                 return 0f;
             }
-            return (float)Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
+            return (float)Program.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
         }
         public static double Basicdmg(Obj_AI_Base target)
         {
@@ -23,27 +19,27 @@ namespace NechritoRiven
             {
                 double dmg = 0;
                 double passivenhan;
-                if (Player.Level >= 18)
+                if (Program.Player.Level >= 18)
                     passivenhan = 0.5;
-                else if (Player.Level >= 15)
+                else if (Program.Player.Level >= 15)
                     passivenhan = 0.45;
-                else if (Player.Level >= 12)
+                else if (Program.Player.Level >= 12)
                     passivenhan = 0.4;
-                else if (Player.Level >= 9)
+                else if (Program.Player.Level >= 9)
                     passivenhan = 0.35;
-                else if (Player.Level >= 6)
+                else if (Program.Player.Level >= 6)
                     passivenhan = 0.3;
-                else if (Player.Level >= 3)
+                else if (Program.Player.Level >= 3)
                     passivenhan = 0.25;
                 else
                     passivenhan = 0.2;
                 if (Spells._w.IsReady()) dmg = dmg + Spells._w.GetDamage(target);
                 if (Spells._q.IsReady())
                 {
-                    var qnhan = 4 - _qstack;
-                    dmg = dmg + Spells._q.GetDamage(target) * qnhan + Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
+                    var qnhan = 4 - Program._qstack;
+                    dmg = dmg + Spells._q.GetDamage(target) * qnhan + Program.Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
                 }
-                dmg = dmg + Player.GetAutoAttackDamage(target) * (1 + passivenhan);
+                dmg = dmg + Program.Player.GetAutoAttackDamage(target) * (1 + passivenhan);
                 return dmg;
             }
             return 0;
@@ -56,17 +52,17 @@ namespace NechritoRiven
             {
                 float damage = 0;
                 float passivenhan;
-                if (Player.Level >= 18)
+                if (Program.Player.Level >= 18)
                     passivenhan = 0.5f;
-                else if (Player.Level >= 15)
+                else if (Program.Player.Level >= 15)
                     passivenhan = 0.45f;
-                else if (Player.Level >= 12)
+                else if (Program.Player.Level >= 12)
                     passivenhan = 0.4f;
-                else if (Player.Level >= 9)
+                else if (Program.Player.Level >= 9)
                     passivenhan = 0.35f;
-                else if (Player.Level >= 6)
+                else if (Program.Player.Level >= 6)
                     passivenhan = 0.3f;
-                else if (Player.Level >= 3)
+                else if (Program.Player.Level >= 3)
                     passivenhan = 0.25f;
                 else
                     passivenhan = 0.2f;
@@ -74,11 +70,11 @@ namespace NechritoRiven
                 if (Spells._w.IsReady()) damage = damage + Spells._w.GetDamage(enemy);
                 if (Spells._q.IsReady())
                 {
-                    var qnhan = 4 - _qstack;
+                    var qnhan = 4 - Program._qstack;
                     damage = damage + Spells._q.GetDamage(enemy) * qnhan +
-                             (float)Player.GetAutoAttackDamage(enemy) * qnhan * (1 + passivenhan);
+                             (float)Program.Player.GetAutoAttackDamage(enemy) * qnhan * (1 + passivenhan);
                 }
-                damage = damage + (float)Player.GetAutoAttackDamage(enemy) * (1 + passivenhan);
+                damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy) * (1 + passivenhan);
                 if (Spells._r.IsReady())
                 {
                     return damage * 1.2f + Spells._r.GetDamage(enemy);
@@ -99,17 +95,17 @@ namespace NechritoRiven
             if (target == null) return 0;
             double dmg = 0;
             double passivenhan;
-            if (Player.Level >= 18)
+            if (Program.Player.Level >= 18)
                 passivenhan = 0.5;
-            else if (Player.Level >= 15)
+            else if (Program.Player.Level >= 15)
                 passivenhan = 0.45;
-            else if (Player.Level >= 12)
+            else if (Program.Player.Level >= 12)
                 passivenhan = 0.4;
-            else if (Player.Level >= 9)
+            else if (Program.Player.Level >= 9)
                 passivenhan = 0.35;
-            else if (Player.Level >= 6)
+            else if (Program.Player.Level >= 6)
                 passivenhan = 0.3;
-            else if (Player.Level >= 3)
+            else if (Program.Player.Level >= 3)
                 passivenhan = 0.25;
             else
                 passivenhan = 0.2;
@@ -117,10 +113,10 @@ namespace NechritoRiven
             if (Spells._w.IsReady()) dmg = dmg + Spells._w.GetDamage(target);
             if (Spells._q.IsReady())
             {
-                var qnhan = 4 - _qstack;
-                dmg = dmg + Spells._q.GetDamage(target) * qnhan + Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
+                var qnhan = 4 - Program._qstack;
+                dmg = dmg + Spells._q.GetDamage(target) * qnhan + Program.Player.GetAutoAttackDamage(target) * qnhan * (1 + passivenhan);
             }
-            dmg = dmg + Player.GetAutoAttackDamage(target) * (1 + passivenhan);
+            dmg = dmg + Program.Player.GetAutoAttackDamage(target) * (1 + passivenhan);
             if (!Spells._r.IsReady()) return dmg;
             var rdmg = Rdame(target, target.Health - dmg * 1.2);
             return dmg * 1.2 + rdmg;
@@ -132,8 +128,8 @@ namespace NechritoRiven
             {
                 var missinghealth = (target.MaxHealth - health) / target.MaxHealth > 0.75 ? 0.75 : (target.MaxHealth - health) / target.MaxHealth;
                 var pluspercent = missinghealth * 2;
-                var rawdmg = new double[] { 80, 120, 160 }[Spells._r.Level - 1] + 0.6 * Player.FlatPhysicalDamageMod;
-                return Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
+                var rawdmg = new double[] { 80, 120, 160 }[Spells._r.Level - 1] + 0.6 * Program.Player.FlatPhysicalDamageMod;
+                return Program.Player.CalcDamage(target, Damage.DamageType.Physical, rawdmg * (1 + pluspercent));
             }
             return 0;
         }

@@ -83,20 +83,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Creatures.cs" />
     <Compile Include="Classes\Dmg.cs" />
-    <Compile Include="Drawing\Drawings.cs" />
-    <Compile Include="Classes\Git.cs" />
+    <Compile Include="Classes\FleeLogic.cs" />
     <Compile Include="Classes\HpBarIndicator.cs" />
     <Compile Include="Classes\Logic.cs" />
     <Compile Include="Classes\MenuConfig.cs" />
-    <Compile Include="Classes\Modes\Modes.cs" />
+    <Compile Include="Classes\Modes\Burst.cs" />
+    <Compile Include="Classes\Modes\Combo.cs" />
+    <Compile Include="Classes\Modes\FastHarass.cs" />
+    <Compile Include="Classes\Modes\Flee.cs" />
+    <Compile Include="Classes\Modes\Harass.cs" />
+    <Compile Include="Classes\Modes\Jungle.cs" />
+    <Compile Include="Classes\Modes\Lane.cs" />
     <Compile Include="Classes\Orbwalking.cs" />
-    <Compile Include="Drawing\DrawLoad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Spells.cs" />
-    <Compile Include="Riven.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -113,9 +115,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

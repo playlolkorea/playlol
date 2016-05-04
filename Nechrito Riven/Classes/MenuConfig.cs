@@ -33,7 +33,12 @@ namespace NechritoRiven
             emoteMenu.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
             animation.AddSubMenu(emoteMenu);
             Config.AddSubMenu(animation);
-            
+
+            /*
+            var burst = new Menu("Burst", "burst");
+            burst.AddItem(new MenuItem("OneShot", "OneShot Burst").SetValue(true)).SetTooltip("E R1 Tiamat AA W Q AA R2 Q");
+            Config.AddSubMenu(burst);
+            */
 
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
@@ -73,9 +78,9 @@ namespace NechritoRiven
             draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
             Config.AddSubMenu(draw);
 
-          //   var flee = new Menu("Flee", "Flee");
-         //    flee.AddItem(new MenuItem("WallFlee", "WallJump in Flee").SetValue(true).SetTooltip("Jumps over walls in flee mode"));
-        //    Config.AddSubMenu(flee);
+            var flee = new Menu("Flee", "Flee");
+            flee.AddItem(new MenuItem("WallFlee", "WallJump in Flee").SetValue(true).SetTooltip("Jumps over walls in flee mode"));
+            Config.AddSubMenu(flee);
 
             var skin = new Menu("SkinChanger", "SkinChanger");
             skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
