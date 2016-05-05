@@ -127,7 +127,7 @@ namespace Nechrito_Rengar.Main
                     
                   if (Champion.E.IsReady())
                     {
-                        Champion.E.Cast();
+                        Champion.E.Cast(target);
                     }
                   if (Champion.W.IsReady())
                     {
@@ -151,7 +151,7 @@ namespace Nechrito_Rengar.Main
 
                     if (Champion.E.IsReady())
                     {
-                        Champion.E.Cast();
+                        Champion.E.Cast(target);
                     }
                     if (Champion.W.IsReady())
                     {
@@ -269,6 +269,14 @@ namespace Nechrito_Rengar.Main
                     }
                 }
             }
+        }
+        public static void Game_OnUpdate(EventArgs args)
+        {
+            if (MenuConfig.UseSkin)
+            {
+                Player.SetSkin(Player.CharData.BaseSkinName, MenuConfig.Menu.Item("Skin").GetValue<StringList>().SelectedIndex);
+            }
+            else Player.SetSkin(Player.CharData.BaseSkinName, Player.BaseSkinId);
         }
     }
 }

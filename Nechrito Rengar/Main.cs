@@ -24,6 +24,7 @@ namespace Nechrito_Rengar
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Rengar</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5 (Date: 5/5/2016)</font></b>");
             Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Completely Re-written</font></b>");
             Game.OnUpdate += OnUpdate;
+            Game.OnUpdate += Modes.Game_OnUpdate;
             Drawing.OnEndScene += Drawing_OnEndScene;
             Drawing.OnDraw += DRAWING.Drawing_OnDraw;
             MenuConfig.Load();

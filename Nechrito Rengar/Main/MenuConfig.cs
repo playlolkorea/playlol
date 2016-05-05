@@ -13,6 +13,7 @@ namespace Nechrito_Rengar.Main
             var draw = new Menu("Draw", "Draw");
             var misc = new Menu("Misc", "Misc");
             var combo = new Menu("ComboMode", "ComboMode");
+            var skin = new Menu("SkinChanger", "SkinChanger");
 
             TargetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(TargetSelectorMenu);
@@ -34,10 +35,14 @@ namespace Nechrito_Rengar.Main
             draw.AddItem(new MenuItem("EngageDraw", "Draw Engage Range")).SetValue(true);
             Menu.AddSubMenu(draw);
 
+            skin.AddItem(new MenuItem("UseSkin", "Use Skinchanger")).SetValue(true).SetTooltip("Toggles Skinchanger");
+            skin.AddItem(new MenuItem("Skin", "Choose A Skin!").SetValue(new StringList(new[] { "Default", "Headhunter Rengar", "Night Hunter Rengar", "SSW Rengar" })));
+            Menu.AddSubMenu(skin);
+
             Menu.AddToMainMenu();
         }
         public static bool Passive => Menu.Item("Passive").GetValue<KeyBind>().Active;
-
+        public static bool UseSkin => Menu.Item("UseSkin").GetValue<bool>();
         public static bool KillStealSummoner => Menu.Item("KillStealSummoner").GetValue<bool>();
         public static bool UseItem => Menu.Item("UseItem").GetValue<bool>();
         public static bool dind => Menu.Item("dind").GetValue<bool>();
