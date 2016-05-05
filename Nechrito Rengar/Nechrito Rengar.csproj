@@ -33,20 +33,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\clipper_library.dll</HintPath>
-    </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Software\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Software\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Software\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\..\..\..\Software\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Software\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,23 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Dmg.cs" />
-    <Compile Include="Classes\HpBarIndicator.cs" />
-    <Compile Include="Classes\Killsteal.cs" />
-    <Compile Include="Classes\Logic.cs" />
-    <Compile Include="Classes\MenuConfig.cs" />
-    <Compile Include="Classes\Modes\ApCombo.cs" />
-    <Compile Include="Classes\Modes\Combo.cs" />
-    <Compile Include="Classes\Modes\Harass.cs" />
-    <Compile Include="Classes\Modes\Jungle.cs" />
-    <Compile Include="Classes\Orbwalking.cs" />
-    <Compile Include="Classes\Spells.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Drawing\DRAWING.cs" />
+    <Compile Include="Drawing\HpBarIndicator.cs" />
+    <Compile Include="Handlers\Dmg.cs" />
+    <Compile Include="Handlers\ITEMS.cs" />
+    <Compile Include="Handlers\Killsteal.cs" />
+    <Compile Include="Main\Modes.cs" />
+    <Compile Include="MAIN.cs" />
+    <Compile Include="Main\MenuConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
