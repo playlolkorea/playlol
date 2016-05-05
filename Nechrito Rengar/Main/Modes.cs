@@ -14,7 +14,7 @@ namespace Nechrito_Rengar.Main
         {
             var hasPassive = Player.HasBuff("RengarRBuff") || Player.HasBuff("RengarPassiveBuff");
 
-            var target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
             if (target.IsValidTarget() && !target.IsZombie && target.Distance(Player) <= Champion.E.Range)
             {
                 if(Player.Mana == 5)
@@ -244,7 +244,7 @@ namespace Nechrito_Rengar.Main
                     {
                         Champion.Q.Cast(m);
                     }
-                    if(Champion.E.IsReady() && !hasPassive)
+                   else if(Champion.E.IsReady() && !hasPassive)
                     {
                         Champion.E.Cast(m);
                     }
@@ -263,7 +263,7 @@ namespace Nechrito_Rengar.Main
                     {
                         Champion.Q.Cast(m);
                     }
-                    if (Champion.E.IsReady() && !hasPassive)
+                   else if (Champion.E.IsReady() && !hasPassive)
                     {
                         Champion.E.Cast(m);
                     }
