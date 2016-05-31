@@ -75,7 +75,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,22 +83,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Dmg.cs" />
-    <Compile Include="Classes\FleeLogic.cs" />
-    <Compile Include="Classes\HpBarIndicator.cs" />
-    <Compile Include="Classes\Logic.cs" />
-    <Compile Include="Classes\MenuConfig.cs" />
-    <Compile Include="Classes\Modes\Burst.cs" />
-    <Compile Include="Classes\Modes\Combo.cs" />
-    <Compile Include="Classes\Modes\FastHarass.cs" />
+    <Compile Include="Classes\Drawing\DRAW.cs" />
+    <Compile Include="Classes\Extras\Anim.cs" />
+    <Compile Include="Classes\Extras\Dmg.cs" />
+    <Compile Include="Classes\Extras\ITEMS.cs" />
+    <Compile Include="Classes\Extras\Logic.cs" />
+    <Compile Include="Classes\Modes\FleeLogic.cs" />
+    <Compile Include="Classes\Drawing\HpBarIndicator.cs" />
+    <Compile Include="Classes\Handlers\MenuConfig.cs" />
     <Compile Include="Classes\Modes\Flee.cs" />
-    <Compile Include="Classes\Modes\Harass.cs" />
-    <Compile Include="Classes\Modes\Jungle.cs" />
-    <Compile Include="Classes\Modes\Lane.cs" />
-    <Compile Include="Classes\Orbwalking.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Classes\Modes\Modes.cs" />
+    <Compile Include="Classes\Handlers\Orbwalking.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\Spells.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
