@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#region
+
+using System;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using LeagueSharp;
-using LeagueSharp.Common;
-using Version = System.Version;
+
+#endregion
 
 namespace NechritoRiven.Load
 {
-    class AssemblyVersion
+    internal class AssemblyVersion
     {
         private static string DownloadServerVersion
         {
             get
             {
-                using (var wC = new WebClient()) return wC.DownloadString("https://github.com/Nechrito/Leaguesharp/blob/master/Nechrito%20Riven/Properties/AssemblyInfo.cs");
+                using (var wC = new WebClient()) return wC.DownloadString("https://raw.githubusercontent.com/Nechrito/Leaguesharp/master/Nechrito%20Riven/Properties/AssemblyInfo.cs");
             }
         }
 

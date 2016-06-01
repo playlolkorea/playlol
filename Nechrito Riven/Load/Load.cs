@@ -1,6 +1,7 @@
 ﻿#region
 
 using LeagueSharp;
+using LeagueSharp.Common;
 using NechritoRiven.Core;
 using NechritoRiven.Draw;
 using NechritoRiven.Event;
@@ -30,6 +31,9 @@ namespace NechritoRiven.Load
             Game.OnUpdate += KillSteal.Update;
             Game.OnUpdate += AlwaysUpdate.Update;
             Game.OnUpdate += Skinchanger.Update;
+
+            Interrupter2.OnInterruptableTarget += Interrupt2.OnInterruptableTarget;
+            AntiGapcloser.OnEnemyGapcloser += Gapclose.gapcloser;
 
             AssemblyVersion.CheckVersion();
 

@@ -54,6 +54,8 @@ namespace NechritoRiven.Menus
             Config.AddSubMenu(jngl);
 
             var misc = new Menu("Misc", "Misc");
+            misc.AddItem(new MenuItem("GapcloserMenu", "Anti-Gapcloser").SetValue(true));
+            misc.AddItem(new MenuItem("InterruptMenu", "Interrupter").SetValue(true));
             misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
             misc.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(29, 23, 43)));
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
@@ -94,7 +96,8 @@ namespace NechritoRiven.Menus
 
             Config.AddToMainMenu();
         }
-
+        public static bool GapcloserMenu => Config.Item("GapcloserMenu").GetValue<KeyBind>().Active;
+        public static bool InterruptMenu => Config.Item("InterruptMenu").GetValue<KeyBind>().Active;
         public static bool QMove => Config.Item("QMove").GetValue<KeyBind>().Active;
         public static StringList Trinketlist => Config.Item("Trinketlist").GetValue<StringList>();
         public static bool Buytrinket => Config.Item("Buytrinket").GetValue<bool>();
