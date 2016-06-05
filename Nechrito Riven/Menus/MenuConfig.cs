@@ -38,7 +38,7 @@ namespace NechritoRiven.Menus
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
-            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use R when target is killable");
+            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use Flash when target is killable");
             Config.AddSubMenu(combo);
 
             var lane = new Menu("Lane", "Lane");
@@ -61,7 +61,7 @@ namespace NechritoRiven.Menus
             misc.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(39, 36, 53)));
             Config.AddSubMenu(misc);
 
-            var trinket = new Menu("trinket", "Trinket");
+            var trinket = new Menu("Trinket", "Trinket");
             trinket.AddItem(new MenuItem("Buytrinket", "Buy Trinket").SetValue(true).SetTooltip("Will buy trinket"));
             trinket.AddItem(new MenuItem("Trinketlist", "Choose Trinket").SetValue(new StringList(new[] { "Oracle Alternation", "Farsight Alternation"  })));
             Config.AddSubMenu(trinket);
@@ -96,10 +96,15 @@ namespace NechritoRiven.Menus
 
             Config.AddToMainMenu();
         }
+
         public static bool GapcloserMenu => Config.Item("GapcloserMenu").GetValue<KeyBind>().Active;
         public static bool InterruptMenu => Config.Item("InterruptMenu").GetValue<KeyBind>().Active;
+
         public static bool QMove => Config.Item("QMove").GetValue<KeyBind>().Active;
+
+        public static StringList ItemList => Config.Item("ItemList").GetValue<StringList>();
         public static StringList Trinketlist => Config.Item("Trinketlist").GetValue<StringList>();
+
         public static bool Buytrinket => Config.Item("Buytrinket").GetValue<bool>();
         public static bool FleeSpot => Config.Item("FleeSpot").GetValue<bool>();
         public static bool WallFlee => Config.Item("WallFlee").GetValue<bool>();

@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
+using System;
 using LeagueSharp;
 using LeagueSharp.Common;
 using NechritoRiven.Menus;
 
+#endregion
+
 namespace NechritoRiven.Event
 {
-    class Trinkets : Core.Core
+    internal class Trinkets : Core.Core
     {
         public static void Update(EventArgs args)
         {

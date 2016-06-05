@@ -61,7 +61,7 @@ namespace NechritoRiven.Event
                         foreach (var m in minion)
                         {
                             if (m.Health < Spells.W.GetDamage(m) && minion.Count > 2)
-                                Spells.W.Cast(m);
+                                Utility.DelayAction.Add(70, () => Spells.W.Cast(m));
                         }
                     }
                 }
@@ -161,7 +161,7 @@ namespace NechritoRiven.Event
         {
             if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
-            var mobs = MinionManager.GetMinions(Player.Position, 550f, MinionTypes.All,
+            var mobs = MinionManager.GetMinions(Player.Position, 600f, MinionTypes.All,
                 MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
 
             if (mobs == null)
@@ -170,7 +170,7 @@ namespace NechritoRiven.Event
             // JUNGLE
             if (Spells.E.IsReady() && MenuConfig.jnglE)
             {
-                Spells.E.Cast(mobs.ServerPosition);
+                Spells.E.Cast(mobs);
                 Usables.CastHydra();
             }
 
@@ -211,7 +211,7 @@ namespace NechritoRiven.Event
                 {
                     Spells.E.Cast(Target.Position);
                     if (InWRange(Target))
-                        Utility.DelayAction.Add(100, ForceW);
+                    Utility.DelayAction.Add(100, ForceW);
                     Utility.DelayAction.Add(30, () => ForceCastQ(Target));
                 }
             }
@@ -230,35 +230,46 @@ namespace NechritoRiven.Event
 
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
-                if (target.Health < Dmg.Totaldame(target) || MenuConfig.AlwaysF)
+                if(Spells.Flash.IsReady())
                 {
-                    if (Player.Distance(target.Position) <= 700 && Player.Distance(target.Position) >= 600)
+                    if (target.Health < Dmg.Totaldame(target) || MenuConfig.AlwaysF)
                     {
-                        if (Spells.Flash.IsReady() && Spells.R.IsReady() && Spells.E.IsReady() && Spells.W.IsReady() &&
-                            Spells.R.Instance.Name == IsFirstR)
+                        if (Player.Distance(target.Position) <= 700 && Player.Distance(target.Position) >= 600)
                         {
-                            Spells.E.Cast(target.Position);
-                            ForceR();
-                            Usables.CastYoumoo();
-                            Utility.DelayAction.Add(180, FlashW);
+                            if (Spells.R.IsReady() && Spells.E.IsReady() && Spells.W.IsReady() && Spells.R.Instance.Name == IsFirstR)
+                            {
+                                Spells.E.Cast(target.Position);
+                                Usables.CastYoumoo();
+                                ForceR();
+                                Utility.DelayAction.Add(180, FlashW);
+                                Usables.CastHydra();
+                            }
                         }
                     }
                 }
                 else
                 {
-                    if (Spells.E.IsReady())
+                    if (Player.Distance(target) <= Spells.E.Range + Player.BoundingRadius)
                     {
-                        Spells.E.Cast(target);
+                        if (Spells.E.IsReady() && Spells.R.IsReady())
+                        {
+                            Spells.E.Cast(Target.ServerPosition);
+                            ForceR();
+                        }
+                       else if (InWRange(target))
+                        {
+                            Utility.DelayAction.Add(75, ForceW);
+                            Usables.CastHydra();
+                        }
+                        else if (Spells.R.IsReady() && Spells.R.Instance.Name == IsSecondR)
+                        {
+                            ForceR2();
+                        }
+                        if (Spells.E.IsReady())
+                        {
+                            Spells.E.Cast(target);
+                        }
                     }
-                    else if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR)
-                    {
-                        ForceR();
-                    }
-                    else if (Spells.W.IsReady())
-                    {
-                        Spells.W.Cast(target);
-                    }
-
                 }
             }
         }
