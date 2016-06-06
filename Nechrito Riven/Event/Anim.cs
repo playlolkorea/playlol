@@ -60,8 +60,7 @@ namespace NechritoRiven.Event
             Orbwalking.LastAATick = 0;
             if (MenuConfig.QReset) Game.Say("/d");
             Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position.Extend(Game.CursorPos, Player.Distance(Game.CursorPos) + 10));
-            Player.IssueOrder(GameObjectOrder.MoveTo,
-                 Player.Position - 115);
+            Player.IssueOrder(GameObjectOrder.MoveTo, Player.Position - 200);
         }
     }
 }

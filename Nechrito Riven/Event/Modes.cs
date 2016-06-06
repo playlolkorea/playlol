@@ -117,23 +117,20 @@ namespace NechritoRiven.Event
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
             {
 
-                if (Spells.E.IsReady() && (Player.Distance(target.Position) <= 310))
-                    Spells.E.Cast(target.Position);
+                if (Spells.E.IsReady() && (Player.Distance(target.Position) <= Spells.E.Range + Player.AttackRange))
+                    Spells.E.Cast(target);
 
-                if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR)
+                if (Player.Distance(target.Position) <= Spells.W.Range)
                 {
-                    ForceR();
-                }
-
-                if (Spells.W.IsReady() && InWRange(target))
-                {
-                    Spells.W.Cast();
-                }
-
-                if (Spells.Q.IsReady())
-                {
-                    ForceItem();
-                    Utility.DelayAction.Add(1, () => ForceCastQ(target));
+                    if (Spells.W.IsReady())
+                    {
+                        Spells.W.Cast(target);
+                    }
+                    if (Spells.Q.IsReady())
+                    {
+                        Utility.DelayAction.Add(30, () => ForceCastQ(Target));
+                        Usables.CastHydra();
+                    }
                 }
                 if (Spells.R.IsReady() && Qstack >= 2 && Spells.R.Instance.Name == IsSecondR)
                     Spells.R.Cast(target.Position);
@@ -256,18 +253,9 @@ namespace NechritoRiven.Event
                             Spells.E.Cast(Target.ServerPosition);
                             ForceR();
                         }
-                       else if (InWRange(target))
+                        else if (Spells.E.IsReady())
                         {
-                            Utility.DelayAction.Add(75, ForceW);
-                            Usables.CastHydra();
-                        }
-                        else if (Spells.R.IsReady() && Spells.R.Instance.Name == IsSecondR)
-                        {
-                            ForceR2();
-                        }
-                        if (Spells.E.IsReady())
-                        {
-                            Spells.E.Cast(target);
+                            Spells.E.Cast(Target);
                         }
                     }
                 }
