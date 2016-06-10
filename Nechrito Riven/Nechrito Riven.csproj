@@ -94,6 +94,8 @@
     <Compile Include="Event\Interrupt2.cs" />
     <Compile Include="Event\KillSteal.cs" />
     <Compile Include="Event\Modes.cs" />
+    <Compile Include="Event\OnCasted.cs" />
+    <Compile Include="Event\QSpell.cs" />
     <Compile Include="Event\Skinchanger.cs" />
     <Compile Include="Event\Trinkets.cs" />
     <Compile Include="Load\AssemblyVersion.cs" />

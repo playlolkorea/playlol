@@ -9,11 +9,14 @@ namespace NechritoRiven.Event
     {
         public static void OnInterruptableTarget(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (!MenuConfig.InterruptMenu ||  sender.Distance(Player) > Spells.W.Range || sender.IsInvulnerable) return;
+            if (!MenuConfig.InterruptMenu || sender.IsInvulnerable) return;
 
-            if (Spells.W.IsReady())
+            if (sender.IsValidTarget(Spells.W.Range))
             {
-                Spells.W.Cast(sender.ServerPosition);
+                if (Spells.W.IsReady())
+                {
+                    Spells.W.Cast(sender);
+                }
             }
         }
     }

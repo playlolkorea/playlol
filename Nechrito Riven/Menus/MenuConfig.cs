@@ -37,6 +37,7 @@ namespace NechritoRiven.Menus
 
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
+            combo.AddItem(new MenuItem("OverKillCheck", "R Max Damage").SetValue(true)).SetTooltip("Will save R for max damage");
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
             combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use Flash when target is killable");
             Config.AddSubMenu(combo);
@@ -105,6 +106,7 @@ namespace NechritoRiven.Menus
         public static StringList ItemList => Config.Item("ItemList").GetValue<StringList>();
         public static StringList Trinketlist => Config.Item("Trinketlist").GetValue<StringList>();
 
+        public static bool OverKillCheck => Config.Item("OverKillCheck").GetValue<bool>();
         public static bool Buytrinket => Config.Item("Buytrinket").GetValue<bool>();
         public static bool FleeSpot => Config.Item("FleeSpot").GetValue<bool>();
         public static bool WallFlee => Config.Item("WallFlee").GetValue<bool>();

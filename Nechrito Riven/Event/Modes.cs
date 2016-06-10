@@ -22,10 +22,16 @@ namespace NechritoRiven.Event
                 if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
                     var minions = MinionManager.GetMinions(70 + 120 + Player.BoundingRadius);
-                    if (minions.Count >= 1)
+                    if (minions.Count < 1) return;
+
+                    if (!Spells.Q.IsReady() || !MenuConfig.LaneQ) return;
+
+                    foreach (var m in minions)
                     {
+                        ForceCastQ(m);
                         Usables.CastHydra();
                     }
+                    
                 }
             }
         }
@@ -46,14 +52,9 @@ namespace NechritoRiven.Event
                     if (minions == null)
                         return;
 
+                   
                     if (Spells.E.IsReady() && MenuConfig.LaneE)
                         Spells.E.Cast(minions.ServerPosition);
-
-                    if (Spells.Q.IsReady() && MenuConfig.LaneQ)
-                    {
-                        Utility.DelayAction.Add(1, () => ForceCastQ(minions));
-                        Usables.CastHydra();
-                    }
 
                     if (Spells.W.IsReady() && MenuConfig.LaneW)
                     {
@@ -61,7 +62,7 @@ namespace NechritoRiven.Event
                         foreach (var m in minion)
                         {
                             if (m.Health < Spells.W.GetDamage(m) && minion.Count > 2)
-                                Utility.DelayAction.Add(70, () => Spells.W.Cast(m));
+                                Utility.DelayAction.Add(200, () => Spells.W.Cast(m));
                         }
                     }
                 }
@@ -70,9 +71,11 @@ namespace NechritoRiven.Event
 
             var @base = args.Target as Obj_AI_Turret;
             if (@base != null)
-
+            {
                 if (@base.IsValid && args.Target != null && Spells.Q.IsReady() && MenuConfig.LaneQ &&
                     _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ(@base);
+            }
+
 
             var hero = args.Target as Obj_AI_Hero;
             if (hero == null) return;
@@ -80,7 +83,7 @@ namespace NechritoRiven.Event
 
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-
+                
                 if (Spells.E.IsReady())
                 {
                     Spells.E.Cast(target.Position);
@@ -99,7 +102,10 @@ namespace NechritoRiven.Event
                     Utility.DelayAction.Add(1, () => ForceCastQ(target));
                 }
 
-                if (Spells.R.IsReady() && Qstack == 2 && Spells.R.Instance.Name == IsSecondR)
+                if (Spells.R.IsReady() && Qstack > 2 && !MenuConfig.OverKillCheck && Spells.R.Instance.Name == IsSecondR)
+                    Spells.R.Cast(target.Position);
+
+                else if (MenuConfig.OverKillCheck && Spells.R.IsReady() && Spells.R.Instance.Name == IsSecondR && !Spells.Q.IsReady())
                     Spells.R.Cast(target.Position);
             }
 
@@ -158,63 +164,58 @@ namespace NechritoRiven.Event
         {
             if (_orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
-            var mobs = MinionManager.GetMinions(Player.Position, 600f, MinionTypes.All,
-                MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            var mobs = MinionManager.GetMinions(Player.Position, 600f, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
 
-            if (mobs == null)
-                return;
-
-            // JUNGLE
-            if (Spells.E.IsReady() && MenuConfig.jnglE)
+            if (mobs?.Distance(Player.Position) <= Spells.E.Range + Player.AttackRange)
             {
-                Spells.E.Cast(mobs);
+                if (Spells.E.IsReady() && MenuConfig.jnglE)
+                {
+                    Spells.E.Cast(mobs);
+                    Usables.CastHydra();
+                }
+
+                if (Spells.Q.IsReady() && MenuConfig.jnglQ)
+                {
+                    Usables.CastHydra();
+                    Utility.DelayAction.Add(1, () => ForceCastQ(mobs));
+                }
+
+                if (!Spells.W.IsReady() || !MenuConfig.jnglW) return;
                 Usables.CastHydra();
-            }
-
-            if (Spells.Q.IsReady() && MenuConfig.jnglQ)
-            {
-                ForceItem();
-                Utility.DelayAction.Add(1, () => ForceCastQ(mobs));
-            }
-            if (Spells.W.IsReady() && MenuConfig.jnglW)
-            {
-                ForceItem();
-                Spells.W.Cast(mobs);
+                Utility.DelayAction.Add(150, () => Spells.W.Cast(mobs));
             }
         }
 
         public static void Combo()
         {
-            if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR && MenuConfig.AlwaysR &&
-                Target != null) ForceR();
+            if(Target == null || Target.IsDead || !Target.IsValidTarget() || Target.IsInvulnerable) return;
 
-            if (Spells.W.IsReady() && InWRange(Target) && Target != null) Spells.W.Cast();
+            if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR && MenuConfig.AlwaysR) ForceR();
 
-            if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR && Spells.W.IsReady() && Target != null &&
-                Spells.E.IsReady() && Target.IsValidTarget() && !Target.IsZombie && (Dmg.IsKillableR(Target) || MenuConfig.AlwaysR))
+            if (Spells.W.IsReady() && InWRange(Target)) Spells.W.Cast();
+
+            if (Spells.R.IsReady() && Spells.R.Instance.Name == IsFirstR && Spells.W.IsReady() &&
+                Spells.E.IsReady() && (Dmg.IsKillableR(Target) || MenuConfig.AlwaysR))
             {
-                if (!InWRange(Target))
-                {
-                    Spells.E.Cast(Target.Position);
-                    ForceR();
-                    Utility.DelayAction.Add(200, ForceW);
-                    Utility.DelayAction.Add(30, () => ForceCastQ(Target));
-                }
+                if (InWRange(Target)) return;
+
+                Spells.E.Cast(Target.Position);
+                ForceR();
+                Utility.DelayAction.Add(170, ForceW);
+                Utility.DelayAction.Add(30, () => ForceCastQ(Target));
             }
 
             else if (Spells.W.IsReady() && Spells.E.IsReady())
             {
-                if (Target.IsValidTarget() && Target != null && !Target.IsZombie && !InWRange(Target))
-                {
-                    Spells.E.Cast(Target.Position);
-                    if (InWRange(Target))
-                    Utility.DelayAction.Add(100, ForceW);
-                    Utility.DelayAction.Add(30, () => ForceCastQ(Target));
-                }
+                Spells.E.Cast(Target.Position);
+                if (!InWRange(Target)) return;
+
+                Utility.DelayAction.Add(100, ForceW);
+                Utility.DelayAction.Add(30, () => ForceCastQ(Target));
             }
             else if (Spells.E.IsReady())
             {
-                if (Target != null && Target.IsValidTarget() && !Target.IsZombie && !InWRange(Target))
+                if (!InWRange(Target))
                 {
                     Spells.E.Cast(Target.Position);
                 }
@@ -225,38 +226,37 @@ namespace NechritoRiven.Event
         {
             var target = TargetSelector.GetSelectedTarget();
 
-            if (target != null && target.IsValidTarget() && !target.IsZombie)
+            if (target == null || !target.IsValidTarget() || target.IsZombie || target.IsInvulnerable) return;
+
+            if(Spells.Flash.IsReady())
             {
-                if(Spells.Flash.IsReady())
+                if (target.Health < Dmg.Totaldame(target) || MenuConfig.AlwaysF)
                 {
-                    if (target.Health < Dmg.Totaldame(target) || MenuConfig.AlwaysF)
+                    if (Player.Distance(target.Position) <= 700 && Player.Distance(target.Position) >= 600)
                     {
-                        if (Player.Distance(target.Position) <= 700 && Player.Distance(target.Position) >= 600)
+                        if (Spells.R.IsReady() && Spells.E.IsReady() && Spells.W.IsReady() && Spells.R.Instance.Name == IsFirstR)
                         {
-                            if (Spells.R.IsReady() && Spells.E.IsReady() && Spells.W.IsReady() && Spells.R.Instance.Name == IsFirstR)
-                            {
-                                Spells.E.Cast(target.Position);
-                                Usables.CastYoumoo();
-                                ForceR();
-                                Utility.DelayAction.Add(180, FlashW);
-                                Usables.CastHydra();
-                            }
+                            Spells.E.Cast(target.Position);
+                            Usables.CastYoumoo();
+                            ForceR();
+                            Utility.DelayAction.Add(180, FlashW);
+                            Usables.CastHydra();
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                if (Player.Distance(target) <= Spells.E.Range + Player.BoundingRadius)
                 {
-                    if (Player.Distance(target) <= Spells.E.Range + Player.BoundingRadius)
+                    if (Spells.E.IsReady() && Spells.R.IsReady())
                     {
-                        if (Spells.E.IsReady() && Spells.R.IsReady())
-                        {
-                            Spells.E.Cast(Target.ServerPosition);
-                            ForceR();
-                        }
-                        else if (Spells.E.IsReady())
-                        {
-                            Spells.E.Cast(Target);
-                        }
+                        Spells.E.Cast(Target.ServerPosition);
+                        ForceR();
+                    }
+                    else if (Spells.E.IsReady())
+                    {
+                        Spells.E.Cast(Target);
                     }
                 }
             }
@@ -289,8 +289,7 @@ namespace NechritoRiven.Event
             }
             if (Spells.Q.IsReady() && Spells.E.IsReady() && Qstack == 3 && !Orbwalking.CanAttack() && Orbwalking.CanMove(5))
             {
-                var epos = Player.ServerPosition +
-                          (Player.ServerPosition - target.ServerPosition).Normalized() * 300;
+                var epos = Player.ServerPosition + (Player.ServerPosition - target.ServerPosition).Normalized() * 300;
                 Spells.E.Cast(epos);
                 Utility.DelayAction.Add(190, () => Spells.Q.Cast(epos));
             }
