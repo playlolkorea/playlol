@@ -80,6 +80,7 @@ namespace NechritoRiven.Menus
 
             var flee = new Menu("Flee", "Flee");
             flee.AddItem(new MenuItem("WallFlee", "WallJump in Flee").SetValue(true).SetTooltip("Jumps over walls in flee mode"));
+            flee.AddItem(new MenuItem("FleeYoumuu", "Youmuu's Ghostblade").SetValue(true).SetTooltip("Will flee with ghostblade"));
             Config.AddSubMenu(flee);
 
             var skin = new Menu("SkinChanger", "SkinChanger");
@@ -98,14 +99,15 @@ namespace NechritoRiven.Menus
             Config.AddToMainMenu();
         }
 
-        public static bool GapcloserMenu => Config.Item("GapcloserMenu").GetValue<KeyBind>().Active;
-        public static bool InterruptMenu => Config.Item("InterruptMenu").GetValue<KeyBind>().Active;
+        public static bool GapcloserMenu => Config.Item("GapcloserMenu").GetValue<bool>();
+        public static bool InterruptMenu => Config.Item("InterruptMenu").GetValue<bool>();
 
         public static bool QMove => Config.Item("QMove").GetValue<KeyBind>().Active;
 
         public static StringList ItemList => Config.Item("ItemList").GetValue<StringList>();
         public static StringList Trinketlist => Config.Item("Trinketlist").GetValue<StringList>();
 
+        public static bool FleeYomuu => Config.Item("FleeYoumuu").GetValue<bool>();
         public static bool OverKillCheck => Config.Item("OverKillCheck").GetValue<bool>();
         public static bool Buytrinket => Config.Item("Buytrinket").GetValue<bool>();
         public static bool FleeSpot => Config.Item("FleeSpot").GetValue<bool>();

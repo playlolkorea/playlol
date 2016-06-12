@@ -18,6 +18,7 @@ namespace NechritoRiven.Draw
                 return;
 
             var heropos = Drawing.WorldToScreen(Player.Position);
+
             if (MenuConfig.DrawCb)
                 Render.Circle.DrawCircle(Player.Position, 250 + Player.AttackRange + 70,
                     Spells.E.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
@@ -42,15 +43,15 @@ namespace NechritoRiven.Draw
 
             if (MenuConfig.DrawAlwaysR)
             {
-                Drawing.DrawText(heropos.X - 15, heropos.Y + 20, System.Drawing.Color.DodgerBlue, "Force R  (     )");
+                Drawing.DrawText(heropos.X - 15, heropos.Y + 20, System.Drawing.Color.Cyan, "Force R  (     )");
                 Drawing.DrawText(heropos.X + 53, heropos.Y + 20,
-                    MenuConfig.AlwaysR ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, MenuConfig.AlwaysR ? "On" : "Off");
+                    MenuConfig.AlwaysR ? System.Drawing.Color.White : System.Drawing.Color.Red, MenuConfig.AlwaysR ? "On" : "Off");
             }
             if (MenuConfig.ForceFlash)
             {
-                Drawing.DrawText(heropos.X - 15, heropos.Y + 40, System.Drawing.Color.DodgerBlue, "Force Flash  (     )");
+                Drawing.DrawText(heropos.X - 15, heropos.Y + 40, System.Drawing.Color.Cyan, "Force Flash  (     )");
                 Drawing.DrawText(heropos.X + 83, heropos.Y + 40,
-                    MenuConfig.AlwaysF ? System.Drawing.Color.LimeGreen : System.Drawing.Color.Red, MenuConfig.AlwaysF ? "On" : "Off");
+                    MenuConfig.AlwaysF ? System.Drawing.Color.White : System.Drawing.Color.Red, MenuConfig.AlwaysF ? "On" : "Off");
             }
         }
     }

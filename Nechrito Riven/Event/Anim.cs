@@ -44,7 +44,7 @@ namespace NechritoRiven.Event
                     if ((_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst ||
                          _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo ||
                          _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass ||
-                         _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee)) Usables.CastYoumoo();
+                         _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee && MenuConfig.FleeYomuu)) Usables.CastYoumoo();
                     break;
                 case "Spell4a":
                     lastR = Utils.GameTimeTickCount;

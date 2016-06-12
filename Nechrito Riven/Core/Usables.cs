@@ -1,8 +1,10 @@
-﻿using LeagueSharp.Common.Data;
+﻿using System.Linq;
+using LeagueSharp.Common.Data;
+using NechritoRiven.Menus;
 
 namespace NechritoRiven.Core
 {
-    class Usables
+    class Usables : Core
     {
         public static void CastHydra()
         {
