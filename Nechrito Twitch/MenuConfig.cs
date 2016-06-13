@@ -1,23 +1,26 @@
-﻿using LeagueSharp;
+﻿#region
+
 using LeagueSharp.Common;
+
+#endregion
 
 namespace Nechrito_Twitch
 {
-    class MenuConfig
+    internal class MenuConfig
     {
         public static Menu Config;
         public static Menu TargetSelectorMenu;
-        public static Orbwalking.Orbwalker _orbwalker;
-        public static string menuName = "Nechrito Twitch";
+        public static Orbwalking.Orbwalker Orbwalker;
+        public static string MenuName = "Nechrito Twitch";
 
         public static void LoadMenu()
         {
-            Config = new Menu(menuName, menuName, true);
+            Config = new Menu(MenuName, MenuName, true);
             TargetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(TargetSelectorMenu);
             Config.AddSubMenu(TargetSelectorMenu);
             var orbwalker = new Menu("Orbwalker", "rorb");
-            _orbwalker = new Orbwalking.Orbwalker(orbwalker);
+            Orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Config.AddSubMenu(orbwalker);
 
             var combo = new Menu("Combo", "Combo");
@@ -44,11 +47,11 @@ namespace Nechrito_Twitch
             draw.AddItem(new MenuItem("dind", "Dmg Indicator").SetValue(true));
             Config.AddSubMenu(draw);
 
-            /*
+            
             var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('B', KeyBindType.Press)));
+            misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('T', KeyBindType.Press)));
             Config.AddSubMenu(misc);
-            */
+            
             Config.AddToMainMenu();
 
 
@@ -58,10 +61,12 @@ namespace Nechrito_Twitch
         public static bool StealBuff => Config.Item("StealBuff").GetValue<bool>();
         public static bool UseW => Config.Item("UseW").GetValue<bool>();
         public static bool KsE => Config.Item("KsE").GetValue<bool>();
-        public static bool laneW => Config.Item("laneW").GetValue<bool>();
-        public static bool harassW => Config.Item("harassW").GetValue<bool>();
-        public static bool dind => Config.Item("dind").GetValue<bool>();
+        public static bool LaneW => Config.Item("laneW").GetValue<bool>();
+        public static bool HarassW => Config.Item("harassW").GetValue<bool>();
+        public static bool Dind => Config.Item("dind").GetValue<bool>();
+
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
+
         public static int ESlider => Config.Item("ESlider").GetValue<Slider>().Value;
     }
 }

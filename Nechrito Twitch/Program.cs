@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -12,7 +11,6 @@ namespace Nechrito_Twitch
     {
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
         public static Menu Menu;
-        private static Orbwalking.Orbwalker _orbwalker;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
 
         private static readonly string[] Monsters =
@@ -24,21 +22,23 @@ namespace Nechrito_Twitch
         {
             "SRU_Dragon_Air","SRU_Dragon_Fire","SRU_Dragon_Water","SRU_Dragon_Earth","SRU_Dragon_Elder","SRU_Baron","SRU_RiftHerald"
         };
+
         private static float GetDamage(Obj_AI_Base target)
         {
             return Spells._e.GetDamage(target);
         }
+
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
 
         private static void OnGameLoad(EventArgs args)
         {
             if (Player.ChampionName != "Twitch") return;
+
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 3</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 4</font></b>");
             Game.PrintChat(
                 "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Rework</font></b>");
-
-
+            
             Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnUpdate += Game_OnUpdate;
             MenuConfig.LoadMenu();
@@ -48,9 +48,9 @@ namespace Nechrito_Twitch
         private static void Game_OnUpdate(EventArgs args)
         {
             AutoE();
-            Recall();
+          //  Recall();
 
-            switch (MenuConfig._orbwalker.ActiveMode)
+            switch (MenuConfig.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
@@ -67,33 +67,39 @@ namespace Nechrito_Twitch
 
         public static void Combo()
         {
-            var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Spells._w.Range, TargetSelector.DamageType.Physical);
             if (target == null || !target.IsValidTarget() || target.IsDead || target.IsInvulnerable) return;
 
             if (!MenuConfig.UseW) return;
-            if (target.IsValidTarget(Spells._w.Range) && Spells._w.CanCast(target))
+            if (target.Health < Player.GetAutoAttackDamage(target, true) * 2) return;
+            var wPred = Spells._w.GetPrediction(target).CastPosition;
+
+            if (Spells._w.IsReady())
             {
-                Spells._w.Cast(target);
+                Spells._w.Cast(wPred);
             }
         }
 
         public static void Harass()
         {
             var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical);
+
             if (!Orbwalking.InAutoAttackRange(target) && target.GetBuffCount("twitchdeadlyvenom") >= MenuConfig.ESlider && Player.ManaPercent >= 50 && Spells._e.IsReady())
             {
                 Spells._e.Cast(target);
             }
-            if (!MenuConfig.harassW) return;
+
+            if (!MenuConfig.HarassW) return;
+            var wPred = Spells._w.GetPrediction(target).CastPosition;
             if (target.IsValidTarget(Spells._w.Range) && Spells._w.CanCast(target))
             {
-                Spells._w.Cast(target);
+                Spells._w.Cast(wPred);
             }
         }
 
         public static void LaneClear()
         {
-            if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
+            if (MenuConfig.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
             var minions = MinionManager.GetMinions(Player.ServerPosition, 800);
 
@@ -101,7 +107,7 @@ namespace Nechrito_Twitch
 
             var wPrediction = Spells._w.GetCircularFarmLocation(minions);
 
-            if (!MenuConfig.laneW) return;
+            if (!MenuConfig.LaneW) return;
 
             if (Spells._w.IsReady())
             {
@@ -111,7 +117,7 @@ namespace Nechrito_Twitch
 
         public static void JungleClear()
         {
-            if (MenuConfig._orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
+            if (MenuConfig.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
             var mobs = MinionManager.GetMinions(Player.Position, Spells._w.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
@@ -131,14 +137,21 @@ namespace Nechrito_Twitch
 
         private static void Recall()
         {
-            if (!MenuConfig.QRecall) return;
-            if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
+            if (MenuConfig.QRecall)
+            {
+                if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
+                Spellbook.OnCastSpell += (sender, eventArgs) =>
+                {
+                    if (eventArgs.Slot != SpellSlot.Recall) return;
 
-            Spells._q.Cast();
-            Utility.DelayAction.Add(200, () => Spells._recall.Cast());
+                    Spells._q.Cast();
+                    Utility.DelayAction.Add((int)Spells._q.Delay + 300, () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
+                    eventArgs.Process = false;
+                };
+            }
         }
 
-        public static void AutoE()
+        private static void AutoE()
         {
             var mob = MinionManager.GetMinions(Spells._e.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
@@ -157,15 +170,18 @@ namespace Nechrito_Twitch
             {
                 foreach (var m in mob)
                 {
-                    if (!m.CharData.BaseSkinName.Contains("SRU_Blue") && (!m.CharData.BaseSkinName.Contains("SRU_Red") || !MenuConfig.StealBuff)) continue;
+                    if (m.CharData.BaseSkinName.Contains("SRU_Red") && MenuConfig.StealBuff) continue;
                     if (Spells._e.IsKillable(m))
                         Spells._e.Cast();
                 }
             }
             
             if (!MenuConfig.KsE) return;
+
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && Spells._e.IsKillable(enemy)))
-            { Spells._e.Cast(enemy);}
+            {
+                Spells._e.Cast(enemy);
+            }
         }
 
 
@@ -173,7 +189,7 @@ namespace Nechrito_Twitch
         {
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget() && !ene.IsZombie))
             {
-                if (!MenuConfig.dind) continue;
+                if (!MenuConfig.Dind) continue;
 
                 Indicator.unit = enemy;
                 Indicator.drawDmg(GetDamage(enemy), new ColorBGRA(255, 204, 0, 170));
