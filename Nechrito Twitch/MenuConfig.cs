@@ -35,6 +35,10 @@ namespace Nechrito_Twitch
             lane.AddItem(new MenuItem("laneW", "Use W").SetValue(true));
             Config.AddSubMenu(lane);
 
+            var steal = new Menu("Steal", "Steal");
+            steal.AddItem(new MenuItem("StealEpic", "Dragon & Baron").SetValue(true));
+            steal.AddItem(new MenuItem("StealBuff", "Buffs").SetValue(true));
+            Config.AddSubMenu(steal);
 
             var draw = new Menu("Draw", "Draw");
             draw.AddItem(new MenuItem("dind", "Dmg Indicator").SetValue(true));
@@ -50,6 +54,8 @@ namespace Nechrito_Twitch
 
         }
         // Menu Items
+        public static bool StealEpic => Config.Item("StealEpic").GetValue<bool>();
+        public static bool StealBuff => Config.Item("StealBuff").GetValue<bool>();
         public static bool UseW => Config.Item("UseW").GetValue<bool>();
         public static bool KsE => Config.Item("KsE").GetValue<bool>();
         public static bool laneW => Config.Item("laneW").GetValue<bool>();
