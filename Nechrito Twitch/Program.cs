@@ -76,21 +76,16 @@ namespace Nechrito_Twitch
 
             if (Spells._e.IsReady() && MenuConfig.EAA)
             {
-                if (!target.IsFacing(Player))
+                if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50)
                 {
-                    Game.PrintChat("Target is not facing, will now return");
-                    return;
-                }
-                if (target.Distance(Player) >= Player.AttackRange)
-                {
-                    Game.PrintChat("Out of AA Range, will now return");
+                    Utility.DelayAction.Add(1000, ()=> Game.PrintChat("Exploit Will NOT Interrupt "));
                     return;
                 }
 
                 if (target.Health <= Player.GetAutoAttackDamage(target) *1.33 + GetDamage(target))
                 {
                     Spells._e.Cast();
-                    Game.PrintChat("Casting E to then cast AA Q");
+                    Utility.DelayAction.Add(750, ()=> Game.PrintChat("Casting E to then cast AA Q"));
                 }
             }
 
@@ -99,8 +94,8 @@ namespace Nechrito_Twitch
                 Spells._q.Cast();
                 do
                 {
-                    Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>");
-                    Game.PrintChat("Casting Q");
+                    Utility.DelayAction.Add(750, ()=> Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
+                   // Game.PrintChat("Casting Q");
                 } while (Spells._q.Cast());
             }
            
