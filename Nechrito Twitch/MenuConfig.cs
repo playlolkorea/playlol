@@ -40,7 +40,7 @@ namespace Nechrito_Twitch
 
             var steal = new Menu("Steal", "Steal");
             steal.AddItem(new MenuItem("StealEpic", "Dragon & Baron").SetValue(true));
-            steal.AddItem(new MenuItem("StealBuff", "Buffs").SetValue(true));
+            steal.AddItem(new MenuItem("StealBuff", "Steal Redbuff").SetValue(true));
             Config.AddSubMenu(steal);
 
             var draw = new Menu("Draw", "Draw");
@@ -70,7 +70,7 @@ namespace Nechrito_Twitch
         public static bool HarassW => Config.Item("harassW").GetValue<bool>();
         public static bool Dind => Config.Item("dind").GetValue<bool>();
         public static bool Exploit => Config.Item("Exploit").GetValue<bool>();
-        public static bool EAA => Config.Item("Exploit").GetValue<bool>();
+        public static bool EAA => Config.Item("EAA").GetValue<bool>();
 
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
 

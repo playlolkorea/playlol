@@ -10,7 +10,6 @@ namespace Nechrito_Twitch
     internal class Program
     {
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
-        public static Menu Menu;
         private static readonly HpBarIndicator Indicator = new HpBarIndicator();
 
         private static readonly string[] Monsters =
@@ -35,10 +34,11 @@ namespace Nechrito_Twitch
             if (Player.ChampionName != "Twitch") return;
 
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5½</font></b>");
             Game.PrintChat(
                 "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Rework & Exploit</font></b>");
 
+            
             Recall();
             Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnUpdate += Game_OnUpdate;
@@ -49,8 +49,8 @@ namespace Nechrito_Twitch
         private static void Game_OnUpdate(EventArgs args)
         {
            AutoE();
-            
-            
+           Exploit();
+
             switch (MenuConfig.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -66,34 +66,52 @@ namespace Nechrito_Twitch
             }
         }
 
-        public static void Combo()
+        private static void Exploit()
         {
             var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return;
 
-            if (MenuConfig.Exploit)
-            {
-               if (Spells._q.IsReady())
-                {
-                    if (Spells._e.IsReady() && MenuConfig.EAA)
-                    {
-                        var Dmg = Player.GetAutoAttackDamage(target) + GetDamage(target);
-                        if (target.Health <= Dmg)
-                        {
-                            Spells._e.Cast();
-                        }
-                    }
+            if (!MenuConfig.Exploit) return;
+            if (!Spells._q.IsReady()) return;
 
-                   if (target.Health < Player.GetAutoAttackDamage(target) && Player.IsWindingUp)
-                    {
-                        Spells._q.Cast();
-                        do
-                        {
-                            Game.PrintChat("Exploiting ...");
-                        } while (Spells._q.Cast());
-                    }
+            if (Spells._e.IsReady() && MenuConfig.EAA)
+            {
+                if (!target.IsFacing(Player))
+                {
+                    Game.PrintChat("Target is not facing, will now return");
+                    return;
+                }
+                if (target.Distance(Player) >= Player.AttackRange)
+                {
+                    Game.PrintChat("Out of AA Range, will now return");
+                    return;
+                }
+
+                if (target.Health <= Player.GetAutoAttackDamage(target) *1.33 + GetDamage(target))
+                {
+                    Spells._e.Cast();
+                    Game.PrintChat("Casting E to then cast AA Q");
                 }
             }
+
+            if (target.Health < Player.GetAutoAttackDamage(target, true) && Player.IsWindingUp)
+            {
+                Spells._q.Cast();
+                do
+                {
+                    Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>");
+                    Game.PrintChat("Casting Q");
+                } while (Spells._q.Cast());
+            }
+           
+        }
+
+        private static void Combo()
+        {
+            var target = TargetSelector.GetTarget(Spells._w.Range, TargetSelector.DamageType.Physical);
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return;
+
+            
 
             if (!MenuConfig.UseW) return;
             if (target.Health < Player.GetAutoAttackDamage(target, true) * 2) return;
@@ -111,12 +129,13 @@ namespace Nechrito_Twitch
 
             if (!Orbwalking.InAutoAttackRange(target) && target.GetBuffCount("twitchdeadlyvenom") >= MenuConfig.ESlider && Player.ManaPercent >= 50 && Spells._e.IsReady())
             {
-                Spells._e.Cast(target);
+                Spells._e.Cast();
             }
 
             if (!MenuConfig.HarassW) return;
             var wPred = Spells._w.GetPrediction(target).CastPosition;
-            if (target.IsValidTarget(Spells._w.Range) && Spells._w.CanCast(target))
+
+            if (target.IsValidTarget(Spells._w.Range) && Spells._w.IsReady())
             {
                 Spells._w.Cast(wPred);
             }
@@ -136,7 +155,7 @@ namespace Nechrito_Twitch
 
             if (Spells._w.IsReady())
             {
-                if(wPrediction.MinionsHit >= 3)
+                if(wPrediction.MinionsHit >= 4)
                 Spells._w.Cast(wPrediction.Position);
             }
         }
@@ -163,10 +182,9 @@ namespace Nechrito_Twitch
 
         private static void Recall()
         {
-
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
-                if(!MenuConfig.Exploit) return;
+                if(!MenuConfig.QRecall) return;
                 if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
                 if (eventArgs.Slot != SpellSlot.Recall) return;
 
