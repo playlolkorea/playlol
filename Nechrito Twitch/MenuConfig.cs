@@ -51,7 +51,12 @@ namespace Nechrito_Twitch
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('T', KeyBindType.Press)));
             Config.AddSubMenu(misc);
-            
+
+            var ExploitMenu = new Menu("ExploitMenu", "ExploitMenu");
+            ExploitMenu.AddItem(new MenuItem("Exploit", "Exploits").SetValue(false).SetTooltip("Will Instant Q After Kill"));
+            ExploitMenu.AddItem(new MenuItem("EAA", "E AA Q").SetValue(false).SetTooltip("Will cast E if killable by E + AA then Q"));
+            Config.AddSubMenu(ExploitMenu);
+
             Config.AddToMainMenu();
 
 
@@ -64,6 +69,8 @@ namespace Nechrito_Twitch
         public static bool LaneW => Config.Item("laneW").GetValue<bool>();
         public static bool HarassW => Config.Item("harassW").GetValue<bool>();
         public static bool Dind => Config.Item("dind").GetValue<bool>();
+        public static bool Exploit => Config.Item("Exploit").GetValue<bool>();
+        public static bool EAA => Config.Item("Exploit").GetValue<bool>();
 
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
 

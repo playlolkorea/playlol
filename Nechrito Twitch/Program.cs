@@ -35,10 +35,11 @@ namespace Nechrito_Twitch
             if (Player.ChampionName != "Twitch") return;
 
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 4</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Rework</font></b>");
-            
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Rework & Exploit</font></b>");
+
+            Recall();
             Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnUpdate += Game_OnUpdate;
             MenuConfig.LoadMenu();
@@ -47,9 +48,9 @@ namespace Nechrito_Twitch
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            AutoE();
-          //  Recall();
-
+           AutoE();
+            
+            
             switch (MenuConfig.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -67,8 +68,32 @@ namespace Nechrito_Twitch
 
         public static void Combo()
         {
-            var target = TargetSelector.GetTarget(Spells._w.Range, TargetSelector.DamageType.Physical);
-            if (target == null || !target.IsValidTarget() || target.IsDead || target.IsInvulnerable) return;
+            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return;
+
+            if (MenuConfig.Exploit)
+            {
+               if (Spells._q.IsReady())
+                {
+                    if (Spells._e.IsReady() && MenuConfig.EAA)
+                    {
+                        var Dmg = Player.GetAutoAttackDamage(target) + GetDamage(target);
+                        if (target.Health <= Dmg)
+                        {
+                            Spells._e.Cast();
+                        }
+                    }
+
+                   if (target.Health < Player.GetAutoAttackDamage(target) && Player.IsWindingUp)
+                    {
+                        Spells._q.Cast();
+                        do
+                        {
+                            Game.PrintChat("Exploiting ...");
+                        } while (Spells._q.Cast());
+                    }
+                }
+            }
 
             if (!MenuConfig.UseW) return;
             if (target.Health < Player.GetAutoAttackDamage(target, true) * 2) return;
@@ -111,6 +136,7 @@ namespace Nechrito_Twitch
 
             if (Spells._w.IsReady())
             {
+                if(wPrediction.MinionsHit >= 3)
                 Spells._w.Cast(wPrediction.Position);
             }
         }
@@ -137,19 +163,20 @@ namespace Nechrito_Twitch
 
         private static void Recall()
         {
-            if (MenuConfig.QRecall)
-            {
-                if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
-                Spellbook.OnCastSpell += (sender, eventArgs) =>
-                {
-                    if (eventArgs.Slot != SpellSlot.Recall) return;
 
-                    Spells._q.Cast();
-                    Utility.DelayAction.Add((int)Spells._q.Delay + 300, () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
-                    eventArgs.Process = false;
-                };
-            }
+            Spellbook.OnCastSpell += (sender, eventArgs) =>
+            {
+                if(!MenuConfig.Exploit) return;
+                if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
+                if (eventArgs.Slot != SpellSlot.Recall) return;
+
+                Spells._q.Cast();
+                Utility.DelayAction.Add((int) Spells._q.Delay + 300,
+                    () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
+                eventArgs.Process = false;
+            };
         }
+
 
         private static void AutoE()
         {
