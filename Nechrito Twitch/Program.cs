@@ -1,9 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 
+#endregion
 
 namespace Nechrito_Twitch
 {
@@ -14,12 +17,13 @@ namespace Nechrito_Twitch
 
         private static readonly string[] Monsters =
         {
-           "SRU_Red", "SRU_Gromp", "SRU_Krug","SRU_Razorbeak","SRU_Murkwolf"
+            "SRU_Red", "SRU_Gromp", "SRU_Krug", "SRU_Razorbeak", "SRU_Murkwolf"
         };
 
         private static readonly string[] Dragons =
         {
-            "SRU_Dragon_Air","SRU_Dragon_Fire","SRU_Dragon_Water","SRU_Dragon_Earth","SRU_Dragon_Elder","SRU_Baron","SRU_RiftHerald"
+            "SRU_Dragon_Air", "SRU_Dragon_Fire", "SRU_Dragon_Water", "SRU_Dragon_Earth", "SRU_Dragon_Elder", "SRU_Baron",
+            "SRU_RiftHerald"
         };
 
         private static float GetDamage(Obj_AI_Base target)
@@ -38,7 +42,6 @@ namespace Nechrito_Twitch
             Game.PrintChat(
                 "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit</font></b>");
 
-            
             Recall();
             Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnUpdate += Game_OnUpdate;
@@ -48,8 +51,8 @@ namespace Nechrito_Twitch
 
         private static void Game_OnUpdate(EventArgs args)
         {
-           AutoE();
-           Exploit();
+            AutoE();
+            Exploit();
 
             switch (MenuConfig.Orbwalker.ActiveMode)
             {
@@ -68,35 +71,35 @@ namespace Nechrito_Twitch
 
         private static void Exploit()
         {
-            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return;
+            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical); // Looks for a target within AA Range.
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
 
-            if (!MenuConfig.Exploit) return;
-            if (!Spells._q.IsReady()) return;
+            if (!MenuConfig.Exploit) return; // If Exploit in Menu is "Off", return.
+            if (!Spells._q.IsReady()) return;// if Twitch's Q isn't ready, return.
 
-            if (Spells._e.IsReady() && MenuConfig.EAA)
+            if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
             {
-                if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50)
+                if (target.Health <= Player.GetAutoAttackDamage(target)*1.275 + GetDamage(target)) // If our targets healh is less than AA * 1.275 + Twitch's E Damage, do the following
                 {
-                    Utility.DelayAction.Add(500, ()=> Game.PrintChat("Exploit Will NOT Interrupt "));
-                    return;
-                }
-
-                if (target.Health <= Player.GetAutoAttackDamage(target) * 1.275 + GetDamage(target))
-                {
-                    Spells._e.Cast();
-                    Utility.DelayAction.Add(500, ()=> Game.PrintChat("Casting E to then cast AA Q"));
+                    if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
+                    {
+                        Game.PrintChat("Exploit Will NOT Interrupt Combo!!"); // Prints in chat
+                        return; // Will return 
+                    }
+                    // Here we could use an else statement, but it would be redudant and a waste.
+                    Spells._e.Cast(); // Will cast Twitch's E spell
+                    Utility.DelayAction.Add(500, () => Game.PrintChat("Casting E to then cast AA Q")); // Delays the message with 0.5 seconds (500 milliseconds)
                 }
             }
 
-            if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return;
+            if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
-            Spells._q.Cast();
-            do
+            Spells._q.Cast(); // Will cast Twitch's Q spell
+            do // begins a "do" loop
             {
-                Utility.DelayAction.Add(500, ()=> Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
-                // Game.PrintChat("Casting Q");
-            } while (Spells._q.Cast());
+                // Delays the message with 0.5s 
+              Utility.DelayAction.Add(500, () => Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
+            } while (Spells._q.Cast()); // Will loop this message during the time we cast Q.
         }
 
         private static void Combo()
@@ -104,10 +107,8 @@ namespace Nechrito_Twitch
             var target = TargetSelector.GetTarget(Spells._w.Range, TargetSelector.DamageType.Physical);
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return;
 
-            
-
             if (!MenuConfig.UseW) return;
-            if (target.Health < Player.GetAutoAttackDamage(target, true) * 2) return;
+            if (target.Health < Player.GetAutoAttackDamage(target, true)*2) return;
             var wPred = Spells._w.GetPrediction(target).CastPosition;
 
             if (Spells._w.IsReady())
@@ -119,13 +120,15 @@ namespace Nechrito_Twitch
         private static void Harass()
         {
             var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical);
-            if(target == null || target.IsDead || !target.IsValidTarget() || target.IsInvulnerable) return;
+            if (target == null || target.IsDead || !target.IsValidTarget() || target.IsInvulnerable) return;
+
             if (!Orbwalking.InAutoAttackRange(target) && target.GetBuffCount("twitchdeadlyvenom") >= MenuConfig.ESlider && Player.ManaPercent >= 50 && Spells._e.IsReady())
             {
                 Spells._e.Cast();
             }
 
             if (!MenuConfig.HarassW) return;
+
             var wPred = Spells._w.GetPrediction(target).CastPosition;
 
             if (target.IsValidTarget(Spells._w.Range) && Spells._w.IsReady())
@@ -158,7 +161,8 @@ namespace Nechrito_Twitch
         {
             if (MenuConfig.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
-            var mobs = MinionManager.GetMinions(Player.Position, Spells._w.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+            var mobs = MinionManager.GetMinions(Player.Position, Spells._w.Range, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
 
             var wPrediction = Spells._w.GetCircularFarmLocation(mobs);
             if (mobs.Count == 0) return;
@@ -181,12 +185,13 @@ namespace Nechrito_Twitch
         {
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
-                if(!MenuConfig.QRecall) return;
+                if (!MenuConfig.QRecall) return;
                 if (!Spells._q.IsReady() || !Spells._recall.IsReady()) return;
                 if (eventArgs.Slot != SpellSlot.Recall) return;
 
                 Spells._q.Cast();
-                Utility.DelayAction.Add((int) Spells._q.Delay + 300, () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
+                Utility.DelayAction.Add((int) Spells._q.Delay + 300,
+                    () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
                 eventArgs.Process = false;
             };
         }
@@ -194,7 +199,8 @@ namespace Nechrito_Twitch
 
         private static void AutoE()
         {
-            var mob = MinionManager.GetMinions(Spells._e.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+            var mob = MinionManager.GetMinions(Spells._e.Range, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
 
             if (MenuConfig.StealEpic)
             {
@@ -216,7 +222,7 @@ namespace Nechrito_Twitch
                         Spells._e.Cast();
                 }
             }
-            
+
             if (!MenuConfig.KsE) return;
 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && Spells._e.IsKillable(enemy)))
