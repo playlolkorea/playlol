@@ -34,9 +34,9 @@ namespace Nechrito_Twitch
             if (Player.ChampionName != "Twitch") return;
 
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5½</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 6</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Rework & Exploit</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit</font></b>");
 
             
             Recall();
@@ -78,27 +78,25 @@ namespace Nechrito_Twitch
             {
                 if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50)
                 {
-                    Utility.DelayAction.Add(1000, ()=> Game.PrintChat("Exploit Will NOT Interrupt "));
+                    Utility.DelayAction.Add(500, ()=> Game.PrintChat("Exploit Will NOT Interrupt "));
                     return;
                 }
 
-                if (target.Health <= Player.GetAutoAttackDamage(target) *1.33 + GetDamage(target))
+                if (target.Health <= Player.GetAutoAttackDamage(target) * 1.275 + GetDamage(target))
                 {
                     Spells._e.Cast();
-                    Utility.DelayAction.Add(750, ()=> Game.PrintChat("Casting E to then cast AA Q"));
+                    Utility.DelayAction.Add(500, ()=> Game.PrintChat("Casting E to then cast AA Q"));
                 }
             }
 
-            if (target.Health < Player.GetAutoAttackDamage(target, true) && Player.IsWindingUp)
+            if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return;
+
+            Spells._q.Cast();
+            do
             {
-                Spells._q.Cast();
-                do
-                {
-                    Utility.DelayAction.Add(750, ()=> Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
-                   // Game.PrintChat("Casting Q");
-                } while (Spells._q.Cast());
-            }
-           
+                Utility.DelayAction.Add(500, ()=> Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
+                // Game.PrintChat("Casting Q");
+            } while (Spells._q.Cast());
         }
 
         private static void Combo()
@@ -118,10 +116,10 @@ namespace Nechrito_Twitch
             }
         }
 
-        public static void Harass()
+        private static void Harass()
         {
             var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical);
-
+            if(target == null || target.IsDead || !target.IsValidTarget() || target.IsInvulnerable) return;
             if (!Orbwalking.InAutoAttackRange(target) && target.GetBuffCount("twitchdeadlyvenom") >= MenuConfig.ESlider && Player.ManaPercent >= 50 && Spells._e.IsReady())
             {
                 Spells._e.Cast();
@@ -136,7 +134,7 @@ namespace Nechrito_Twitch
             }
         }
 
-        public static void LaneClear()
+        private static void LaneClear()
         {
             if (MenuConfig.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
@@ -148,14 +146,15 @@ namespace Nechrito_Twitch
 
             if (!MenuConfig.LaneW) return;
 
-            if (Spells._w.IsReady())
+            if (!Spells._w.IsReady()) return;
+
+            if (wPrediction.MinionsHit >= 4)
             {
-                if(wPrediction.MinionsHit >= 4)
                 Spells._w.Cast(wPrediction.Position);
             }
         }
 
-        public static void JungleClear()
+        private static void JungleClear()
         {
             if (MenuConfig.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) return;
 
@@ -164,7 +163,10 @@ namespace Nechrito_Twitch
             var wPrediction = Spells._w.GetCircularFarmLocation(mobs);
             if (mobs.Count == 0) return;
 
-            Spells._w.Cast(wPrediction.Position);
+            if (wPrediction.MinionsHit >= 3 && Player.ManaPercent >= 20)
+            {
+                Spells._w.Cast(wPrediction.Position);
+            }
 
             foreach (var m in ObjectManager.Get<Obj_AI_Base>().Where(x => Monsters.Contains(x.CharData.BaseSkinName) && !x.IsDead))
             {
@@ -184,8 +186,7 @@ namespace Nechrito_Twitch
                 if (eventArgs.Slot != SpellSlot.Recall) return;
 
                 Spells._q.Cast();
-                Utility.DelayAction.Add((int) Spells._q.Delay + 300,
-                    () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
+                Utility.DelayAction.Add((int) Spells._q.Delay + 300, () => ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Recall));
                 eventArgs.Process = false;
             };
         }
