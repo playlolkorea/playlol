@@ -38,6 +38,11 @@ namespace Nechrito_Twitch
             lane.AddItem(new MenuItem("laneW", "Use W").SetValue(true).SetTooltip("Will only W if 4 minions can be hit"));
             Config.AddSubMenu(lane);
 
+            var Jungle = new Menu("Jungle", "Jungle");
+            Jungle.AddItem(new MenuItem("JungleE", "Use E").SetValue(true));
+            Jungle.AddItem(new MenuItem("JungleW", "Use W").SetValue(false));
+            Config.AddSubMenu(Jungle);
+
             var steal = new Menu("Steal", "Steal");
             steal.AddItem(new MenuItem("StealEpic", "Dragons & Baron").SetValue(true));
             steal.AddItem(new MenuItem("StealBuff", "Steal Redbuff").SetValue(true));
@@ -55,7 +60,7 @@ namespace Nechrito_Twitch
             var ExploitMenu = new Menu("ExploitMenu", "Exploit");
             ExploitMenu.AddItem(new MenuItem("Exploit", "Exploits").SetValue(false).SetTooltip("Will Instant Q After Kill"));
             ExploitMenu.AddItem(new MenuItem("EAA", "E AA Q").SetValue(false).SetTooltip("Will cast E if killable by E + AA then Q"));
-           // ExploitMenu.AddItem(new MenuItem("ExploitMultiplier", "Attack * % Multiplier").SetValue(new Slider(1, 0, 1.5)).SetTooltip("Debugging"));
+          //  ExploitMenu.AddItem(new MenuItem("ExploitMultiplier", "Attacks").SetValue(new Slider(1, 0, 5)).SetTooltip("Debugging"));
             Config.AddSubMenu(ExploitMenu);
 
             Config.AddToMainMenu();
@@ -72,10 +77,12 @@ namespace Nechrito_Twitch
         public static bool Dind => Config.Item("dind").GetValue<bool>();
         public static bool Exploit => Config.Item("Exploit").GetValue<bool>();
         public static bool EAA => Config.Item("EAA").GetValue<bool>();
+        public static bool JungleE => Config.Item("JungleE").GetValue<bool>();
+        public static bool JungleW => Config.Item("JungleW").GetValue<bool>();
 
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
 
         public static int ESlider => Config.Item("ESlider").GetValue<Slider>().Value;
-      //  public static int ExploitMultiplier => Config.Item("ExploitMultiplier").GetValue<Slider>().Value;
+     //   public static int ExploitMultiplier => Config.Item("ExploitMultiplier").GetValue<Slider>().Value;
     }
 }
