@@ -70,11 +70,11 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         private static void Game_OnUpdate(EventArgs args)
         {
             AutoE(); // Updates our "AutoE" void 
-            Exploit(); // Updates the Exploit void
-
+            
             switch (MenuConfig.Orbwalker.ActiveMode) // Switch for our current pressed keybind / Mode
             {
-                case Orbwalking.OrbwalkingMode.Combo: // If we press the combo keybind 
+                case Orbwalking.OrbwalkingMode.Combo: // If we press the combo keybind
+                    Exploit(); // Updates the Exploit void 
                     Combo(); // Update our combo method
                     break; // Breaks our method when we release the keybind
                 case Orbwalking.OrbwalkingMode.Mixed: // If we press our harass keybind
