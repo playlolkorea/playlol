@@ -5,6 +5,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using Color = System.Drawing.Color;
 
 #endregion
 
@@ -32,16 +33,6 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             "SRU_RiftHerald"
         };
 
-        /// <summary>
-        /// Gives us the Damage of Twitch's E spell
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        private static float GetDamage(Obj_AI_Base target)
-        {
-            return Spells._e.GetDamage(target);
-        }
-
         // Initializes the loading process
         private static void Main() => CustomEvents.Game.OnGameLoad += OnGameLoad;
 
@@ -51,12 +42,13 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             // Printing chat with our message when starting the loading process
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 7</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 8</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit & Dmg</font></b>");
 
             
             Recall(); // Loads our Recall void
+            Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene; // With this we can draw health bar and damages
             Game.OnUpdate += Game_OnUpdate; // Initialises our update method
             MenuConfig.LoadMenu(); // Loads our Menu
@@ -97,7 +89,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
             {
-                if (target.Health <= Player.GetAutoAttackDamage(target, true) * (1.15) + GetDamage(target) * (1.35)) // If our targets healh is less than AA + Twitch's E Damage, do the following
+                if (target.Health <= Player.GetAutoAttackDamage(target) + Dmg.ExploitDamage(target)) // If our targets healh is less than AA + Twitch's E Damage, do the following
                 {
                     if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
                     {
@@ -111,7 +103,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
                 // FIGURE OUT HOW TO DO THS BETTER!
                 // WITH THIS, WE CAN E AA AA Q IF WE CAN'T DO E AA Q! = 100% will be successful!
-                else if (target.Health <= Player.GetAutoAttackDamage(target, true) * 2 * (1.15) + GetDamage(target)*(1.35))
+                if (target.Health <= Player.GetAutoAttackDamage(target) * 2 + Dmg.ExploitDamage(target))
                 {
                     if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
                     {
@@ -124,7 +116,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 }
             }
 
-            if (!(target.Health < Player.GetAutoAttackDamage(target, true) * (1.035)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
+            if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
             Spells._q.Cast(); // Will cast Twitch's Q spell
             do // begins a "do" loop
@@ -274,12 +266,23 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             if (!MenuConfig.KsE) return; // If Menu => Combo => Killsecure E is "Off", return
 
             // Searches for enemies that are valid within Twitch's E spell range & Is killable by Twitch's E spell
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && Spells._e.IsKillable(enemy)))
+            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && !enemy.IsInvulnerable && enemy.Health < Dmg.GetDamage(enemy)))
             {
                 Spells._e.Cast(enemy); // Executes enemy with Twitch's E spell
             }
         }
+       
+        public static void OnDraw(EventArgs args)
+        {
+            var HasPassive = Player.HasBuff("TwitchHideInShadows");
+            
 
+            if (HasPassive)
+            {
+                var passiveTime = Math.Max(0, Player.GetBuff("TwitchHideInShadows").EndTime) - Game.Time;
+                Render.Circle.DrawCircle(Player.Position, passiveTime * Player.MoveSpeed, Color.Gray);
+            }
+        }
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
@@ -289,7 +292,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 if (!MenuConfig.Dind) continue; 
 
                 Indicator.unit = enemy;
-                Indicator.drawDmg(GetDamage(enemy), new ColorBGRA(255, 204, 0, 170));
+                Indicator.drawDmg(Dmg.GetDamage(enemy), new ColorBGRA(255, 204, 0, 170));
             }
         }
     }
