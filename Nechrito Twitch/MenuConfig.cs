@@ -54,7 +54,7 @@ namespace Nechrito_Twitch
 
             
             var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('T', KeyBindType.Press)));
+            misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('B', KeyBindType.Press)));
             misc.AddItem(new MenuItem("EOnDeath", "Auto E On Death").SetValue(true));
             misc.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Kingping Twitch", "Whistler Village Twitch", "Medieval Twitch", "Gangster Twitch", "Vandal Twitch", "Pickpocket Twitch", "SSW Twitch" })));
 
