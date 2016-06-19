@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -20,7 +16,7 @@ namespace Nechrito_Twitch
             float eDmg = 0;
 
             eDmg = eDmg + ERaw(target) + Passive(target);
-
+            
             if (Player.HasBuff("SummonerExhaust")) eDmg = eDmg * 0.6f;
 
             return eDmg;
@@ -33,8 +29,8 @@ namespace Nechrito_Twitch
             if (target.IsInvulnerable || target.HasBuff("KindredRNoDeathBuff") || target.HasBuffOfType(BuffType.SpellShield)) return 0;
 
             float eDmg = 0;
-
-            eDmg = eDmg + ERaw(target);
+ 
+            eDmg = eDmg + ERaw(target);           
 
             if (Player.HasBuff("SummonerExhaust")) eDmg = eDmg * 0.6f;
 

@@ -14,3 +14,4 @@ C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Nechrito Twitch\Nechrito
 C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Nechrito Twitch\Nechrito Twitch\obj\x86\Debug\Nechrito Twitch.csprojResolveAssemblyReference.cache
 C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Nechrito Twitch\Nechrito Twitch\obj\x86\Debug\Nechrito Twitch.exe
 C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Nechrito Twitch\Nechrito Twitch\obj\x86\Debug\Nechrito Twitch.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Nechrito Twitch\Nechrito Twitch\bin\Debug\LeagueSharp.Sandbox.pdb

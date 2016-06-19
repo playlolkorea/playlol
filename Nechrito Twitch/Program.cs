@@ -42,9 +42,9 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             // Printing chat with our message when starting the loading process
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 8</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 9</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit & Dmg</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit & E Calc</font></b>");
 
             
             Recall(); // Loads our Recall void
@@ -62,7 +62,9 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         private static void Game_OnUpdate(EventArgs args)
         {
             AutoE(); // Updates our "AutoE" void 
-            
+            SkinChanger();
+            EDeath();
+
             switch (MenuConfig.Orbwalker.ActiveMode) // Switch for our current pressed keybind / Mode
             {
                 case Orbwalking.OrbwalkingMode.Combo: // If we press the combo keybind
@@ -82,10 +84,13 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         private static void Exploit()
         {
             var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical); // Looks for a target within AA Range.
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
 
             if (!MenuConfig.Exploit) return; // If Exploit in Menu is "Off", return.
+
             if (!Spells._q.IsReady()) return;// if Twitch's Q isn't ready, return.
+
+            if (!(target.Distance(Player) < Player.AttackRange)) return;
 
             if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
             {
@@ -122,7 +127,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             do // begins a "do" loop
             {
                 // Delays the message with 0.5s 
-              Utility.DelayAction.Add(500, () => Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>"));
+              Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>");
             } while (Spells._q.Cast()); // Will loop this message during the time we cast Q.
         }
 
@@ -215,6 +220,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             }
         }
 
+        // Recall
         private static void Recall()
         {
             Spellbook.OnCastSpell += (sender, eventArgs) => // Subscribes to the event(?)
@@ -231,7 +237,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             };
         }
 
-
+        // Auto E 
         private static void AutoE()
         {
             // Looks for mobs within Twitch's E spell range, prioritizes the mob with most health
@@ -272,10 +278,27 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             }
         }
        
+        private static void SkinChanger()
+        {
+            Player.SetSkin(Player.CharData.BaseSkinName, MenuConfig.Skin.SelectedIndex);
+        }
+
+        private static void EDeath()
+        {
+            if (!MenuConfig.EOnDeath) return;
+            if (Spells._e.IsReady()) return;
+            if (Player.HealthPercent <= 10) return;
+
+            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && !enemy.IsInvulnerable && enemy.HasBuff("twitchdeadlyvenom")))
+            {
+                Spells._e.Cast(enemy); // Executes enemy with Twitch's E spell
+            }
+        }
+
         public static void OnDraw(EventArgs args)
         {
+            // Completely useless to make it a variable. But looks cleaner imo
             var HasPassive = Player.HasBuff("TwitchHideInShadows");
-            
 
             if (HasPassive)
             {
@@ -292,7 +315,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 if (!MenuConfig.Dind) continue; 
 
                 Indicator.unit = enemy;
-                Indicator.drawDmg(Dmg.GetDamage(enemy), new ColorBGRA(255, 204, 0, 170));
+                Indicator.drawDmg(Dmg.ExploitDamage(enemy), new ColorBGRA(255, 204, 0, 170));
             }
         }
     }

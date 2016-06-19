@@ -55,6 +55,9 @@ namespace Nechrito_Twitch
             
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('T', KeyBindType.Press)));
+            misc.AddItem(new MenuItem("EOnDeath", "Auto E On Death").SetValue(true));
+            misc.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Kingping Twitch", "Whistler Village Twitch", "Medieval Twitch", "Gangster Twitch", "Vandal Twitch", "Pickpocket Twitch", "SSW Twitch" })));
+
             Config.AddSubMenu(misc);
 
             var ExploitMenu = new Menu("ExploitMenu", "Exploit");
@@ -79,6 +82,9 @@ namespace Nechrito_Twitch
         public static bool EAA => Config.Item("EAA").GetValue<bool>();
         public static bool JungleE => Config.Item("JungleE").GetValue<bool>();
         public static bool JungleW => Config.Item("JungleW").GetValue<bool>();
+        public static bool EOnDeath => Config.Item("EOnDeath").GetValue<bool>();
+
+        public static StringList Skin => Config.Item("Skin").GetValue<StringList>();
 
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
 
