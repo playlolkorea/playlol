@@ -42,9 +42,9 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             // Printing chat with our message when starting the loading process
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 9</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 10</font></b>");
             Game.PrintChat(
-                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Exploit & E Calc</font></b>");
+                "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Finished</font></b>");
 
             
             Recall(); // Loads our Recall void
@@ -64,11 +64,13 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             AutoE(); // Updates our "AutoE" void 
             SkinChanger();
             EDeath();
+            Trinket();
 
             switch (MenuConfig.Orbwalker.ActiveMode) // Switch for our current pressed keybind / Mode
             {
                 case Orbwalking.OrbwalkingMode.Combo: // If we press the combo keybind
                     Exploit(); // Updates the Exploit void 
+                    ExploitQ(); // Better optimized, will update Q AA check faster than the whole E AA Q (Not sure though, just wanna test.)
                     Combo(); // Update our combo method
                     break; // Breaks our method when we release the keybind
                 case Orbwalking.OrbwalkingMode.Mixed: // If we press our harass keybind
@@ -81,45 +83,10 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             }
         }
 
-        private static void Exploit()
+        private static void ExploitQ()
         {
-            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical); // Looks for a target within AA Range.
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
-
-            if (!MenuConfig.Exploit) return; // If Exploit in Menu is "Off", return.
-
-            if (!Spells._q.IsReady()) return;// if Twitch's Q isn't ready, return.
-
-            if (!(target.Distance(Player) < Player.AttackRange)) return;
-
-            if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
-            {
-                if (target.Health <= Player.GetAutoAttackDamage(target) + Dmg.ExploitDamage(target)) // If our targets healh is less than AA + Twitch's E Damage, do the following
-                {
-                    if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
-                    {
-                        Game.PrintChat("Exploit Will NOT Interrupt Combo!!"); // Prints in chat
-                        return; // Will return 
-                    }
-                    // Here we could use an else statement, but it would be redudant and a waste.
-                    Spells._e.Cast(); // Will cast Twitch's E spell
-                    Game.PrintChat("Casting E to then cast AA Q"); // Delays the message with 0.5 seconds (500 milliseconds)
-                }
-
-                // FIGURE OUT HOW TO DO THS BETTER!
-                // WITH THIS, WE CAN E AA AA Q IF WE CAN'T DO E AA Q! = 100% will be successful!
-                if (target.Health <= Player.GetAutoAttackDamage(target) * 2 + Dmg.ExploitDamage(target))
-                {
-                    if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
-                    {
-                        Game.PrintChat("Exploit Will NOT Interrupt Combo!!"); // Prints in chat
-                        return; // Will return 
-                    }
-                    // Here we could use an else statement, but it would be redudant and a waste.
-                    Spells._e.Cast(); // Will cast Twitch's E spell
-                    Game.PrintChat("Casting E to then cast AA Q"); // Delays the message with 0.5 seconds (500 milliseconds)
-                }
-            }
+            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; 
 
             if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
@@ -127,8 +94,44 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             do // begins a "do" loop
             {
                 // Delays the message with 0.5s 
-              Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>");
+                Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Exploit Active</font></b><b><font color=\"#FFFFFF\">]</font></b>");
             } while (Spells._q.Cast()); // Will loop this message during the time we cast Q.
+        }
+
+        private static void Exploit()
+        {
+            var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical); // Looks for a target within AA Range.
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
+
+            if (!MenuConfig.Exploit) return; // If Exploit in Menu is "Off", return.
+
+            if (!Spells._e.IsReady()) return;
+
+            if (!Spells._q.IsReady()) return;// if Twitch's Q isn't ready, return.
+ 
+            if (!(target.Distance(Player) < Player.AttackRange)) return;
+
+            if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
+            {
+                if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
+                {
+                    Game.PrintChat("Exploit: Will NOT Interrupt Combo!!"); // Prints in chat
+                    return; // Will return 
+                }
+
+                if (target.Health <= Player.GetAutoAttackDamage(target) + Dmg.ExploitDamage(target)) // If our targets healh is less than AA + Twitch's E Damage, do the following
+                {
+                    // Here we could use an else statement, but it would be redudant and a waste.
+                    Spells._e.Cast(); // Will cast Twitch's E spell
+                    Game.PrintChat("Exploit: E AA Q"); // Delays the message with 0.5 seconds (500 milliseconds)
+                }
+
+                if (!(target.Health <= (Player.GetAutoAttackDamage(target) * 1.1) + Dmg.ExploitDamage(target))) return;
+
+                Spells._e.Cast();
+                Usables.Botrk();
+                Game.PrintChat("Exploit: E Botrk AA Q");
+            }
         }
 
         // Combo
@@ -136,6 +139,11 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         {
             var target = TargetSelector.GetTarget(Spells._w.Range, TargetSelector.DamageType.Physical); // Gets a target from Twitch's W spell Range
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable) return; // If the target isn't defined, not a valid target within our range or just Invulnerable, return
+
+            if(target.Distance(Player) <= Player.AttackRange)
+            {
+                Usables.CastYoumoo();
+            }
 
             if (!MenuConfig.UseW) return; // If our Combo W Menu is "Off", return
             if (target.Health < Player.GetAutoAttackDamage(target, true)*2) return; // If our targets health is less than Twitch's AA * 2, return (We wont cast W if killable by 2 AA
@@ -250,7 +258,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 // Searches through our list above "Dragons"
                 foreach (var m in ObjectManager.Get<Obj_AI_Base>().Where(x => Dragons.Contains(x.CharData.BaseSkinName) && !x.IsDead))
                 {
-                    if (m.Health < Spells._e.GetDamage(m)) // If monster is found and targets health is less than Twitch's E spell
+                    if (m.Health <= Dmg.ExploitDamage(m)) // If monster is found and targets health is less than Twitch's E spell
                     {
                         Spells._e.Cast(m); // Execute with Twitch's E spell
                     }
@@ -264,7 +272,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 {
                     // If base skin name is SRU_Red (Redbuff)
                     if (m.CharData.BaseSkinName.Contains("SRU_Red")) continue;
-                    if (Spells._e.IsKillable(m)) // If Redbuff is killable
+                    if (m.Health <= Dmg.ExploitDamage(m)) // If Redbuff is killable
                         Spells._e.Cast(); // Kill Redbuff with Twitch's E spell
                 }
             }
@@ -292,6 +300,22 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && !enemy.IsInvulnerable && enemy.HasBuff("twitchdeadlyvenom")))
             {
                 Spells._e.Cast(enemy); // Executes enemy with Twitch's E spell
+            }
+        }
+
+        public static void Trinket()
+        {
+            if (Player.Level < 9 || !Player.InShop() || !MenuConfig.BuyTrinket) return;
+            if (Items.HasItem(3363) || Items.HasItem(3364)) return;
+
+            switch (MenuConfig.TrinketList.SelectedIndex)
+            {
+                case 0:
+                    Player.BuyItem(ItemId.Oracles_Lens_Trinket);
+                    break;
+                case 1:
+                    Player.BuyItem(ItemId.Farsight_Orb_Trinket);
+                    break;
             }
         }
 
