@@ -254,11 +254,11 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         {
             // Looks for mobs within Twitch's E spell range, prioritizes the mob with most health
             var mob = MinionManager.GetMinions(Spells._e.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
-            if(Player.Level == 1) return; // if Twitch's level is 1, return. We don't want to auto steal jungle from our jungler.
 
             // If Menu => Steal => Steal Dragon & Baron is "On" execute the following code within the brackets
             if (MenuConfig.StealEpic)
             {
+                if (Player.Level == 1) return; // if Twitch's level is 1, return. We don't want to auto steal jungle from our jungler.
                 // Searches through our list above "Dragons"
                 foreach (var m in ObjectManager.Get<Obj_AI_Base>().Where(x => Dragons.Contains(x.CharData.BaseSkinName) && !x.IsDead))
                 {
@@ -272,6 +272,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             // If Menu => Steal => Steal Redbuff, do the following code within the brackets
             if (MenuConfig.StealBuff)
             {
+                if (Player.Level == 1) return; // if Twitch's level is 1, return. We don't want to auto steal jungle from our jungler.
                 foreach (var m in mob)
                 {
                     // If base skin name is SRU_Red (Redbuff)
