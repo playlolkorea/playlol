@@ -91,6 +91,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
             Spells._q.Cast(); // Will cast Twitch's Q spell
+            if (!MenuConfig.ExploitChat) return;
             do // begins a "do" loop
             {
                 // Delays the message with 0.5s 
@@ -115,6 +116,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             {
                 if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
                 {
+                    if (!MenuConfig.ExploitChat) return;
                     Game.PrintChat("Exploit: Will NOT Interrupt Combo!!"); // Prints in chat
                     return; // Will return 
                 }
@@ -123,6 +125,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 {
                     // Here we could use an else statement, but it would be redudant and a waste.
                     Spells._e.Cast(); // Will cast Twitch's E spell
+                    if (!MenuConfig.ExploitChat) return;
                     Game.PrintChat("Exploit: E AA Q"); // Delays the message with 0.5 seconds (500 milliseconds)
                 }
 
@@ -130,6 +133,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
                 Spells._e.Cast();
                 Usables.Botrk();
+                if (!MenuConfig.ExploitChat) return;
                 Game.PrintChat("Exploit: E Botrk AA Q");
             }
         }

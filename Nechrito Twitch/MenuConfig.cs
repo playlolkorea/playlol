@@ -64,7 +64,7 @@ namespace Nechrito_Twitch
             var ExploitMenu = new Menu("ExploitMenu", "Exploit");
             ExploitMenu.AddItem(new MenuItem("Exploit", "Exploits").SetValue(false).SetTooltip("Will Instant Q After Kill"));
             ExploitMenu.AddItem(new MenuItem("EAA", "E AA Q").SetValue(false).SetTooltip("Will cast E if killable by E + AA then Q"));
-          //  ExploitMenu.AddItem(new MenuItem("ExploitMultiplier", "Attacks").SetValue(new Slider(1, 0, 5)).SetTooltip("Debugging"));
+            ExploitMenu.AddItem(new MenuItem("ExploitChat", "Print Messages").SetValue(false).SetTooltip("Will Print Exploit Messages"));
             Config.AddSubMenu(ExploitMenu);
 
             Config.AddToMainMenu();
@@ -85,6 +85,7 @@ namespace Nechrito_Twitch
         public static bool JungleW => Config.Item("JungleW").GetValue<bool>();
         public static bool EOnDeath => Config.Item("EOnDeath").GetValue<bool>();
         public static bool BuyTrinket => Config.Item("BuyTrinket").GetValue<bool>();
+        public static bool ExploitChat => Config.Item("ExploitChat").GetValue<bool>();
 
         public static StringList Skin => Config.Item("Skin").GetValue<StringList>();
         public static StringList TrinketList => Config.Item("TrinketList").GetValue<StringList>();
