@@ -7,6 +7,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
 
+
 #endregion
 
 namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd be "Nechrito_Twitch.FOLDER_NAME
@@ -48,10 +49,15 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             
             Recall(); // Loads our Recall void
+
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene; // With this we can draw health bar and damages
+
             Game.OnUpdate += Game_OnUpdate; // Initialises our update method
             MenuConfig.LoadMenu(); // Loads our Menu
+
             Spells.Initialise();   // Initialises our Spells
         }
 
@@ -62,15 +68,14 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         private static void Game_OnUpdate(EventArgs args)
         {
             AutoE(); // Updates our "AutoE" void 
-            SkinChanger();
-            EDeath();
-            Trinket();
+            SkinChanger(); // Updates skinchanger void
+            EDeath();  // Updates EDeath void
+            Trinket(); // Updates Trinket void
+            Exploit(); // Updates the Exploit void 
 
             switch (MenuConfig.Orbwalker.ActiveMode) // Switch for our current pressed keybind / Mode
             {
                 case Orbwalking.OrbwalkingMode.Combo: // If we press the combo keybind
-                    Exploit(); // Updates the Exploit void 
-                    ExploitQ(); // Better optimized, will update Q AA check faster than the whole E AA Q (Not sure though, just wanna test.)
                     Combo(); // Update our combo method
                     break; // Breaks our method when we release the keybind
                 case Orbwalking.OrbwalkingMode.Mixed: // If we press our harass keybind
@@ -83,12 +88,19 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             }
         }
 
-        private static void ExploitQ()
+        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            var target = TargetSelector.GetTarget(Player.AttackRange, TargetSelector.DamageType.Physical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; 
+            if (!Spells._q.IsReady()) return;
 
-            if (!(target.Health < Player.GetAutoAttackDamage(target)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
+            if (!sender.IsAlly) return;
+
+            var target = args.Target as Obj_AI_Hero;
+
+            if (!target.IsValidTarget()) return;
+
+            if (target == null || target.IsDead) return; 
+
+            if (!(target.Health <= Player.GetAutoAttackDamage(target, false)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
             Spells._q.Cast(); // Will cast Twitch's Q spell
             if (!MenuConfig.ExploitChat) return;
@@ -101,6 +113,8 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
         private static void Exploit()
         {
+            if (!MenuConfig.EAA) return;
+
             var target = TargetSelector.GetTarget(Spells._e.Range, TargetSelector.DamageType.Physical); // Looks for a target within AA Range.
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable || target.IsDead) return; //If target isn't defined or a valid target within AA Range or target is in zhonyas, return
 
@@ -112,12 +126,12 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
  
             if (!(target.Distance(Player) < Player.AttackRange)) return;
 
-            if (Spells._e.IsReady() && MenuConfig.EAA) // If Twitch's E is ready and EAA Menu is "On", do the following code within the brackets.
+            if (Spells._e.IsReady()) // If Twitch's E is ready, do the following code within the brackets.
             {
                 if (!target.IsFacing(Player) && target.Distance(Player) >= Player.AttackRange - 50) // Return if our target isn't facing us and he's at AA range - 50
                 {
                     if (!MenuConfig.ExploitChat) return;
-                    Game.PrintChat("Exploit: Will NOT Interrupt Combo!!"); // Prints in chat
+                    Game.PrintChat("Exploit: will NOT interrupt combo!!"); // Prints in chat
                     return; // Will return 
                 }
 
@@ -130,6 +144,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 }
 
                 if (!(target.Health <= (Player.GetAutoAttackDamage(target) * 1.1) + Dmg.ExploitDamage(target))) return;
+                if (!LeagueSharp.Common.Data.ItemData.Blade_of_the_Ruined_King.GetItem().IsReady()) return;
 
                 Spells._e.Cast();
                 Usables.Botrk();
@@ -252,6 +267,15 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
         // Auto E 
         private static void AutoE()
         {
+            if (MenuConfig.KsE) // If Menu => Combo => Killsecure E is "Off", return
+            {
+                // Searches for enemies that are valid within Twitch's E spell range & Is killable by Twitch's E spell
+                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && !enemy.IsInvulnerable && enemy.Health <= Dmg.GetDamage(enemy)))
+                {
+                    Spells._e.Cast(enemy); // Executes enemy with Twitch's E spell
+                }
+            }
+
             // Looks for mobs within Twitch's E spell range, prioritizes the mob with most health
             var mob = MinionManager.GetMinions(Spells._e.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
@@ -270,24 +294,15 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             }
 
             // If Menu => Steal => Steal Redbuff, do the following code within the brackets
-            if (MenuConfig.StealBuff)
-            {
-                if (Player.Level == 1) return; // if Twitch's level is 1, return. We don't want to auto steal jungle from our jungler.
-                foreach (var m in mob)
-                {
-                    // If base skin name is SRU_Red (Redbuff)
-                    if (m.CharData.BaseSkinName.Contains("SRU_Red")) continue;
-                    if (m.Health <= Dmg.ExploitDamage(m)) // If Redbuff is killable
-                        Spells._e.Cast(); // Kill Redbuff with Twitch's E spell
-                }
-            }
+            if (!MenuConfig.StealBuff) return;
 
-            if (!MenuConfig.KsE) return; // If Menu => Combo => Killsecure E is "Off", return
-
-            // Searches for enemies that are valid within Twitch's E spell range & Is killable by Twitch's E spell
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsValidTarget(Spells._e.Range) && !enemy.IsInvulnerable && enemy.Health < Dmg.GetDamage(enemy)))
+            if (Player.Level == 1) return; // if Twitch's level is 1, return. We don't want to auto steal jungle from our jungler.
+            foreach (var m in mob)
             {
-                Spells._e.Cast(enemy); // Executes enemy with Twitch's E spell
+                // If base skin name is SRU_Red (Redbuff)
+                if (m.CharData.BaseSkinName.Contains("SRU_Red")) continue;
+                if (m.Health <= Dmg.ExploitDamage(m)) // If Redbuff is killable
+                    Spells._e.Cast(); // Kill Redbuff with Twitch's E spell
             }
         }
        
