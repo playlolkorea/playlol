@@ -1,0 +1,14 @@
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\Grievous Ignite.exe.config
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\Grievous Ignite.exe
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\Grievous Ignite.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\LeagueSharp.Common.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\LeagueSharp.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\SharpDX.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\clipper_library.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\LeagueSharp.Sandbox.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\LeagueSharp.Common.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\bin\Debug\LeagueSharp.Sandbox.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\obj\x86\Debug\Grievous Ignite.csprojResolveAssemblyReference.cache
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\obj\x86\Debug\Grievous Ignite.exe
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Grievous Ignite\Grievous Ignite\obj\x86\Debug\Grievous Ignite.pdb
