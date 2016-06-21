@@ -37,7 +37,7 @@ namespace Grievous_Ignite
                 if (!(IgniteDmg >= enemy.Health)) return;
 
                 Indicator.unit = enemy;
-                Indicator.drawDmg(IgniteDmg, new ColorBGRA(255, 204, 0, 170));
+                Indicator.drawDmg(IgniteDmg, new ColorBGRA(30, 255, 0, 120));
             }
         }
     }
