@@ -60,18 +60,18 @@ namespace Nechrito_Diana
                     {
                         if ((minion.CharData.BaseSkinName.Contains("Dragon") || minion.CharData.BaseSkinName.Contains("Baron")))
                         {
-                        var QRDmg = Spells._q.IsReady() && Spells._r.IsReady()
-                   ? Spells._q.GetDamage(minion) + Spells._r.GetDamage(minion)
+                        var QRDmg = Spells.Q.IsReady() && Spells.R.IsReady()
+                   ? Spells.Q.GetDamage(minion) + Spells.R.GetDamage(minion)
                    : 0;
                         if(QRDmg >= minion.Health)
                         {
-                            Spells._q.Cast(minion);
-                            Spells._r.Cast(minion);
+                            Spells.Q.Cast(minion);
+                            Spells.R.Cast(minion);
                         }
                         if (QRDmg + StealDmg >= minion.Health)
                         {
-                            Spells._q.Cast(minion);
-                            Spells._r.Cast(minion);
+                            Spells.Q.Cast(minion);
+                            Spells.R.Cast(minion);
                             Player.Spellbook.CastSpell(Smite, minion);
                         }       
                       }

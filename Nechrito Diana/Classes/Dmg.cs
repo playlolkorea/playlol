@@ -32,15 +32,15 @@ namespace Nechrito_Diana
 
                 if (Program.Player.HasBuff("dianapassivebuff"))
                 {
-                    if (Spells._r.IsReady() && Spells._q.IsReady())
-                        damage += Spells._q.GetDamage(enemy) + Spells._r.GetDamage(enemy) +
-                            Spells._r.GetDamage(enemy) + (float)Program.Player.GetAutoAttackDamage(enemy);
+                    if (Spells.R.IsReady() && Spells.Q.IsReady())
+                        damage += Spells.Q.GetDamage(enemy) + Spells.R.GetDamage(enemy) +
+                            Spells.R.GetDamage(enemy) + (float)Program.Player.GetAutoAttackDamage(enemy);
                 }
                 damage = damage + (float)Program.Player.GetAutoAttackDamage(enemy);
 
-                if (Spells._q.IsReady()) damage += Spells._q.GetDamage(enemy);
-                if (Spells._w.IsReady()) damage += Spells._w.GetDamage(enemy);
-                if (Spells._r.IsReady()) damage += Spells._r.GetDamage(enemy);
+                if (Spells.Q.IsReady()) damage += Spells.Q.GetDamage(enemy);
+                if (Spells.W.IsReady()) damage += Spells.W.GetDamage(enemy);
+                if (Spells.R.IsReady()) damage += Spells.R.GetDamage(enemy);
                 return damage;
             }
             return 0;
