@@ -51,7 +51,7 @@ namespace Nechrito_Gragas
             Config.AddSubMenu(draw);
 
             Config.AddItem(new MenuItem("info", ""));
-            Config.AddItem(new MenuItem("info2", "WIP"));
+            Config.AddItem(new MenuItem("info2", "Work In Progress"));
 
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();

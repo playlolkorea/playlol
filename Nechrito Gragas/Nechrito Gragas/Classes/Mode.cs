@@ -2,12 +2,40 @@
 using LeagueSharp;
 using SPrediction;
 using System;
+using SharpDX;
 
 namespace Nechrito_Gragas
 {
     class Mode
     {
         private static Obj_AI_Hero Player => ObjectManager.Player;
+
+        public static Vector3 pred(Obj_AI_Hero Target)
+        {
+            var pos = Spells.R.GetVectorSPrediction(Target, 20).CastTargetPosition;
+
+            if (Target != null && !pos.IsWall())
+            {
+                if (Target.IsFacing(Player))
+                {
+                    if (Target.IsMoving)
+                    {
+                        pos = pos.Extend(Player.Position.To2D(), - 70);
+                    }
+                    pos = pos.Extend(Player.Position.To2D(), - 70);
+                }
+
+                if (!Target.IsFacing(Player))
+                {
+                    if (Target.IsMoving)
+                    {
+                        pos = pos.Extend(Player.Position.To2D(), - 120);
+                    }
+                    pos = pos.Extend(Player.Position.To2D(), - 100);
+                }
+            }
+            return pos.To3D2();
+        }
 
         public static void ComboLogic()
         {
@@ -18,29 +46,10 @@ namespace Nechrito_Gragas
                 if (Target.IsDashing()) return;
                 if (Spells.Q.IsReady() && Spells.R.IsReady())
                 {
-                    var pos = Spells.R.GetSPrediction(Target).CastPosition.Extend(Player.Position.To2D(), 0);
                     
-                    if (Target.IsFacing(Player))
-                    {
-                        if (Target.IsMoving)
-                        {
-                            pos = pos + 100;
-                        }
-                        pos = pos + 80;
-                    }
-
-                    if (!Target.IsFacing(Player))
-                    {
-                        if (Target.IsMoving)
-                        {
-                            pos = pos + 120;
-                        }
-                        pos = pos + 100;
-                    }
-
-                    Spells.Q.Cast(pos);
-                    Spells.R.Cast(pos);
-                    Utility.DelayAction.Add(200, () => Spells.Q.Cast(pos));
+                    Spells.Q.Cast(pred(Target));
+                    Spells.R.Cast(pred(Target));
+                    Utility.DelayAction.Add(200, () => Spells.Q.Cast(Target));
                 }
             }
 
