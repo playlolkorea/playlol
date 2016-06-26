@@ -11,6 +11,7 @@ namespace Nechrito_Diana
         public static void ComboLogic()
         {
             var rTarget = TargetSelector.GetTarget(Spells.R.Range, TargetSelector.DamageType.Magical);
+            
             var arcPred = Spells.Q.GetArcSPrediction(rTarget).CastPosition;
 
             var Target = TargetSelector.GetTarget(Spells.Q.Range, TargetSelector.DamageType.Magical);
@@ -19,18 +20,15 @@ namespace Nechrito_Diana
             {
                 if (rTarget.IsValidTarget() && !rTarget.IsDead && !rTarget.IsInvulnerable && rTarget != null)
                 {
-                    if (Spells.Q.IsReady())
+                    if (Spells.Q.IsReady() && arcPred != null && Spells.R.IsReady())
                     {
                         Spells.Q.Cast(arcPred);
-                    }
-                    if (Spells.R.IsReady())
-                    {
                         Spells.R.Cast(rTarget);
                     }
                 }
             }
 
-            if (Spells.Q.IsReady() && !MenuConfig.Misaya)
+            if (Spells.Q.IsReady())
             {
                 if (rTarget != null && arcPred != null)
                 {
@@ -44,18 +42,25 @@ namespace Nechrito_Diana
                 {
                     Spells.R.Cast(rTarget);
                 }
-            }
-
-            if (Spells.W.IsReady() && (ObjectManager.Player.Distance(Target.Position) <= ObjectManager.Player.AttackRange + 30))
-            {
-                Spells.W.Cast(Target);
-            }
-
-            if (MenuConfig.ComboE && ObjectManager.Player.ManaPercent > 25)
-            {
-                if (Spells.E.IsReady() && (ObjectManager.Player.Distance(Target.Position) <= Spells.E.Range - 45 || Target.CountEnemiesInRange(Spells.E.Range) > 1 || Target.IsDashing()))
+                if (!MenuConfig.ComboR && rTarget != null)
                 {
-                    Spells.E.Cast(Target);
+                    Spells.R.Cast(rTarget);
+                }
+            }
+
+            if (Target != null && Target.IsValidTarget())
+            {
+                if (Spells.W.IsReady() && (ObjectManager.Player.Distance(Target.Position) <= ObjectManager.Player.AttackRange + 30))
+                {
+                    Spells.W.Cast(Target);
+                }
+
+                if (MenuConfig.ComboE && ObjectManager.Player.ManaPercent > 25)
+                {
+                    if (Spells.E.IsReady() && (ObjectManager.Player.Distance(Target.Position) <= Spells.E.Range - 45 || Target.CountEnemiesInRange(Spells.E.Range) > 1 || Target.IsDashing()))
+                    {
+                        Spells.E.Cast(Target);
+                    }
                 }
             }
         }
