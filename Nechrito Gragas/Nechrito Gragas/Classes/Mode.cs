@@ -31,7 +31,7 @@ namespace Nechrito_Gragas
                     {
                         pos = pos.Extend(Player.Position.To2D(), - 120);
                     }
-                    pos = pos.Extend(Player.Position.To2D(), - 100);
+                    pos = pos.Extend(Player.Position.To2D(), - 150);
                 }
             }
             return pos.To3D2();
@@ -46,7 +46,6 @@ namespace Nechrito_Gragas
                 if (Target.IsDashing()) return;
                 if (Spells.Q.IsReady() && Spells.R.IsReady())
                 {
-                    
                     Spells.Q.Cast(pred(Target));
                     Spells.R.Cast(pred(Target));
                     Utility.DelayAction.Add(200, () => Spells.Q.Cast(Target));
