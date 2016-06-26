@@ -16,15 +16,22 @@ namespace Nechrito_Gragas
             TargetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(TargetSelectorMenu);
             Config.AddSubMenu(TargetSelectorMenu);
+
             var orbwalker = new Menu("Orbwalker", "rorb");
             _orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Config.AddSubMenu(orbwalker);
 
-            //COMBOS ETC HERE
+            
             var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("OnlyR", "Only R Selected Target")).SetValue(true);
+            combo.AddItem(new MenuItem("xd", "Select Target For Insec"));
             combo.AddItem(new MenuItem("ComboR", "Use R")).SetValue(true);
             Config.AddSubMenu(combo);
+
+            var harass = new Menu("Harass", "Harass");
+            harass.AddItem(new MenuItem("harassQ", "Harass Q")).SetValue(true);
+            harass.AddItem(new MenuItem("harassW", "Harass W")).SetValue(true);
+            harass.AddItem(new MenuItem("harassE", "Harass E")).SetValue(true);
+            Config.AddSubMenu(harass);
 
             var Lane = new Menu("Lane", "Lane");
             Lane.AddItem(new MenuItem("LaneQ", "Use Q")).SetValue(true);
@@ -40,17 +47,24 @@ namespace Nechrito_Gragas
 
             var draw = new Menu("Draw", "Draw");
             draw.AddItem(new MenuItem("dind", "Damage Indicator")).SetValue(true);
+            draw.AddItem(new MenuItem("prediction", "R Prediction")).SetValue(true);
             Config.AddSubMenu(draw);
+
+            Config.AddItem(new MenuItem("info", ""));
+            Config.AddItem(new MenuItem("info2", "WIP"));
 
             SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
         public static bool UseSkin => Config.Item("UseSkin").GetValue<bool>();
-        public static bool OnlyR => Config.Item("OnlyR").GetValue<bool>();
         public static bool ComboR => Config.Item("ComboR").GetValue<bool>();
+        public static bool harassQ => Config.Item("harassQ").GetValue<bool>();
+        public static bool harassW => Config.Item("harassW").GetValue<bool>();
+        public static bool harassE => Config.Item("harassE").GetValue<bool>();
         public static bool LaneQ => Config.Item("LaneQ").GetValue<bool>();
         public static bool LaneW => Config.Item("LaneW").GetValue<bool>();
         public static bool LaneE => Config.Item("LaneE").GetValue<bool>();
         public static bool dind => Config.Item("dind").GetValue<bool>();
+        public static bool prediction => Config.Item("prediction").GetValue<bool>();
     }
 }
