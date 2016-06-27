@@ -13,6 +13,8 @@ namespace Nechrito_Gragas
 
         public static readonly int[] RedSmite = { 3715, 1415, 1414, 1413, 1412 };
 
+        public static GameObject GragasQ;
+
         private static Orbwalking.Orbwalker _orbwalker;
 
         public static Obj_AI_Hero Player => ObjectManager.Player;
@@ -25,7 +27,7 @@ namespace Nechrito_Gragas
         {
             if (Player.ChampionName != "Gragas") return;
 
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 4 (Date: 26/6-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5 (Date: 27/6-16)</font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -34,6 +36,9 @@ namespace Nechrito_Gragas
             Game.OnUpdate += OnTick;
 
             Obj_AI_Base.OnDoCast += OnDoCast;
+
+            GameObject.OnCreate += OnCreateObject;
+            GameObject.OnDelete += GameObject_OnDelete;
 
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
@@ -57,6 +62,24 @@ namespace Nechrito_Gragas
                     break;
             }
         }
+
+        private static void OnCreateObject(GameObject sender, EventArgs args)
+        {
+            
+            if (sender.Name == "Gragas_Base_Q_Ally.troy")
+            {
+                GragasQ = sender;
+            }
+        }
+
+        static void GameObject_OnDelete(GameObject sender, EventArgs args)
+        {
+            if (sender.Name == "Gragas_Base_Q_Ally.troy")
+            {
+                GragasQ = null;
+            }
+        }
+
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (Player.IsWindingUp) return;
@@ -98,7 +121,6 @@ namespace Nechrito_Gragas
             }
         }
     
-        
         public static Obj_AI_Base GetCenterMinion()
         {
             var minionposition = MinionManager.GetMinions(300 + Spells.Q.Range).Select(x => x.Position.To2D()).ToList();
@@ -108,6 +130,7 @@ namespace Nechrito_Gragas
                 ? MinionManager.GetMinions(1000).OrderBy(x => x.Distance(center.Position)).FirstOrDefault()
                 : null;
         }
+
         private static void Killsteal()
         {
             if (Spells.Q.IsReady() && Spells.R.IsReady())
@@ -119,8 +142,8 @@ namespace Nechrito_Gragas
                     {
                         var pos = Spells.R.GetSPrediction(target).CastPosition + 60;
 
-                        Spells.Q.Cast(Mode.pred(target));
-                        Spells.R.Cast(Mode.pred(target));
+                        Spells.Q.Cast(Mode.rpred(target));
+                        Spells.R.Cast(Mode.rpred(target));
                     }
                 }
             }
@@ -133,7 +156,7 @@ namespace Nechrito_Gragas
                     if (target.Health < Spells.Q.GetDamage(target))
                     {
                         var pos = Spells.Q.GetSPrediction(target).CastPosition;
-                        Spells.Q.Cast(Mode.pred(target));
+                        Spells.Q.Cast(Mode.rpred(target));
                         Spells.Q.Cast(pos);
                     }
                 }
@@ -159,9 +182,11 @@ namespace Nechrito_Gragas
 
             var Target = TargetSelector.GetSelectedTarget();
 
-            if(Target != null)
+            if(Target != null && !Target.IsDead)
             {
-                Render.Circle.DrawCircle(Mode.pred(Target), 100, System.Drawing.Color.GhostWhite);
+                Render.Circle.DrawCircle(Mode.rpred(Target), 100, System.Drawing.Color.GhostWhite);
+                Render.Circle.DrawCircle(Mode.qpred(Target), 100, System.Drawing.Color.Blue);
+               
             }
            
         }

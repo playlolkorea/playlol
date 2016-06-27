@@ -10,9 +10,9 @@ namespace Nechrito_Gragas
     {
         private static Obj_AI_Hero Player => ObjectManager.Player;
 
-        public static Vector3 pred(Obj_AI_Hero Target)
+        public static Vector3 rpred(Obj_AI_Hero Target)
         {
-            var pos = Spells.R.GetVectorSPrediction(Target, 20).CastTargetPosition;
+            var pos = Spells.R.GetVectorSPrediction(Target, -50).CastTargetPosition;
 
             if (Target != null && !pos.IsWall())
             {
@@ -20,20 +20,50 @@ namespace Nechrito_Gragas
                 {
                     if (Target.IsMoving)
                     {
-                        pos = pos.Extend(Player.Position.To2D(), - 70);
+                        pos = pos.Extend(Player.Position.To2D(), -90);
                     }
-                    pos = pos.Extend(Player.Position.To2D(), - 70);
+                    pos = pos.Extend(Player.Position.To2D(), -100);
                 }
 
                 if (!Target.IsFacing(Player))
                 {
                     if (Target.IsMoving)
                     {
-                        pos = pos.Extend(Player.Position.To2D(), - 120);
+                        pos = pos.Extend(Player.Position.To2D(), -145);
                     }
-                    pos = pos.Extend(Player.Position.To2D(), - 150);
+                    pos = pos.Extend(Player.Position.To2D(), -130);
                 }
             }
+            return pos.To3D2();
+        }
+
+        public static Vector3 qpred(Obj_AI_Hero Target)
+        {
+            var pos = Spells.Q.GetVectorSPrediction(Target, 50).CastTargetPosition;
+
+            pos = pos.Extend(Player.Position.To2D(), + Spells.R.Range);
+
+            if (Target != null && !pos.IsWall())
+            {
+                if (Target.IsFacing(Player))
+                {
+                    if (Target.IsMoving)
+                    {
+                        pos = pos.Extend(Player.Position.To2D(), 90);
+                    }
+                    pos = pos.Extend(Player.Position.To2D(), 100);
+                }
+
+                if (!Target.IsFacing(Player))
+                {
+                    if (Target.IsMoving)
+                    {
+                        pos = pos.Extend(Player.Position.To2D(), 150);
+                    }
+                    pos = pos.Extend(Player.Position.To2D(), 140);
+                }
+            }
+
             return pos.To3D2();
         }
 
@@ -41,48 +71,73 @@ namespace Nechrito_Gragas
         {
             var Target = TargetSelector.GetSelectedTarget();
            
-            if (Target != null && Target.IsValidTarget() && !Target.IsZombie && (Program.Player.Distance(Target.Position) <= 900) && MenuConfig.ComboR)
+            if (Target != null && !Target.IsZombie && MenuConfig.ComboR && Target.Distance(Player) <= 1050f)
             {
                 if (Target.IsDashing()) return;
-                if (Spells.Q.IsReady() && Spells.R.IsReady())
+
+                if (Spells.Q.IsReady()  && Spells.R.IsReady())
                 {
-                    Spells.Q.Cast(pred(Target));
-                    Spells.R.Cast(pred(Target));
-                    Utility.DelayAction.Add(200, () => Spells.Q.Cast(Target));
+                    if(Program.GragasQ == null)
+                    {
+                        Spells.Q.Cast(qpred(Target), true);
+                    }
+
+                    if(Spells.R.IsReady())
+                    {
+                        Spells.R.Cast(rpred(Target), true);
+                    }
+
+                    if (Program.GragasQ != null && Target.Distance(Program.GragasQ.Position) <= 250)
+                    {
+                        Spells.Q.Cast();
+                            
+                        var pos = Spells.E.GetVectorSPrediction(Target, Spells.E.Range).CastTargetPosition;
+                        Spells.E.Cast(pos);
+                    }
                 }
             }
 
              var target = TargetSelector.GetTarget(700f, TargetSelector.DamageType.Magical);
-
+            
              if (target != null && target.IsValidTarget() && !target.IsZombie)
              {
+
                 if (Spells.Q.IsReady())
                 {
-                    var pos = Spells.Q.GetSPrediction(target).CastPosition;
+                    if (!Spells.R.IsReady())
                     {
-                        Spells.Q.Cast(pos);
-                    }
-                }
 
-                // E
-                if (Spells.E.IsReady() && !Spells.R.IsReady())
-                {
-                    var pos = Spells.E.GetPrediction(target).CastPosition;
-                    {
-                        Spells.E.Cast(pos);
+                        if (Program.GragasQ == null)
+                        {
+                            Spells.Q.Cast(target, true);
+                        }
+                        if (Program.GragasQ != null && target.Distance(Program.GragasQ.Position) <= 250)
+                        {
+                            Spells.Q.Cast();
+                        }
                     }
                 }
 
                 // Smite
-                if (Spells.Smite != SpellSlot.Unknown && Spells.R.IsReady() && Player.Spellbook.CanUseSpell(Spells.Smite) == SpellState.Ready && !Target.IsZombie)
+                if (Spells.Smite != SpellSlot.Unknown && Spells.R.IsReady() && Player.Spellbook.CanUseSpell(Spells.Smite) == SpellState.Ready && !target.IsZombie)
                 {
                     Player.Spellbook.CastSpell(Spells.Smite, Target);
                 }
 
-                else if (Spells.W.IsReady() && !Spells.E.IsReady())
+                else if (Spells.W.IsReady() && !Spells.R.IsReady())
                 {
                     Spells.W.Cast();
+                }
 
+                // E
+                else if (Spells.E.IsReady() && !Spells.W.IsReady())
+                {
+                    var pos = Spells.E.GetVectorSPrediction(Target, Spells.E.Range).CastTargetPosition;
+
+                    if (!Spells.E.CheckMinionCollision(pos))
+                    {
+                        Spells.E.Cast(pos);
+                    }
                 }
             }
         }
