@@ -27,7 +27,7 @@ namespace Nechrito_Gragas
         {
             if (Player.ChampionName != "Gragas") return;
 
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5 (Date: 27/6-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 6 (Date: 27/6-16)</font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -105,16 +105,22 @@ namespace Nechrito_Gragas
 
                             if (Spells.Q.IsReady() && MenuConfig.LaneQ)
                             {
-                                if (m.Health < Spells.Q.GetDamage(m))
+                                if (Program.GragasQ == null)
                                 {
-                                    Spells.Q.Cast(GetCenterMinion());
+                                    Spells.Q.Cast(GetCenterMinion(), true);
+                                }
+                                if (Program.GragasQ != null && m.Distance(Program.GragasQ.Position) <= 250 && m.Health < Spells.Q.GetDamage(m))
+                                {
+                                    Spells.Q.Cast(true);
                                 }
                             }
-                        }
-
-                        if (Spells.W.IsReady() && MenuConfig.LaneW)
-                        {
-                            Spells.W.Cast();
+                            if(m.Distance(Player) <= 250f)
+                            {
+                                if (Spells.W.IsReady() && MenuConfig.LaneW)
+                                {
+                                    Spells.W.Cast();
+                                }
+                            }
                         }
                     }
                 }
@@ -153,11 +159,14 @@ namespace Nechrito_Gragas
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells.Q.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health < Spells.Q.GetDamage(target))
+                    if (target.Health < Spells.Q.GetDamage(target) && GragasQ == null)
                     {
                         var pos = Spells.Q.GetSPrediction(target).CastPosition;
-                        Spells.Q.Cast(Mode.rpred(target));
-                        Spells.Q.Cast(pos);
+                        Spells.Q.Cast(pos, true);
+                    }
+                    if(GragasQ != null && target.Distance(Program.GragasQ.Position) <= 250)
+                    {
+                        Spells.Q.Cast();
                     }
                 }
             }
