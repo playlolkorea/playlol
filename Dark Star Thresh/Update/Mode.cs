@@ -17,7 +17,11 @@ namespace Dark_Star_Thresh.Update
         {
             var pos = Spells.Q.GetPrediction(Target).CastPosition.To2D();
 
-
+            if(Spells.Q.MinHitChance >= HitChance.VeryHigh)
+            {
+                return pos.To3D2();
+            }
+           
             return pos.To3D2();
         }
 
@@ -27,6 +31,7 @@ namespace Dark_Star_Thresh.Update
             {
                 case Orbwalking.OrbwalkingMode.None:
                     FlashCombo();
+                    Flee();
                     break;
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
@@ -40,6 +45,11 @@ namespace Dark_Star_Thresh.Update
                     LastHit();
                     break;
             }
+        }
+
+        public static bool ThreshQ(Obj_AI_Base t)
+        {
+            return t.HasBuff("ThreshQ");
         }
 
         public static void Combo()
@@ -57,15 +67,24 @@ namespace Dark_Star_Thresh.Update
             {
                 if (eTarget != null && !eTarget.IsDashing() && !eTarget.IsDead && eTarget.IsValidTarget(Spells.E.Range))
                 {
-                    if(eTarget.CountAlliesInRange(1400) == 0)
+                    if(eTarget.Distance(Player) <= Spells.E.Range)
                     {
-                        Spells.E.Cast(eTarget.Position);
-                    }
-                    else
-                    {
-                        if (eTarget.Distance(Player.Position) <= Spells.E.Range)
+                        if (wAlly == null)
                         {
-                            Spells.E.Cast(Player.Position.Extend(eTarget.Position, Vector3.Distance(eTarget.Position, Player.Position) + 400));
+                            if(MenuConfig.Debug)
+                            {
+                                Game.PrintChat("Pushing");
+                            }
+                           
+                            Spells.E.Cast(eTarget.Position);
+                        }
+                        else
+                        {
+                            if (MenuConfig.Debug)
+                            {
+                                Game.PrintChat("Pulling");
+                            }
+                            Spells.E.Cast(eTarget.Position.Extend(Player.Position, Vector3.Distance(eTarget.Position, Player.Position) + 400));
                         }
                     }
                 }
@@ -82,21 +101,54 @@ namespace Dark_Star_Thresh.Update
                         Spells.Q.Cast(qPred(qTarget));
                     }
                 }
+                // Sorry For Messy Code Here.. Causes Fps Drops
+                if(MenuConfig.ComboTaxi && Spells.E.IsReady())
+                {
+                    var qPrediction = Spells.Q.GetPrediction(qTarget);
+                    if (Player.ManaPercent >= 65 && !Spells.Q.WillHit(qTarget, qPrediction.CastPosition))
+                    {
+                        var minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range + Spells.E.Range);
+                        foreach (var m in minions)
+                        {
+                            if (m != null && m.IsValidTarget() && m.Health > Spells.Q.GetDamage(m))
+                            {
+                                if (m.Distance(Player) >= Spells.E.Range && m.Distance(Player) <= Spells.Q.Range && qTarget.Distance(Player) <= Spells.Q.Range + Spells.E.Range - 50)
+                                {
+                                    if (MenuConfig.Debug)
+                                    {
+                                        Game.PrintChat("Taxi Mode Active...");
+                                    }
+                                    Spells.Q.Cast(m);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             if (wAlly != null)
             {
-                if (Spells.W.IsReady())
+                if(qTarget.IsValidTarget() && qTarget != null && ThreshQ(qTarget))
                 {
-                    Spells.W.Cast(wAlly);
+                    if (Spells.W.IsReady())
+                    {
+                        Spells.W.Cast(wAlly);
+                    }
+                }
+                else if (eTarget.IsValidTarget() && eTarget != null && eTarget.Distance(Player) <= Spells.E.Range)
+                {
+                    if(Spells.W.IsReady())
+                    {
+                        Spells.W.Cast(wAlly);
+                    }
                 }
             }
 
-            if (rTarget != null && !rTarget.IsDead && rTarget.IsValidTarget())
+          if(Spells.R.IsReady())
             {
-                if (MenuConfig.ComboR >= rTarget.CountEnemiesInRange(Spells.R.Range - 30))
+                if (rTarget != null && !rTarget.IsDead && rTarget.IsValidTarget())
                 {
-                    if (Spells.R.IsReady())
+                    if (MenuConfig.ComboR >= rTarget.CountEnemiesInRange(Spells.R.Range - 45))
                     {
                         Spells.R.Cast();
                     }
@@ -138,12 +190,16 @@ namespace Dark_Star_Thresh.Update
 
             foreach(var m in minions)
             {
-                if(m.IsValidTarget(1400) && m != null && !m.IsDead)
+                if(m.IsValidTarget(1050) && m != null && !m.IsDead)
                 {
-                    var range = Player.GetAlliesInRange(Spells.W.Range).Where(x => !x.IsMe).Where(x => !x.IsDead).Where(x => x.Distance(Player.Position) <= 1400).FirstOrDefault();
+                    var range = Player.GetAlliesInRange(Spells.W.Range).Where(x => !x.IsMe).Where(x => !x.IsDead).Where(x => x.Distance(Player.Position) <= 1050).FirstOrDefault();
 
-                    if (Dmg.StackDmg(m) >= m.Health && range != null)
+                    if (Player.GetAutoAttackDamage(m, true) > m.Health && range != null)
                     {
+                        if(MenuConfig.Debug)
+                        {
+                            Game.PrintChat("Damage = " + Player.GetAutoAttackDamage(m, true) + " | Minion Hp = " + m.Health);
+                        }
                         Render.Circle.DrawCircle(m.Position, 75, System.Drawing.Color.MediumVioletRed);
                     }
                 }
@@ -163,7 +219,7 @@ namespace Dark_Star_Thresh.Update
             if(qTarget != null && qTarget.IsValidTarget())
             {
                 var qPrediction = Spells.Q.GetPrediction(qTarget);
-                if(qPrediction.Hitchance >= HitChance.Collision)
+                if(qPrediction.Hitchance >= HitChance.VeryHigh)
                 {
                     var wAlly = Player.GetAlliesInRange(Spells.W.Range).Where(x => !x.IsMe).Where(x => !x.IsDead).Where(x => x.Distance(Player.Position) <= Spells.W.Range + 250).FirstOrDefault();
                     if (wAlly != null)
@@ -179,5 +235,73 @@ namespace Dark_Star_Thresh.Update
                 }    
             }   
         }
+        public static void Flee() // Snippet From Nechrito Diana
+        {
+            if (!MenuConfig.Flee) return;
+
+            var jump = JumpPos.Where(x => x.Value.Distance(ObjectManager.Player.Position) < 300f && x.Value.Distance(Game.CursorPos) < Spells.Q.Range).FirstOrDefault();
+            var monster = MinionManager.GetMinions(Spells.Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.Health).FirstOrDefault();
+            var mobs = MinionManager.GetMinions(Spells.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            
+            if(jump.Value.IsValid() && Spells.Q.IsReady())
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, jump.Value);
+
+
+                foreach (var pos in JunglePos)
+                {
+                    if (Game.CursorPos.Distance(pos) <= 350 && ObjectManager.Player.Position.Distance(pos) <= Spells.Q.Range && Spells.Q.IsReady())
+                    {
+                        Spells.Q.Cast(pos);
+                    }
+                }
+            }
+            else
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            }
+
+
+            if (!mobs.Any() || !Spells.Q.IsReady()) return;
+
+            var m = mobs.MaxOrDefault(x => x.MaxHealth);
+
+            if(m.Distance(Game.CursorPos) <= Spells.Q.Range && m.Distance(Player) >= 475)
+            {
+                if(m.Health > Spells.Q.GetDamage(m))
+                {
+                    Spells.Q.Cast(m.Position);
+                }
+            }
+        }
+        public static readonly Dictionary<String, Vector3> JumpPos = new Dictionary<String, Vector3>()
+        {
+            { "mid_Dragon" , new Vector3 (9122f, 4058f, 53.95995f) },
+            { "left_dragon" , new Vector3 (9088f, 4544f, 52.24316f) },
+            { "baron" , new Vector3 (5774f, 10706f, 55.77578F) },
+            { "red_wolves" , new Vector3 (11772f, 8856f, 50.30728f) },
+            { "blue_wolves" , new Vector3 (3046f, 6132f, 57.04655f) },
+        };
+
+        public static readonly List<Vector3> JunglePos = new List<Vector3>()
+        {
+          new Vector3(6271.479f, 12181.25f, 56.47668f),
+           new Vector3(6971.269f, 10839.12f, 55.2f),
+           new Vector3(8006.336f, 9517.511f, 52.31763f),
+           new Vector3(10995.34f, 8408.401f, 61.61731f),
+          new Vector3(10895.08f, 7045.215f, 51.72278f),
+           new Vector3(12665.45f, 6466.962f, 51.70544f),
+           //pos of baron
+           new Vector3(5048f, 10460f, -71.2406f),
+           new Vector3(39000.529f, 7901.832f, 51.84973f),
+          new Vector3(2106.111f, 8388.643f, 51.77686f),
+           new Vector3(3753.737f, 6454.71f, 52.46301f),
+           new Vector3(6776.247f, 5542.872f, 55.27625f),
+           new Vector3(7811.688f, 4152.602f, 53.79456f),
+          new Vector3(8528.921f, 2822.875f, 50.92188f),
+          //pos of dragon
+           new Vector3(9802f, 4366f, -71.2406f),
+           new Vector3(3926f, 7918f, 51.74162f)
+        };
     }
 }

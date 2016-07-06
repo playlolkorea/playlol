@@ -26,12 +26,12 @@ namespace Dark_Star_Thresh.Core
 
             return dmg;
         }
-
-        public static float StackDmg(Obj_AI_Base target)
+        /* Apparently this is useless (?)
+        public static int StackDmg(Obj_AI_Base target)
         {
-            if (target == null || target.IsDead) return 0;
+            if (target == null || target.IsDead || TalentReaper <= 1) return 0;
 
-            float dmg = 0;
+            int dmg = 0;
 
             if ( LeagueSharp.Common.Data.ItemData.Relic_Shield.GetItem().IsOwned())
             {
@@ -58,6 +58,6 @@ namespace Dark_Star_Thresh.Core
                 var data = ObjectManager.Player.Buffs.FirstOrDefault(b => b.DisplayName == "TalentReaper");
                 return data == null ? 0 : data.Count;
             }
-        }
+        }*/
     }
 }

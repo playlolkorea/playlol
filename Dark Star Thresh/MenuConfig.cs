@@ -24,7 +24,7 @@ namespace Dark_Star_Thresh
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ComboFlash", "Flash Combo").SetValue(new KeyBind('T', KeyBindType.Press))).SetTooltip("Does Flash Combo");
             combo.AddItem(new MenuItem("ComboR", "Min Enemies For R").SetValue(new Slider(3, 0, 5)));
-            combo.AddItem(new MenuItem("ComboStunQ", "Auto Q Stunned Enemies").SetValue(true).SetTooltip("Will try To Q Stunned Enemies"));
+            combo.AddItem(new MenuItem("ComboTaxi", "Taxi Mode").SetValue(true).SetTooltip("Will Cast Q To Minions, Logic implented ofc."));
             Config.AddSubMenu(combo);
 
             var Harass = new Menu("Harass", "Harass");
@@ -37,7 +37,7 @@ namespace Dark_Star_Thresh
             Misc.AddItem(new MenuItem("Gapcloser", "Gapcloser").SetValue(true));
             Misc.AddItem(new MenuItem("UseSkin", "Use Skinchanger").SetValue(false));
             Misc.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Deep Terror Thresh", "Championship Thresh", "Blood Moon Thresh", "SSW Thresh", "Dark Star Thresh" })));
-            Misc.AddItem(new MenuItem("RelicStack", "Stack Relic").SetValue(new KeyBind('A', KeyBindType.Press)));
+            Misc.AddItem(new MenuItem("Flee", "Flee").SetValue(new KeyBind('A', KeyBindType.Press))).SetTooltip("Flee To Minion / Mobs");
             Config.AddSubMenu(Misc);
 
 
@@ -50,6 +50,8 @@ namespace Dark_Star_Thresh
             Draw.AddItem(new MenuItem("DrawR", "Draw R Range").SetValue(true));
             Config.AddSubMenu(Draw);
 
+            Config.AddItem(new MenuItem("Debug", "Debug Mode").SetValue(false).SetTooltip("Prints In Chat What's Going On"));
+
             Config.AddToMainMenu();
         }
 
@@ -57,13 +59,13 @@ namespace Dark_Star_Thresh
 
         // Keybind
         public static bool ComboFlash => Config.Item("ComboFlash").GetValue<KeyBind>().Active;
-        public static bool RelicStack => Config.Item("RelicStack").GetValue<KeyBind>().Active;
+        public static bool Flee => Config.Item("Flee").GetValue<KeyBind>().Active;
 
         // Slider
         public static int ComboR => Config.Item("ComboR").GetValue<Slider>().Value;
 
         // Bool
-        public static bool ComboStunQ => Config.Item("ComboStunQ").GetValue<bool>();
+        public static bool ComboTaxi => Config.Item("ComboTaxi").GetValue<bool>();
 
         public static bool HarassQ => Config.Item("HarassQ").GetValue<bool>();
         public static bool HarassE => Config.Item("HarassE").GetValue<bool>();
@@ -79,5 +81,7 @@ namespace Dark_Star_Thresh
         public static bool DrawW => Config.Item("DrawW").GetValue<bool>();
         public static bool DrawE => Config.Item("DrawE").GetValue<bool>();
         public static bool DrawR => Config.Item("DrawR").GetValue<bool>();
+
+        public static bool Debug => Config.Item("Debug").GetValue<bool>();
     }
 }
