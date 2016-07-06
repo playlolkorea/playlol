@@ -12,24 +12,26 @@ namespace Nechrito_Gragas
 
         public static Vector3 rpred(Obj_AI_Hero Target)
         {
-            var pos = Spells.R.GetVectorSPrediction(Target, - (Player.MoveSpeed - Target.MoveSpeed)).CastTargetPosition;
 
-            if (Target != null && !pos.IsWall())
+            var pos = Spells.R.GetVectorSPrediction(Target, -(Player.MoveSpeed - Target.MoveSpeed)).CastTargetPosition;
+
+            if (Target == null) return pos.To3D();
+
+
+            if (Target.IsFacing(Player))
             {
-                if (Target.IsFacing(Player))
+                if (Target.IsMoving)
                 {
-                    if (Target.IsMoving)
-                    {
-                        pos = pos.Extend(Player.Position.To2D(), -90);
-                    }
-                    pos = pos.Extend(Player.Position.To2D(), - 110);
+                    pos = pos.Extend(Player.Position.To2D(), -90);
                 }
-
-                if (!Target.IsFacing(Player))
-                {
-                    pos = pos.Extend(Player.Position.To2D(), - 150);
-                }
+                pos = pos.Extend(Player.Position.To2D(), -110);
             }
+
+            if (!Target.IsFacing(Player))
+            {
+                pos = pos.Extend(Player.Position.To2D(), -150);
+            }
+            
             return pos.To3D2();
         }
 
@@ -59,37 +61,51 @@ namespace Nechrito_Gragas
             return pos.To3D2();
         }
 
+      
         public static void ComboLogic()
         {
             var Target = TargetSelector.GetSelectedTarget();
-           
-            if (Target != null && !Target.IsZombie && MenuConfig.ComboR && Target.Distance(Player) <= 1050f)
+            if (Target != null && !Target.IsZombie)
             {
-                if (Target.IsDashing()) return;
 
-                if (Spells.Q.IsReady()  && Spells.R.IsReady())
+                if (Target.Distance(Player) <= 1000f)
                 {
-                    if(Program.GragasQ == null)
-                    {
-                        Spells.Q.Cast(qpred(Target), true);
-                    }
+                    if (Target.IsDashing()) return;
 
-                    if(Spells.R.IsReady())
+                    if (Spells.Q.IsReady() && Spells.R.IsReady())
                     {
-                        Spells.R.Cast(rpred(Target), true);
-                    }
 
-                    if (Program.GragasQ != null && Target.Distance(Program.GragasQ.Position) <= 250)
+                        if (Program.GragasQ == null)
+                        {
+                            Spells.Q.Cast(qpred(Target), true);
+                        }
+
+                        if (Spells.R.IsReady())
+                        {
+                            Spells.R.Cast(rpred(Target), true);
+                        }
+
+                        if (Program.GragasQ != null && Target.Distance(Program.GragasQ.Position) <= 250f)
+                        {
+                            Spells.Q.Cast(true);
+
+                            if (Spells.E.IsReady())
+                            {
+                                Spells.E.Cast(Target.Position, true);
+                            }
+                        }
+                    }
+                }
+                if (!Spells.Q.IsReady() && !Spells.R.IsReady())
+                {
+                    if (Spells.W.IsReady())
                     {
-                        Spells.Q.Cast(true);
-                            
-                        var pos = Spells.E.GetVectorSPrediction(Target, Spells.E.Range).CastTargetPosition;
-                        Spells.E.Cast(pos);
+                        Spells.W.Cast();
                     }
                 }
             }
 
-             var target = TargetSelector.GetTarget(700f, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(700f, TargetSelector.DamageType.Magical);
             
              if (target != null && target.IsValidTarget() && !target.IsZombie)
              {
@@ -103,17 +119,17 @@ namespace Nechrito_Gragas
                         {
                             Spells.Q.Cast(target, true);
                         }
-                        if (Program.GragasQ != null && target.Distance(Program.GragasQ.Position) <= 250)
+                        if (Program.GragasQ != null && target.Distance(Program.GragasQ.Position) <= 250f)
                         {
                             Spells.Q.Cast(true);
                         }
                     }
                 }
-
+                
                 // Smite
                 if (Spells.Smite != SpellSlot.Unknown && Spells.R.IsReady() && Player.Spellbook.CanUseSpell(Spells.Smite) == SpellState.Ready && !target.IsZombie)
                 {
-                    Player.Spellbook.CastSpell(Spells.Smite, Target);
+                    Player.Spellbook.CastSpell(Spells.Smite, target);
                 }
 
                 else if (Spells.W.IsReady() && !Spells.R.IsReady())

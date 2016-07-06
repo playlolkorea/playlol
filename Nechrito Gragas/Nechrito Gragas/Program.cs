@@ -27,7 +27,7 @@ namespace Nechrito_Gragas
         {
             if (Player.ChampionName != "Gragas") return;
 
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 6 (Date: 27/6-16)</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Gragas</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 7 (Date: 27/6-16)</font></b>");
 
             MenuConfig.LoadMenu();
             Spells.Initialise();
@@ -48,6 +48,7 @@ namespace Nechrito_Gragas
             SmiteJungle();
             SmiteCombo();
             Killsteal();
+            
 
             switch (MenuConfig._orbwalker.ActiveMode)
             {
@@ -105,11 +106,11 @@ namespace Nechrito_Gragas
 
                             if (Spells.Q.IsReady() && MenuConfig.LaneQ)
                             {
-                                if (Program.GragasQ == null)
+                                if (GragasQ == null)
                                 {
                                     Spells.Q.Cast(GetCenterMinion(), true);
                                 }
-                                if (Program.GragasQ != null && m.Distance(Program.GragasQ.Position) <= 250 && m.Health < Spells.Q.GetDamage(m))
+                                if (GragasQ != null && m.Distance(GragasQ.Position) <= 250 && m.Health < Spells.Q.GetDamage(m))
                                 {
                                     Spells.Q.Cast(true);
                                 }
@@ -159,12 +160,13 @@ namespace Nechrito_Gragas
                 var targets = HeroManager.Enemies.Where(x => x.IsValidTarget(Spells.Q.Range) && !x.IsZombie);
                 foreach (var target in targets)
                 {
-                    if (target.Health < Spells.Q.GetDamage(target) && GragasQ == null)
+                    if (!(target.Health < Spells.Q.GetDamage(target))) return;
+                    if (GragasQ == null)
                     {
                         var pos = Spells.Q.GetSPrediction(target).CastPosition;
                         Spells.Q.Cast(pos, true);
                     }
-                    if(GragasQ != null && target.Distance(Program.GragasQ.Position) <= 250)
+                    if(GragasQ != null && target.Distance(GragasQ.Position) <= 250)
                     {
                         Spells.Q.Cast();
                     }
@@ -195,9 +197,8 @@ namespace Nechrito_Gragas
             {
                 Render.Circle.DrawCircle(Mode.rpred(Target), 100, System.Drawing.Color.GhostWhite);
                 Render.Circle.DrawCircle(Mode.qpred(Target), 100, System.Drawing.Color.Blue);
-               
             }
-           
+            Render.Circle.DrawCircle(Player.Position, Spells.R.Range, Spells.R.IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
         }
         private static void Drawing_OnEndScene(EventArgs args)
         {

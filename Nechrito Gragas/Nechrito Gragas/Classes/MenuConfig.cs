@@ -23,8 +23,7 @@ namespace Nechrito_Gragas
 
             
             var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("xd", "Select Target For Insec"));
-            combo.AddItem(new MenuItem("ComboR", "Use R")).SetValue(true);
+            combo.AddItem(new MenuItem("ComboR", "Use R In Combo")).SetValue(false);
             Config.AddSubMenu(combo);
 
             var harass = new Menu("Harass", "Harass");
@@ -66,5 +65,8 @@ namespace Nechrito_Gragas
         public static bool LaneE => Config.Item("LaneE").GetValue<bool>();
         public static bool dind => Config.Item("dind").GetValue<bool>();
         public static bool prediction => Config.Item("prediction").GetValue<bool>();
+
+      //  public static bool InsecKey => Config.Item("InsecKey").GetValue<KeyBind>().Active;
+
     }
 }
