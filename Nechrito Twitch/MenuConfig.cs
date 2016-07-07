@@ -56,16 +56,11 @@ namespace Nechrito_Twitch
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("QRecall", "QRecall").SetValue(new KeyBind('B', KeyBindType.Press)));
             misc.AddItem(new MenuItem("EOnDeath", "Auto E On Death").SetValue(true));
+            misc.AddItem(new MenuItem("UseSkin", "Use Skinchanger").SetValue(false));
             misc.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Kingping Twitch", "Whistler Village Twitch", "Medieval Twitch", "Gangster Twitch", "Vandal Twitch", "Pickpocket Twitch", "SSW Twitch" })));
             misc.AddItem(new MenuItem("BuyTrinket", "Buy Trinket").SetValue(true));
             misc.AddItem(new MenuItem("TrinketList", "Trinket").SetValue(new StringList(new[] { "Oracle Alternation", "Farsight Alternation" })));
             Config.AddSubMenu(misc);
-
-            var ExploitMenu = new Menu("ExploitMenu", "Exploit");
-            ExploitMenu.AddItem(new MenuItem("Exploit", "Exploits").SetValue(false).SetTooltip("Will Instant Q After Kill"));
-            ExploitMenu.AddItem(new MenuItem("EAA", "E AA Q").SetValue(false).SetTooltip("Will cast E if killable by E + AA then Q"));
-            ExploitMenu.AddItem(new MenuItem("ExploitChat", "Print Messages").SetValue(false).SetTooltip("Will Print Exploit Messages"));
-            Config.AddSubMenu(ExploitMenu);
 
             Config.AddToMainMenu();
         }
@@ -79,13 +74,11 @@ namespace Nechrito_Twitch
         public static bool LaneW => Config.Item("laneW").GetValue<bool>();
         public static bool HarassW => Config.Item("harassW").GetValue<bool>();
         public static bool Dind => Config.Item("dind").GetValue<bool>();
-        public static bool Exploit => Config.Item("Exploit").GetValue<bool>();
-        public static bool EAA => Config.Item("EAA").GetValue<bool>();
         public static bool JungleE => Config.Item("JungleE").GetValue<bool>();
         public static bool JungleW => Config.Item("JungleW").GetValue<bool>();
         public static bool EOnDeath => Config.Item("EOnDeath").GetValue<bool>();
         public static bool BuyTrinket => Config.Item("BuyTrinket").GetValue<bool>();
-        public static bool ExploitChat => Config.Item("ExploitChat").GetValue<bool>();
+        public static bool UseSkin => Config.Item("UseSkin").GetValue<bool>();
 
         public static StringList Skin => Config.Item("Skin").GetValue<StringList>();
         public static StringList TrinketList => Config.Item("TrinketList").GetValue<StringList>();
@@ -93,6 +86,6 @@ namespace Nechrito_Twitch
         public static bool QRecall => Config.Item("QRecall").GetValue<KeyBind>().Active;
 
         public static int ESlider => Config.Item("ESlider").GetValue<Slider>().Value;
-     //   public static int ExploitMultiplier => Config.Item("ExploitMultiplier").GetValue<Slider>().Value;
+       
     }
 }

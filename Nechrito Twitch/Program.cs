@@ -12,7 +12,7 @@ using Color = System.Drawing.Color;
 
 namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd be "Nechrito_Twitch.FOLDER_NAME
 {
-    internal class Program // It's internal since nothing else will have access to this class. 
+    internal class Program // No other assemblies can access this class
     {
         private static readonly Obj_AI_Hero Player = ObjectManager.Player; // We're only going to read off of the given API "Player"
         private static readonly HpBarIndicator Indicator = new HpBarIndicator(); // Loads in HpBarIndicator.cs into Program.cs, which makes us able to make use of it
@@ -39,25 +39,22 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
         private static void OnGameLoad(EventArgs args)
         {
-            if (Player.ChampionName != "Twitch") return; // If our player name isn't Twitch, we will return and we will not load the script
+            if (Player.ChampionName != "Twitch") return; // If our champion name isn't Twitch, we will return and we will not load the script
 
             // Printing chat with our message when starting the loading process
             Game.PrintChat(
                 "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Twitch</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 10</font></b>");
             Game.PrintChat(
                 "<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Finished</font></b>");
-
             
             Recall(); // Loads our Recall void
 
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-
-            Drawing.OnDraw += OnDraw;
+            Drawing.OnDraw += OnDraw; // Subscribers
             Drawing.OnEndScene += Drawing_OnEndScene; // With this we can draw health bar and damages
 
             Game.OnUpdate += Game_OnUpdate; // Initialises our update method
-            MenuConfig.LoadMenu(); // Loads our Menu
 
+            MenuConfig.LoadMenu(); // Loads our Menu
             Spells.Initialise();   // Initialises our Spells
         }
 
@@ -71,7 +68,6 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             SkinChanger(); // Updates skinchanger void
             EDeath();  // Updates EDeath void
             Trinket(); // Updates Trinket void
-            Exploit(); // Updates the Exploit void 
 
             switch (MenuConfig.Orbwalker.ActiveMode) // Switch for our current pressed keybind / Mode
             {
@@ -87,8 +83,8 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                     break; // Breaks our method when we release the keybind
             }
         }
-
-        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        /*
+        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!Spells._q.IsReady()) return;
 
@@ -96,9 +92,11 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
 
             var target = args.Target as Obj_AI_Hero;
 
-            if (!target.IsValidTarget()) return;
+            if (!target.IsValidTarget(Player.AttackRange)) return;
 
-            if (target == null || target.IsDead) return; 
+            if (target == null || target.IsDead) return;
+
+            if (Player.Distance(target) >= Player.AttackRange) return;
 
             if (!(target.Health <= Player.GetAutoAttackDamage(target, false)) || !Player.IsWindingUp) return; // Returns if our targets health is less than AA dmg and we aren't attacking
 
@@ -111,6 +109,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             } while (Spells._q.Cast()); // Will loop this message during the time we cast Q.
         }
 
+       
         private static void Exploit()
         {
             if (!MenuConfig.EAA) return;
@@ -152,6 +151,7 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
                 Game.PrintChat("Exploit: E Botrk AA Q");
             }
         }
+        */
 
         // Combo
         private static void Combo()
@@ -308,6 +308,8 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
        
         private static void SkinChanger()
         {
+            if (!MenuConfig.UseSkin) return;
+
             Player.SetSkin(Player.CharData.BaseSkinName, MenuConfig.Skin.SelectedIndex);
         }
 
@@ -348,6 +350,11 @@ namespace Nechrito_Twitch // Namespace, if we'd put this class in a folder it'd 
             {
                 var passiveTime = Math.Max(0, Player.GetBuff("TwitchHideInShadows").EndTime) - Game.Time;
                 Render.Circle.DrawCircle(Player.Position, passiveTime * Player.MoveSpeed, Color.Gray);
+
+                var qRange = Spells._q.Level + 4;
+                var range = qRange * 1000;
+
+             //   Utility.DrawCircle(Player.Position, range, Color.Cyan, 1, 23, true);
             }
         }
 
