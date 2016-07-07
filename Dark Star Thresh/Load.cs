@@ -22,7 +22,7 @@ namespace Dark_Star_Thresh
             Interrupter2.OnInterruptableTarget += Misc.OnInterruptableTarget;
             AntiGapcloser.OnEnemyGapcloser += Misc.OnEnemyGapcloser;
 
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Dark Star Thresh</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Loaded</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#F52887\">Dark Star Thresh</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Loaded</font></b>");
         }
     }
 }

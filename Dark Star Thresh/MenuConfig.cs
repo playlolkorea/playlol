@@ -24,10 +24,11 @@ namespace Dark_Star_Thresh
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ComboFlash", "Flash Combo").SetValue(new KeyBind('T', KeyBindType.Press))).SetTooltip("Does Flash Combo");
             combo.AddItem(new MenuItem("ComboR", "Min Enemies For R").SetValue(new Slider(3, 0, 5)));
-            combo.AddItem(new MenuItem("ComboTaxi", "Taxi Mode").SetValue(true).SetTooltip("Will Cast Q To Minions, Logic implented ofc."));
+            combo.AddItem(new MenuItem("ComboTaxi", "Taxi Mode (Beta!)").SetValue(true).SetTooltip("Will Cast Q To Minions, Logic implented ofc."));
             Config.AddSubMenu(combo);
 
             var Harass = new Menu("Harass", "Harass");
+            Harass.AddItem(new MenuItem("HarassAA", "Disable AA In Harass").SetValue(false).SetTooltip("Wont Use AA"));
             Harass.AddItem(new MenuItem("HarassQ", "Use Q").SetValue(true).SetTooltip("Wont cast Q2"));
             Harass.AddItem(new MenuItem("HarassE", "Use E").SetValue(true).SetTooltip("Throws the target away from you"));
             Config.AddSubMenu(Harass);
@@ -67,6 +68,7 @@ namespace Dark_Star_Thresh
         // Bool
         public static bool ComboTaxi => Config.Item("ComboTaxi").GetValue<bool>();
 
+        public static bool HarassAA => Config.Item("HarassAA").GetValue<bool>();
         public static bool HarassQ => Config.Item("HarassQ").GetValue<bool>();
         public static bool HarassE => Config.Item("HarassE").GetValue<bool>();
 

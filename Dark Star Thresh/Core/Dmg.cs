@@ -22,11 +22,9 @@ namespace Dark_Star_Thresh.Core
 
             if (Spells.R.IsReady()) dmg = dmg + Spells.R.GetDamage(target);
 
-          //  if (ObjectManager.Player.Spellbook.CanUseSpell(Spells.Ignite) != SpellState.Ready) dmg = dmg + 50 + 20 * ObjectManager.Player.Level;
-
             return dmg;
         }
-        /* Apparently this is useless (?)
+       
         public static int StackDmg(Obj_AI_Base target)
         {
             if (target == null || target.IsDead || TalentReaper <= 1) return 0;
@@ -58,6 +56,6 @@ namespace Dark_Star_Thresh.Core
                 var data = ObjectManager.Player.Buffs.FirstOrDefault(b => b.DisplayName == "TalentReaper");
                 return data == null ? 0 : data.Count;
             }
-        }*/
+        }
     }
 }
