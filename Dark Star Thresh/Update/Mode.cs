@@ -55,7 +55,7 @@ namespace Dark_Star_Thresh.Update
 
         public static void Combo()
         {
-            var qTarget = TargetSelector.GetTarget(Spells.Q.Range, TargetSelector.DamageType.Physical);
+            var qTarget = TargetSelector.GetTarget(MenuConfig.ComboQ * 10, TargetSelector.DamageType.Physical);
 
             var eTarget = TargetSelector.GetTarget(Spells.E.Range, TargetSelector.DamageType.Physical);
 
@@ -70,7 +70,7 @@ namespace Dark_Star_Thresh.Update
                 {
                     if(eTarget.Distance(Player) <= Spells.E.Range)
                     {
-                        if (wAlly == null)
+                        if (wAlly == null && !eTarget.UnderAllyTurret())
                         {
                             if(MenuConfig.Debug)
                             {
@@ -109,20 +109,23 @@ namespace Dark_Star_Thresh.Update
                     if(qTarget != null && qTarget.IsValidTarget())
                     {
                         var qPrediction = Spells.Q.GetPrediction(qTarget);
-                        if (Player.ManaPercent >= 65 && !Spells.Q.WillHit(qTarget, qPrediction.CastPosition))
+
+                        if (Player.ManaPercent >= 55 && !Spells.Q.WillHit(qTarget, qPrediction.CastPosition))
                         {
                             var minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range + Spells.E.Range);
+
                             foreach (var m in minions)
                             {
-                                if (m != null && m.IsValidTarget() && m.Health > Spells.Q.GetDamage(m))
+                                if (m != null && m.IsValidTarget() && m.Health > Spells.Q.GetDamage(m) && qTarget.IsFacing(Player))
                                 {
-                                    if (m.Distance(Player) >= Spells.E.Range * 2 && m.Distance(Player) <= Spells.Q.Range && qTarget.Distance(Player) <= Spells.Q.Range + Spells.E.Range - 50)
+                                    if(ThreshQ(m) || m.Distance(Player) >= 900f)
                                     {
-                                        if (MenuConfig.Debug)
+                                        if (m.Distance(Player) <= Spells.Q.Range && qTarget.Distance(Player) <= Spells.Q.Range + Spells.E.Range - 50)
                                         {
-                                            Game.PrintChat("Taxi Mode Active...");
+                                            if (MenuConfig.Debug) Game.PrintChat("Taxi Mode Active...");
+
+                                            Spells.Q.Cast(m.ServerPosition);
                                         }
-                                        Spells.Q.Cast(m.ServerPosition);
                                     }
                                 }
                             }
@@ -207,15 +210,15 @@ namespace Dark_Star_Thresh.Update
         {
             var minions = MinionManager.GetMinions(150f);
 
-            foreach(var m in minions)
+            foreach (var m in minions)
             {
-                if(m.IsValidTarget(150) && m != null && !m.IsDead)
+                if (m.IsValidTarget(150) && m != null && !m.IsDead)
                 {
                     var range = Player.GetAlliesInRange(Spells.W.Range).Where(x => !x.IsMe).Where(x => !x.IsDead).Where(x => x.Distance(Player.Position) <= 1050).FirstOrDefault();
 
                     if (Player.GetAutoAttackDamage(m, true) > m.Health && range != null)
                     {
-                        if(MenuConfig.Debug)
+                        if (MenuConfig.Debug)
                         {
                             Game.PrintChat("Damage = " + (float)Player.GetAutoAttackDamage(m, true) + " | Minion Hp = " + m.Health);
                         }

@@ -24,6 +24,7 @@ namespace Dark_Star_Thresh
             var combo = new Menu("Combo", "Combo");
             combo.AddItem(new MenuItem("ComboFlash", "Flash Combo").SetValue(new KeyBind('T', KeyBindType.Press))).SetTooltip("Does Flash Combo");
             combo.AddItem(new MenuItem("ComboR", "Min Enemies For R").SetValue(new Slider(3, 0, 5)));
+            combo.AddItem(new MenuItem("ComboQ", "Max Q Range").SetValue(new Slider(110, 0, 110)));
             combo.AddItem(new MenuItem("ComboTaxi", "Taxi Mode (Beta!)").SetValue(true).SetTooltip("Will Cast Q To Minions, Logic implented ofc."));
             Config.AddSubMenu(combo);
 
@@ -64,6 +65,7 @@ namespace Dark_Star_Thresh
 
         // Slider
         public static int ComboR => Config.Item("ComboR").GetValue<Slider>().Value;
+        public static int ComboQ => Config.Item("ComboQ").GetValue<Slider>().Value;
 
         // Bool
         public static bool ComboTaxi => Config.Item("ComboTaxi").GetValue<bool>();
