@@ -1,0 +1,15 @@
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\Dark Star Thresh.exe.config
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\Dark Star Thresh.exe
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\Dark Star Thresh.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\LeagueSharp.Common.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\LeagueSharp.Data.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\LeagueSharp.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\SharpDX.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\clipper_library.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\Newtonsoft.Json.dll
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\LeagueSharp.Common.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\bin\Release\LeagueSharp.Data.pdb
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\obj\x86\Release\Dark Star Thresh.csprojResolveAssemblyReference.cache
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\obj\x86\Release\Dark Star Thresh.exe
+C:\Users\Nechrito\Documents\Visual Studio 2015\Projects\Dark Star Thresh\Dark Star Thresh\obj\x86\Release\Dark Star Thresh.pdb
