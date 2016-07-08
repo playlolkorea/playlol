@@ -35,7 +35,7 @@ namespace Nechrito_Nidalee.Handlers
                 {
                     Champion.Bushwack.Cast(Target.ServerPosition - 75);
                 }
-               if (!CatForm() && Champion.Javelin.IsReady() && QPred.Hitchance >= HitChance.VeryHigh)
+               if (!CatForm() && Champion.Javelin.IsReady() && QPred.Hitchance >= HitChance.VeryHigh && QPred.Hitchance != HitChance.Collision)
                 {
                     Champion.Javelin.Cast(QPred.CastPosition);
                 }
@@ -69,7 +69,7 @@ namespace Nechrito_Nidalee.Handlers
             var QPred = Champion.Javelin.GetPrediction(Target);
             if (Target != null && Target.IsValidTarget() && !Target.IsZombie)
             {
-                if (!CatForm() && Champion.Javelin.IsReady() && QPred.Hitchance == HitChance.Collision)
+                if (!CatForm() && Champion.Javelin.IsReady() && QPred.Hitchance >= HitChance.VeryHigh && QPred.Hitchance != HitChance.Collision)
                 {
                     Champion.Javelin.Cast(QPred.CastPosition);
                 }
@@ -78,23 +78,25 @@ namespace Nechrito_Nidalee.Handlers
         public static void Lane()
         {
             var minions = MinionManager.GetMinions(600f).FirstOrDefault();
-            if (minions == null)
-                return;
-            if(!CatForm() && minions.Distance(Player) <= 325)
+            if (minions == null) return;
+
+            if (!CatForm() && minions.Distance(Player) <= 325)
             { Champion.Aspect.Cast(); }
-            if(CatForm())
+
+            if (!CatForm()) return;
+
+            var m = MinionManager.GetMinions(Player.Position, 600);
+            foreach (var min in m)
             {
-                var m = MinionManager.GetMinions(Player.Position, 600);
-                foreach (var min in m)
-                {
-                    if (min.Health <= Champion.Takedown.GetDamage(min) && m.Count > 0)
-                        Champion.Takedown.Cast(min);
-                    if (min.Health <= Champion.Swipe.GetDamage(min) && m.Count > 0)
-                        Champion.Swipe.Cast(min.ServerPosition);
-                    if (min.Health <= Champion.Pounce.GetDamage(min) && m.Count > 2)
-                        Champion.Pounce.Cast(min);
+                if (min.Health <= Champion.Takedown.GetDamage(min) && m.Count > 0)
+                    Champion.Takedown.Cast(min);
+
+                if (min.Health <= Champion.Swipe.GetDamage(min) && m.Count > 0)
+                    Champion.Swipe.Cast(min.ServerPosition);
+
+                if (min.Health <= Champion.Pounce.GetDamage(min) && m.Count > 2)
+                    Champion.Pounce.Cast(min);
                    
-                }
             }
         }
         public static void Jungle()
@@ -166,18 +168,17 @@ namespace Nechrito_Nidalee.Handlers
             }
             if (IsWallDash && Champion.Pounce.IsReady() && WallPoint.Distance(Player.ServerPosition) <= 800)
             {
-                if (WallPoint.Distance(Player.ServerPosition) <= 600)
+                if (!(WallPoint.Distance(Player.ServerPosition) <= 600)) return;
+
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
+
+                if (!(WallPoint.Distance(Player.ServerPosition) < 50) || !Champion.Pounce.IsReady()) return;
+
+                if (!CatForm())
                 {
-                    ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, WallPoint);
-                    if (WallPoint.Distance(Player.ServerPosition) < 50 && Champion.Pounce.IsReady())
-                    {
-                        if (!CatForm())
-                        {
-                            Champion.Aspect.Cast();
-                        }
-                        Champion.Pounce.Cast(WallPoint);
-                    }
+                    Champion.Aspect.Cast();
                 }
+                Champion.Pounce.Cast(WallPoint);
             }
             else
             {
