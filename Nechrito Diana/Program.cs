@@ -4,6 +4,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using System.Collections.Generic;
+using SPrediction;
 
 namespace Nechrito_Diana
 {
@@ -18,8 +19,8 @@ namespace Nechrito_Diana
         {
             if (Player.ChampionName != "Diana") return;
 
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 4</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Combo Logic & More</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Diana</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 5</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Q Prediction & Misaya Combo</font></b>");
             MenuConfig.LoadMenu();
 
             Spells.Initialise();
@@ -147,6 +148,7 @@ namespace Nechrito_Diana
             if (Player.IsDead)
                 return;
 
+                       
             if (MenuConfig.EscapeSpot)
             {
                 foreach (var pos in JunglePos)
@@ -173,13 +175,16 @@ namespace Nechrito_Diana
         {
             if (sender.IsEnemy && Spells.E.IsReady() && sender.IsValidTarget() && !sender.IsZombie && MenuConfig.Interrupt)
             {
-                if (sender.IsValidTarget(Spells.E.Range + sender.BoundingRadius)) Spells.E.Cast();
+                if (sender.IsValidTarget(Spells.E.Range)) Spells.E.Cast();
             }
         }
         private static void gapcloser(ActiveGapcloser gapcloser)
         {
             var target = gapcloser.Sender;
-            if (target.IsEnemy && Spells.E.IsReady() && target.IsValidTarget() && !target.IsZombie && MenuConfig.Gapcloser)
+            if (!MenuConfig.Gapcloser) return;
+            if (target == null) return;
+
+            if (target.IsEnemy && Spells.E.IsReady() && target.IsValidTarget() && !target.IsZombie)
             {
                 if (target.IsValidTarget(Spells.E.Range + Player.BoundingRadius + target.BoundingRadius)) Spells.E.Cast();
             }
