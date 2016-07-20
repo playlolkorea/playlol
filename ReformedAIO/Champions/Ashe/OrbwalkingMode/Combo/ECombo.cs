@@ -70,8 +70,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
         {
             this.Menu = new Menu(this.Name, this.Name);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "asdf", "Will Cast E When Not Visible Anymore"));
-
+            
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500)));
 
            //this.Menu.AddItem(new MenuItem(this.Menu.Name + "EKillable", "Only When Killable").SetValue(true)); 

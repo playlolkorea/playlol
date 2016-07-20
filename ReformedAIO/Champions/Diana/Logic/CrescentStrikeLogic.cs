@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using LeagueSharp;
+﻿using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using SPrediction;
@@ -14,9 +13,6 @@ namespace ReformedAIO.Champions.Diana.Logic
         {
             var pos = Variables.Spells[SpellSlot.Q].GetArcSPrediction(target);
 
-            // TODO Check how this can be improved.
-            
-           
             return pos.CastPosition.To3D() + QDelay(target);
         }
 
@@ -29,28 +25,21 @@ namespace ReformedAIO.Champions.Diana.Logic
 
         //public float misayaDelay(Obj_AI_Hero target)
         //{
-        //    var time = target.Distance(Variables.Player) / (Variables.Player.MoveSpeed + Variables.Spells[SpellSlot.Q].Speed);
+        //    var dist = Variables.Player.ServerPosition.Distance(target.ServerPosition);
+        //    var delay = Variables.Spells[SpellSlot.Q].Delay;
+        //    var speed = Variables.Spells[SpellSlot.Q].Speed;
+        //    var movespeed = Variables.Player.MoveSpeed;
 
-        //    return time + Variables.Spells[SpellSlot.Q].Delay;
+        //    var time = 0f;
+
+        //    if (dist > delay)
+        //    {
+
+        //        time = (dist / (movespeed + speed));
+        //    }
+
+        //    return (time + delay);
         //}
-
-        public float misayaDelay(Obj_AI_Hero target)
-        {
-            var dist = Variables.Player.ServerPosition.Distance(target.ServerPosition);
-            var delay = Variables.Spells[SpellSlot.Q].Delay;
-            var speed = Variables.Spells[SpellSlot.Q].Speed;
-            var movespeed = Variables.Player.MoveSpeed;
-
-            var time = 0f;
-
-            if (dist > delay) // Impossible to do it otherwise
-            {
-
-                time = (dist / (movespeed + speed));
-            }
-
-            return (time + delay);
-        }
 
         public float GetDmg(Obj_AI_Base x)
         {

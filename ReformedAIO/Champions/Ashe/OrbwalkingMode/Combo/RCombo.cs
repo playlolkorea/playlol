@@ -78,6 +78,8 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "Gapclose", "Gapcloser").SetValue(true));
 
+            
+
             this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
 
             this.Parent.Menu.AddSubMenu(this.Menu);

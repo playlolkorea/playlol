@@ -20,7 +20,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         private void RangersFocus()
         {
-            var target = TargetSelector.GetTarget(Variable.Player.AttackRange, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Orbwalking.GetRealAutoAttackRange(Variable.Player), TargetSelector.DamageType.Physical);
             
             if (target == null || !target.IsValid) return;
 
@@ -34,10 +34,9 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
         
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if(!Variable.Spells[SpellSlot.Q].IsReady()) return;
-
+            
             if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
             this.RangersFocus();

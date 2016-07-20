@@ -73,14 +73,12 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
 
             if (target == null || !target.IsValid) return;
 
-            if (Variables.Spells[SpellSlot.Q].IsReady() && Variables.Spells[SpellSlot.R].IsReady())
+            if (Variables.Spells[SpellSlot.Q].IsReady() && Variables.Spells[SpellSlot.R].IsReady() && target.Distance(Variables.Player) >= 500)
             {
                 Variables.Spells[SpellSlot.R].Cast(target);
             }
             
-            Utility.DelayAction.Add((int)qLogic.misayaDelay(target) / 4, ()=> Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target))); // Use delays, not every RQ will look the same
-            Game.PrintChat((qLogic.misayaDelay(target) / 4).ToString(CultureInfo.InvariantCulture)); // Used to debugging                // Also more undetected kappa
-          
+            Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
         }
 
         protected sealed override void OnLoad()

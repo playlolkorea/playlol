@@ -7,14 +7,16 @@ namespace ReformedAIO.Champions.Ashe.Logic
     {
         public bool SafeR(Obj_AI_Hero target)
         {
-            var safe = target.Distance(Variable.Player) < 1500 && (target.CountAlliesInRange(1500) > target.CountEnemiesInRange(1500) ||
-                                                                   Variable.Player.Health > target.Health || ComboDamage(target) > target.Health); 
+            bool safe;
+
+            if (target.Distance(Variable.Player) < 1500) safe = true;
+
+            if(target.CountAlliesInRange(1500) > target.CountEnemiesInRange(1500) || Variable.Player.Health > target.Health || ComboDamage(target) > target.Health); safe = true;
             // This will count for more allies than enemies in 1500 units or if player health is more than targets health, can be improved.
 
-            if (target.UnderTurret()) safe = false;
 
-            if (target.HasBuff("kindredrnodeathbuff") || target.HasBuff("Chrono Shift") ||
-                target.HasBuffOfType(BuffType.PhysicalImmunity)) safe = false;
+            if (target.HasBuffOfType(BuffType.SpellShield) || target.UnderTurret() || target.HasBuffOfType(BuffType.PhysicalImmunity) ||
+                target.HasBuff("kindredrnodeathbuff") || target.HasBuff("Chrono Shift")) safe = false;
 
             return safe;
         }
@@ -36,11 +38,11 @@ namespace ReformedAIO.Champions.Ashe.Logic
             if (!Variable.Spells[SpellSlot.R].IsReady()) return 0f;
 
             if (Variable.Spells[SpellSlot.Q].IsReady() || QCount() >= 3) dmg = dmg +
-                    (float)Variable.Player.GetAutoAttackDamage(target) * 4 + Variable.Spells[SpellSlot.Q].GetDamage(target);
+                    (float)Variable.Player.GetAutoAttackDamage(target) * 5 + Variable.Spells[SpellSlot.Q].GetDamage(target);
 
             else
             {
-                dmg = dmg + (float) Variable.Player.GetAutoAttackDamage(target);
+                dmg = dmg + (float) Variable.Player.GetAutoAttackDamage(target) * 2;
             } 
 
             dmg = dmg + Variable.Spells[SpellSlot.R].GetDamage(target);
