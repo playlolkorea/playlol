@@ -91,6 +91,7 @@
     <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\WLane.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Ashe\Variable.cs" />
+    <Compile Include="Champions\Bootstrap.cs" />
     <Compile Include="Champions\DianaLoader.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\Misaya.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\MisayaCombo.cs" />

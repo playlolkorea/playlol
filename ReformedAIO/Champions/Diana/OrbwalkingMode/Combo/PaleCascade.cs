@@ -27,7 +27,7 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 
             if (target == null || !target.IsValid) return;
 
-           // if (Menu.Item(Menu.Name + "REnemies").GetValue<Slider>().Value >= target.CountEnemiesInRange(1400)) return;
+            if (target.CountEnemiesInRange(1400) >= Menu.Item(Menu.Name + "REnemies").GetValue<Slider>().Value) return;
            
             if (Menu.Item(Menu.Name + "RTurret").GetValue<bool>() && target.UnderTurret()) return;
 
@@ -51,8 +51,8 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
            
             Menu = new Menu(Name, Name);
 
-            //this.Menu.AddItem(new MenuItem(this.Name + "REnemies", "Don't R Into >= x Enemies")
-            //    .SetValue(new Slider(2, 0, 5)));
+            this.Menu.AddItem(new MenuItem(this.Name + "REnemies", "Don't R Into >= x Enemies")
+                .SetValue(new Slider(2, 0, 5)));
 
             this.Menu.AddItem(new MenuItem(this.Name + "RTurret", "Don't R Into Turret").SetValue(true));
 
