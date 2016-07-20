@@ -58,8 +58,6 @@ namespace ReformedAIO.Champions
                 Console.WriteLine("Handling " + apply.Name);
                 apply.HandleEvents();
             }
-
-            Console.WriteLine("Reformed AIO - LOADED");
         }
     }
 }

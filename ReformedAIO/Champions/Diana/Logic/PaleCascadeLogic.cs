@@ -1,4 +1,5 @@
-﻿using LeagueSharp;
+﻿using System.Linq;
+using LeagueSharp;
 using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Diana.Logic
@@ -9,7 +10,7 @@ namespace ReformedAIO.Champions.Diana.Logic
 
         public bool tBuff(Obj_AI_Base x)
         {
-            return x.HasBuff("dianamoonlight");
+            return x.Buffs.Any(a => a.Name.ToLower().Contains("dianamoonlight"));
         }
 
         public float GetDmg(Obj_AI_Base x)
