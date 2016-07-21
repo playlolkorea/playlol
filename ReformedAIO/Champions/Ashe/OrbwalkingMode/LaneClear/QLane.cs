@@ -31,7 +31,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>() && minions.Any(m => m.CountEnemiesInRange(2000) > 0))
+            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>() && minions.Any(m => m.CountEnemiesInRange(2500) > 0))
             {
                return;
             }

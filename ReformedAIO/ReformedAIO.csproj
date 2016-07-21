@@ -44,6 +44,9 @@
     <Reference Include="LeagueSharp.Data">
       <HintPath>C:\Software\PlaySharp\References\LeagueSharp.Data.dll</HintPath>
     </Reference>
+    <Reference Include="LeagueSharp.SDKEx">
+      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.SDKEx.dll</HintPath>
+    </Reference>
     <Reference Include="RethoughtLib">
       <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
     </Reference>

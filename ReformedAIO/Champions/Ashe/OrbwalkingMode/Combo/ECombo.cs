@@ -19,6 +19,15 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         private ELogic eLogic;
 
+        private void OnDraw(EventArgs args)
+        {
+            if(Variable.Player.IsDead || !Menu.Item(Menu.Name + "VectorDraw").GetValue<bool>()) return;
+
+            var pos = eLogic.Camp.FirstOrDefault(x => x.Value.Distance(Variable.Player.Position) > 1500 && x.Value.Distance(Variable.Player.Position) < 7000);
+
+            Render.Circle.DrawCircle(pos.Value, 100, !pos.Value.IsValid() ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+        }
+
         private void Hawkshot()
         {
             var target = TargetSelector.GetTarget(Variable.Player.AttackRange, TargetSelector.DamageType.Physical);
@@ -35,7 +44,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
                 if (position.Distance(path) > 1500) return;
 
-                if (NavMesh.IsWallOfGrass(Variable.Player.Position, 1) && Variable.Player.Distance(path) < 1500) return;
+                if (NavMesh.IsWallOfGrass(Variable.Player.Position, 1)) return; // Stil no proof wether or not this work yet.
 
                 Variable.Spells[SpellSlot.E].Cast(path);
             }
@@ -47,12 +56,12 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
             if(!pos.Value.IsValid()) return;
 
-            Utility.DelayAction.Add(250, ()=> Variable.Spells[SpellSlot.E].Cast(pos.Value));
+            Utility.DelayAction.Add(290, ()=> Variable.Spells[SpellSlot.E].Cast(pos.Value)); // Humanized
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if(!Variable.Spells[SpellSlot.E].IsReady()) return;
+            if(!Variable.Spells[SpellSlot.E].IsReady() || Variable.Player.IsRecalling() || Variable.Player.InShop()) return;
 
             if (Menu.Item(Menu.Name + "ECount").GetValue<bool>() && eLogic.GetEAmmo() == 1) return;
 
@@ -71,11 +80,13 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
             this.Menu = new Menu(this.Name, this.Name);
 
             
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500)));
-
-           //this.Menu.AddItem(new MenuItem(this.Menu.Name + "EKillable", "Only When Killable").SetValue(true)); 
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500)).SetTooltip("Only for enemeis & not objectives"));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "ECount", "Save 1 Charge").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "EToVector", "E To Objectives").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "VectorDraw", "Draw Objective Position").SetValue(true));
 
             this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
 
@@ -90,12 +101,14 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         protected override void OnDisable()
         {
+            Drawing.OnDraw -= this.OnDraw;
             Events.OnUpdate -= this.OnUpdate;
             base.OnDisable();
         }
 
         protected override void OnEnable()
         {
+            Drawing.OnDraw += this.OnDraw;
             Events.OnUpdate += this.OnUpdate;
             base.OnEnable();
         }

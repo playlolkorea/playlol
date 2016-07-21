@@ -36,7 +36,6 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
         {
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            
             if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
             this.RangersFocus();

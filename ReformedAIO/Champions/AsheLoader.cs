@@ -9,7 +9,6 @@ using ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear;
 using ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear;
 using RethoughtLib.Classes.Feature;
 using RethoughtLib.Classes.Intefaces;
-using RethoughtLib.Utility;
 using Draw = ReformedAIO.Champions.Ashe.Drawings.Draw; 
 
 namespace ReformedAIO.Champions
@@ -22,8 +21,6 @@ namespace ReformedAIO.Champions
 
         public void Load()
         {
-            Console.WriteLine("ReformedAIO Loading...");
-
             var rootMenu = new Menu("Ashe", "Ashe", true);
             rootMenu.AddToMainMenu();
 
