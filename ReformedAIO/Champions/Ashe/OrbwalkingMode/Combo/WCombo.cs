@@ -29,6 +29,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         private void OnUpdate(EventArgs args)
         {
+            
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.W].IsReady() || Variable.Player.IsWindingUp) return;
 
             this.Volley();

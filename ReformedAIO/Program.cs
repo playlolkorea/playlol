@@ -9,7 +9,7 @@ namespace ReformedAIO
     {
         static void Main(string[] args)
         {
-            //RethoughtLib.RethoughtLib.Instance.Load();
+            RethoughtLib.RethoughtLib.Instance.Load();
             var bootstrap = new Bootstrap(new List<ILoadable>() { new DianaLoader(), new GragasLoader(), new AsheLoader() });
         }
     }
