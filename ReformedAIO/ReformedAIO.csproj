@@ -44,9 +44,6 @@
     <Reference Include="LeagueSharp.Data">
       <HintPath>C:\Software\PlaySharp\References\LeagueSharp.Data.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.SDKEx">
-      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.SDKEx.dll</HintPath>
-    </Reference>
     <Reference Include="RethoughtLib">
       <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
     </Reference>
@@ -118,7 +115,6 @@
     <Compile Include="Champions\Gragas\Menus\Draw\DrawQ.cs" />
     <Compile Include="Champions\Gragas\Menus\Draw\DrawR.cs" />
     <Compile Include="HpBarIndicator.cs" />
-    <Compile Include="Champions\Diana\Module\Assembly\Assembly.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\Combo.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\CrescentStrike.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\LunarRush.cs" />
@@ -136,7 +132,6 @@
     <Compile Include="Champions\Diana\OrbwalkingMode\Laneclear\LaneLunarRush.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Mixed\MixedCrescentStrike.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Target\CheckTarget.cs" />
     <Compile Include="Champions\Diana\Variables.cs" />
     <Compile Include="Champions\Gragas\Logic\LogicAll.cs" />
     <Compile Include="Champions\Gragas\Logic\QLogic.cs" />

@@ -2,6 +2,7 @@
 using LeagueSharp;
 using LeagueSharp.Common;
 using RethoughtLib.Classes.Feature;
+using RethoughtLib;
 using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo

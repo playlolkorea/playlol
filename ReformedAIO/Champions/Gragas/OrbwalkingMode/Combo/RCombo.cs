@@ -5,8 +5,6 @@ using LeagueSharp.Common;
 using ReformedAIO.Champions.Gragas.Logic;
 using RethoughtLib.Classes.Feature;
 using RethoughtLib.Events;
-using RethoughtLib.TargetValidator;
-using RethoughtLib.TargetValidator.Implementations;
 using SharpDX;
 using SPrediction;
 
@@ -48,15 +46,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
         {
             var target = TargetSelector.GetSelectedTarget();
 
-            var targetValidator = new TargetValidator();
-            
-            var check = new IsValidTargetCheck();
-
-            targetValidator.AddCheck(check);
-            targetValidator.RemoveCheck(check);
-            var valid = targetValidator.Check(target);
-
-            if (target.IsDashing()) return;
+           if(target == null || !target.IsValidTarget() || target.IsDashing()) return;
 
             Variable.Player.IssueOrder(GameObjectOrder.MoveTo, target);
 
