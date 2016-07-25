@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
 {
-    class LaneCrescentStrike : FeatureChild<Laneclear>
+    internal class LaneCrescentStrike : FeatureChild<Laneclear>
     {
         public LaneCrescentStrike(Laneclear parent) : base(parent)
         {

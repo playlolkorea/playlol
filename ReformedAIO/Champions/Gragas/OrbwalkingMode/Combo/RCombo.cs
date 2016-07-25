@@ -10,7 +10,7 @@ using SPrediction;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
 {
-    class RCombo : FeatureChild<Combo>
+    internal class RCombo : FeatureChild<Combo>
     {
         public override string Name => "[R] Explosive Cask";
 
@@ -84,7 +84,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
             }  
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

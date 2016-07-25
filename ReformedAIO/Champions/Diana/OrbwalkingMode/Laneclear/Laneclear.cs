@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
 {
-    class Laneclear : FeatureParent
+    internal class Laneclear : FeatureParent
     {
         public Laneclear(Menu rootMenu) : base(rootMenu)
         {

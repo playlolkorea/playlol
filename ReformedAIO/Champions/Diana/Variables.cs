@@ -4,7 +4,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Diana
 {
-    class Variables
+    internal class Variables
     {
         public static Orbwalking.Orbwalker Orbwalker { get; internal set; }
 

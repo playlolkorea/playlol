@@ -5,7 +5,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Gragas.Menus.Draw
 {
-    class DrawR : FeatureChild<Draw>
+    internal class DrawR : FeatureChild<Draw>
     {
         public DrawR(Draw parent) : base(parent)
         {

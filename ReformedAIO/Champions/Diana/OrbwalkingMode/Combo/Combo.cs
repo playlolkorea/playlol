@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    class Combo : FeatureParent
+    internal class Combo : FeatureParent
     {
         public Combo(Menu rootMenu) : base(rootMenu)
         {

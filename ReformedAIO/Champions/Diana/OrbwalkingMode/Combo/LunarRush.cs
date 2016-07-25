@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    class LunarRush : FeatureChild<Combo>
+    internal class LunarRush : FeatureChild<Combo>
     {
         public LunarRush(Combo parent) : base(parent)
         {

@@ -8,7 +8,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Gragas.Menus.Draw
 {
-    class DrawIndicator : FeatureChild<Draw>
+    internal class DrawIndicator : FeatureChild<Draw>
     {
         public DrawIndicator(Draw parent) : base(parent)
         {

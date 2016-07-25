@@ -5,7 +5,7 @@ using SPrediction;
 
 namespace ReformedAIO.Champions.Diana.Logic
 {
-    class CrescentStrikeLogic
+    internal class CrescentStrikeLogic
     {
         protected Obj_AI_Hero Target;
 

@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Flee
 {
-    class FleeMode : FeatureChild<Flee>
+    internal class FleeMode : FeatureChild<Flee>
     {
         public FleeMode(Flee parent) : base(parent)
         {

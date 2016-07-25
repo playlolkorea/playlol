@@ -6,7 +6,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    class CrescentStrike : FeatureChild<Combo>
+    internal class CrescentStrike : FeatureChild<Combo>
     {
         public CrescentStrike(Combo parent) : base(parent)
         {

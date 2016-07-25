@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    class PaleCascade : FeatureChild<Combo>
+    internal class PaleCascade : FeatureChild<Combo>
     {
         public PaleCascade(Combo parent) : base(parent)
         {

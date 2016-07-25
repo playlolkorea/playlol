@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReformedAIO.Utilities
 {
-    class UtilityLoader
+    internal class UtilityLoader
     {
         public void Initialize()
         {

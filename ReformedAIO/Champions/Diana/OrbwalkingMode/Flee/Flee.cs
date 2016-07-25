@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Flee
 {
-    class Flee : FeatureParent
+    internal class Flee : FeatureParent
     {
         public Flee(Menu rootMenu) : base(rootMenu)
         {

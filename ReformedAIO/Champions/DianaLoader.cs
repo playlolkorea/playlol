@@ -19,7 +19,7 @@ using PaleCascade = ReformedAIO.Champions.Diana.OrbwalkingMode.Combo.PaleCascade
 
 namespace ReformedAIO.Champions
 {
-    class DianaLoader : ILoadable
+    internal class DianaLoader : ILoadable
     {
         private readonly List<IFeatureChild> _apply = new List<IFeatureChild>();
 

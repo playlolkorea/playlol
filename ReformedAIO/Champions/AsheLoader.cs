@@ -13,7 +13,7 @@ using Draw = ReformedAIO.Champions.Ashe.Drawings.Draw;
 
 namespace ReformedAIO.Champions
 {
-    class AsheLoader : ILoadable
+    internal class AsheLoader : ILoadable
     {
         private readonly List<IFeatureChild> _apply = new List<IFeatureChild>();
 

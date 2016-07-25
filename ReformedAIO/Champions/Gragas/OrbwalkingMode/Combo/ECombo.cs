@@ -7,7 +7,7 @@ using SPrediction;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
 {
-    class ECombo : FeatureChild<Combo>
+    internal class ECombo : FeatureChild<Combo>
     {
         public override string Name => "[E] Body Slam";
 
@@ -45,7 +45,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
             this.BodySlam();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

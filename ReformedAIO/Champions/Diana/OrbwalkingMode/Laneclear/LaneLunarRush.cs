@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
 {
-    class LaneLunarRush : FeatureChild<Laneclear>
+    internal class LaneLunarRush : FeatureChild<Laneclear>
     {
         public LaneLunarRush(Laneclear parent) : base(parent)
         {

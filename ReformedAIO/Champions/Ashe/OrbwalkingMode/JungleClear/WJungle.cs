@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
 {
-    class WJungle : FeatureChild<Jungle>
+    internal class WJungle : FeatureChild<Jungle>
     {
         public override string Name => "[W] Volley";
 
@@ -37,7 +37,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
             this.Volley();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

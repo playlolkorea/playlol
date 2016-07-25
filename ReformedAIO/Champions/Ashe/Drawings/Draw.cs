@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Ashe.Drawings
 {
-    class Draw : FeatureParent
+    internal class Draw : FeatureParent
     {
         public Draw(Menu rootMenu) : base(rootMenu)
         {

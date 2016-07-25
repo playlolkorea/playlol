@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Jungleclear
 {
-    class JungleMoonfall : FeatureChild<Jungleclear>
+    internal class JungleMoonfall : FeatureChild<Jungleclear>
     {
         public JungleMoonfall(Jungleclear parent) : base(parent)
         {

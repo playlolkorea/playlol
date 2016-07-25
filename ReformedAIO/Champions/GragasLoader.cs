@@ -13,7 +13,7 @@ using RethoughtLib.Classes.Intefaces;
 
 namespace ReformedAIO.Champions
 {
-    class GragasLoader : ILoadable
+    internal class GragasLoader : ILoadable
     {
         private readonly List<IFeatureChild> _apply = new List<IFeatureChild>();
 

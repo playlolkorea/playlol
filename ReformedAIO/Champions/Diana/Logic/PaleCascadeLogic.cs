@@ -4,7 +4,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Diana.Logic
 {
-    class PaleCascadeLogic
+    internal class PaleCascadeLogic
     {
         protected Obj_AI_Hero Target;
 

@@ -6,7 +6,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Ashe.Logic
 {
-    class ELogic
+    internal class ELogic
     {
         public bool CanCastE()
         {

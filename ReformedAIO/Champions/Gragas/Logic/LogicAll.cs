@@ -3,7 +3,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Gragas.Logic
 {
-    class LogicAll
+    internal class LogicAll
     {
         public float ComboDmg(Obj_AI_Base x)
         {

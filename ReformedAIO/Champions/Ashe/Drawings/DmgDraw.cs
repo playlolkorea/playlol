@@ -8,7 +8,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Ashe.Drawings
 {
-    class DmgDraw : FeatureChild<Draw>
+    internal class DmgDraw : FeatureChild<Draw>
     {
         public DmgDraw(Draw parent) : base(parent)
         {
@@ -38,7 +38,7 @@ namespace ReformedAIO.Champions.Ashe.Drawings
 
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {          
             Menu = new Menu(Name, Name);
 

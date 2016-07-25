@@ -6,7 +6,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Mixed
 {
-    class MixedCrescentStrike : FeatureChild<Mixed>
+    internal class MixedCrescentStrike : FeatureChild<Mixed>
     {
         public MixedCrescentStrike(Mixed parent) : base(parent)
         {

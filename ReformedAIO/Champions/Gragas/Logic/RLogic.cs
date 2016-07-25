@@ -5,7 +5,7 @@ using SPrediction;
 
 namespace ReformedAIO.Champions.Gragas.Logic
 {
-    class RLogic
+    internal class RLogic
     {
         public Vector3 RPred(Obj_AI_Hero target)
         {

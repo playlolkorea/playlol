@@ -5,7 +5,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Gragas.Logic
 {
-    class QLogic
+    internal class QLogic
     {
 
         public Vector3 QPred(Obj_AI_Hero target)

@@ -7,7 +7,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Diana.Menus.Draw
 {
-    class DrawDmg : FeatureChild<Draw>
+    internal class DrawDmg : FeatureChild<Draw>
     {
         public DrawDmg(Draw parent) : base(parent)
         {

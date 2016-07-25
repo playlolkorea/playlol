@@ -6,7 +6,7 @@ using RethoughtLib.Classes.Intefaces;
 
 namespace ReformedAIO.Champions
 {
-    class Bootstrap : LeagueSharpAutoBootstrap
+    internal class Bootstrap : LeagueSharpAutoBootstrap
     {
         public Bootstrap(List<ILoadable> modules, List<string> additionalStrings = null) : base(modules, additionalStrings)
         {

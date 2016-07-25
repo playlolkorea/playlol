@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
 {
-    class QJungle : FeatureChild<Jungle>
+    internal class QJungle : FeatureChild<Jungle>
     {
         public override string Name => "[Q] Ranger's Focus";
 
@@ -36,7 +36,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
             this.RangersFocus();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

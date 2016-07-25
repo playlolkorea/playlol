@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 {
-    class RCombo : FeatureChild<Combo>
+    internal class RCombo : FeatureChild<Combo>
     {
         public override string Name => "[R] Crystal Arrow";
 
@@ -53,22 +53,44 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
             Variable.Spells[SpellSlot.R].CastIfHitchanceEquals(target, HitChance.High);
         }
 
+        private void SemiR()
+        {
+            if(!Menu.Item(Menu.Name + "SemiR").GetValue<KeyBind>().Active) return;
+
+            if(Variable.Player.CountEnemiesInRange(1500) == 0) return;
+
+            var target = TargetSelector.GetSelectedTarget();
+            if(target == null) return;
+
+            var pred = Variable.Spells[SpellSlot.R].GetPrediction(target);
+            if (pred.Hitchance >= HitChance.High)
+            {
+                Variable.Spells[SpellSlot.R].Cast(pred.CastPosition);
+            }
+        }
+
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.R].IsReady()) return;
+            if (!Variable.Spells[SpellSlot.R].IsReady()) return;
+
+            this.SemiR();
+
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
 
             if (Menu.Item(Menu.Name + "RMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
             this.CrystalArrow();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "RDistance", "Max Distance").SetValue(new Slider(1100, 0, 1500)).SetTooltip("Too Much And You Might Not Get The Kill"));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "RMana", "Mana %").SetValue(new Slider(10, 0, 100)));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "SemiR", "Semi-Auto R Key").SetValue(new KeyBind('A', KeyBindType.Press)).SetTooltip("Select Your Target First"));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "RKillable", "Only When Killable").SetValue(true));
 

@@ -6,7 +6,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
 {
-    class QCombo : FeatureChild<Combo>
+    internal class QCombo : FeatureChild<Combo>
     {
         public override string Name => "[Q] Barrel Roll";
 
@@ -46,7 +46,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
             this.BarrelRoll();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

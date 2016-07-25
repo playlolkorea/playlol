@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
 {
-    class Lane : FeatureParent
+    internal class Lane : FeatureParent
     {
         public Lane(Menu rootMenu) : base(rootMenu)
         {

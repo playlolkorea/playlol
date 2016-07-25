@@ -6,7 +6,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.Menus.Draw
 {
-    class DrawPred : FeatureChild<Draw>
+    internal class DrawPred : FeatureChild<Draw>
     {
         public DrawPred(Draw parent) : base(parent)
         {

@@ -5,7 +5,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Diana.Logic
 {
-    class LogicAll
+    internal class LogicAll
     {
        
 

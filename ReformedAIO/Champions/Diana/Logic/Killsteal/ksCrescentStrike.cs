@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.Logic.Killsteal
 {
-    class ksCrescentStrike : FeatureChild<Killsteal>
+    internal class ksCrescentStrike : FeatureChild<Killsteal>
     {
         public ksCrescentStrike(Killsteal parent) : base(parent)
         {

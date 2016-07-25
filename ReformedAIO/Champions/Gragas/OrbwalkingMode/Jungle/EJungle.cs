@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Jungle
 {
-    class EJungle : FeatureChild<Jungle>
+    internal class EJungle : FeatureChild<Jungle>
     {
         public override string Name => "[E] Body Slam";
 
@@ -34,7 +34,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Jungle
             this.BodySlam();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

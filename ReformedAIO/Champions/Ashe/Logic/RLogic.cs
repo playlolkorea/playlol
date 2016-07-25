@@ -3,7 +3,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Ashe.Logic
 {
-    class RLogic
+    internal class RLogic
     {
         public bool SafeR(Obj_AI_Hero target)
         {

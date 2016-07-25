@@ -8,7 +8,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 {
-    class ECombo : FeatureChild<Combo>
+    internal class ECombo : FeatureChild<Combo>
     {
         public override string Name => "[E] Hawkshot";
 
@@ -75,7 +75,7 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
             this.Hawkshot();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
 {
-    class Jungle : FeatureParent
+    internal class Jungle : FeatureParent
     {
         public Jungle(Menu rootMenu) : base(rootMenu)
         {

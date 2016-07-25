@@ -12,7 +12,7 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
 {
     using Logic;
 
-    class MisayaCombo : FeatureChild<Misaya>
+    internal class MisayaCombo : FeatureChild<Misaya>
     {
         public MisayaCombo(Misaya parent) : base(parent)
         {

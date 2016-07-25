@@ -3,7 +3,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Ashe.Logic
 {
-    class QLogic
+    internal class QLogic
     {
         public int QCount()
         {

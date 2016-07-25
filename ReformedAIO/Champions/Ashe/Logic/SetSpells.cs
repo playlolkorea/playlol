@@ -4,7 +4,7 @@ using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Ashe.Logic
 {
-    class SetSpells
+    internal class SetSpells
     {
         public void Load()
         {

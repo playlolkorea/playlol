@@ -8,7 +8,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
 {
-    class WLane : FeatureChild<Lane>
+    internal class WLane : FeatureChild<Lane>
     {
         public WLane(Lane parent) : base(parent)
         {

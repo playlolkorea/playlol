@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 {
-    class WCombo : FeatureChild<Combo>
+    internal class WCombo : FeatureChild<Combo>
     {
         public override string Name => "[W] Volley";
 
@@ -29,13 +29,13 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         private void OnUpdate(EventArgs args)
         {
-            
+           
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.W].IsReady() || Variable.Player.IsWindingUp) return;
 
             this.Volley();
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             this.Menu = new Menu(this.Name, this.Name);
 

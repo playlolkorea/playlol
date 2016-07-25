@@ -1,16 +1,19 @@
 ﻿using RethoughtLib.Classes.Intefaces;
-using RethoughtLib.Classes.Bootstraps;
 using System.Collections.Generic;
 using ReformedAIO.Champions;
 
 namespace ReformedAIO
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             RethoughtLib.RethoughtLib.Instance.Load();
-            var bootstrap = new Bootstrap(new List<ILoadable>() { new DianaLoader(), new GragasLoader(), new AsheLoader() });
+
+            var bootstrap = new Bootstrap(new List<ILoadable>
+            {
+                new DianaLoader(), new GragasLoader(), new AsheLoader(), new RyzeLoader()
+            });
         }
     }
 }

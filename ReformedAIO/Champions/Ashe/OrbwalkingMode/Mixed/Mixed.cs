@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Mixed
 {
-    class Mixed : FeatureParent
+    internal class Mixed : FeatureParent
     {
         public Mixed(Menu rootMenu) : base(rootMenu)
         {

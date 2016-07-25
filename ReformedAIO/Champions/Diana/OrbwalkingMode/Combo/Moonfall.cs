@@ -6,7 +6,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    class Moonfall : FeatureChild<Combo>
+    internal class Moonfall : FeatureChild<Combo>
     {
         public Moonfall(Combo parent) : base(parent)
         {

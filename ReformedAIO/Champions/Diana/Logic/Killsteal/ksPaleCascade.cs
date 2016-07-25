@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Diana.Logic.Killsteal
 {
-    class ksPaleCascade : FeatureChild<Killsteal>
+    internal class ksPaleCascade : FeatureChild<Killsteal>
     {
         public ksPaleCascade(Killsteal parent) : base(parent)
         {

@@ -7,7 +7,7 @@ using RethoughtLib.Events;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
 {
-    class LaneE : FeatureChild<Lane>
+    internal class LaneE : FeatureChild<Lane>
     {
 
         public LaneE(Lane parent) : base(parent)

@@ -23,7 +23,7 @@ namespace ReformedAIO.Champions.Ashe.Drawings
                     : System.Drawing.Color.IndianRed);
         }
 
-        protected override sealed void OnLoad()
+        protected sealed override void OnLoad()
         {
             Menu = new Menu(Name, Name);
 

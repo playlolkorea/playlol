@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Jungleclear
 {
-    class Jungleclear : FeatureParent
+    internal class Jungleclear : FeatureParent
     {
         public Jungleclear(Menu rootMenu) : base(rootMenu)
         {

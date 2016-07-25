@@ -17,3 +17,23 @@ C:\Users\Nechrito\documents\visual studio 2015\Projects\ReformedAIO\ReformedAIO\
 C:\Users\Nechrito\documents\visual studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.pdb
 C:\Users\Nechrito\documents\visual studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.dll
 C:\Users\Nechrito\documents\visual studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.pdb
+C:\Users\Nechr\Desktop\Projects\ReformedAIO\ReformedAIO\bin\Debug\ReformedAIO.exe.config
+C:\Users\Nechr\Desktop\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.exe
+C:\Users\Nechr\Desktop\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\ReformedAIO.exe.config
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.exe
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\ReformedAIO.exe
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\ReformedAIO.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Common.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Data.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SharpDX.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\clipper_library.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Common.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Data.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\RethoughtLib.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.csprojResolveAssemblyReference.cache
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\RethoughtLib.dll

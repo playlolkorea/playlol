@@ -4,7 +4,7 @@ using SharpDX;
 
 namespace ReformedAIO.Champions.Diana.Logic
 {
-    class FleeLogic
+    internal class FleeLogic
     {
 
         public readonly List<Vector3> JunglePos = new List<Vector3>()

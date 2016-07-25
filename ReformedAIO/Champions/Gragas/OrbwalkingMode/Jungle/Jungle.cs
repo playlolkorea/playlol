@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Jungle
 {
-    class Jungle : FeatureParent
+    internal class Jungle : FeatureParent
     {
         public Jungle(Menu rootMenu) : base(rootMenu)
         {

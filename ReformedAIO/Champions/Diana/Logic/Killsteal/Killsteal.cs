@@ -3,7 +3,7 @@ using RethoughtLib.Classes.Feature;
 
 namespace ReformedAIO.Champions.Diana.Logic.Killsteal
 {
-    class Killsteal : FeatureParent
+    internal class Killsteal : FeatureParent
     {
         public Killsteal(Menu rootMenu) : base(rootMenu)
         {
