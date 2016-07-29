@@ -106,6 +106,8 @@
     <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\QLane.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\WLane.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\Mixed.cs" />
+    <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\QMixed.cs" />
+    <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\WMixed.cs" />
     <Compile Include="Champions\Ashe\Variable.cs" />
     <Compile Include="Champions\Bootstrap.cs" />
     <Compile Include="Champions\DianaLoader.cs" />

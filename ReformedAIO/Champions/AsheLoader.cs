@@ -7,6 +7,7 @@ using ReformedAIO.Champions.Ashe.Logic;
 using ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo;
 using ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear;
 using ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear;
+using ReformedAIO.Champions.Ashe.OrbwalkingMode.Mixed;
 using RethoughtLib.Classes.Feature;
 using RethoughtLib.Classes.Intefaces;
 using Draw = ReformedAIO.Champions.Ashe.Drawings.Draw; 
@@ -32,6 +33,7 @@ namespace ReformedAIO.Champions
             setSpell.Load();
 
             var combo = new Combo(rootMenu);
+            var mixed = new Mixed(rootMenu);
             var jungle = new Jungle(rootMenu);
             var lane = new Lane(rootMenu);
             var draw = new Draw(rootMenu);
@@ -40,6 +42,9 @@ namespace ReformedAIO.Champions
             _apply.Add(new WCombo(combo));
             _apply.Add(new ECombo(combo));
             _apply.Add(new RCombo(combo));
+
+            _apply.Add(new QMixed(mixed));
+            _apply.Add(new WMixed(mixed));
 
             _apply.Add(new QJungle(jungle));
             _apply.Add(new WJungle(jungle));
