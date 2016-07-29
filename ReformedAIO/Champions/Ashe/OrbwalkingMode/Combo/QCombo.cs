@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using ReformedAIO.Champions.Ashe.Logic;
@@ -20,8 +21,9 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 
         private void RangersFocus()
         {
-            var target = TargetSelector.GetTarget(Orbwalking.GetRealAutoAttackRange(Variable.Player), TargetSelector.DamageType.Physical);
-            
+           // var target = TargetSelector.GetTarget(Orbwalking.GetRealAutoAttackRange(Variable.Player), TargetSelector.DamageType.Physical);
+            var target = HeroManager.Enemies.Where(Orbwalking.InAutoAttackRange).FirstOrDefault(x => !x.HasBuff(""));
+
             if (target == null || !target.IsValid) return;
 
             if(Menu.Item(Menu.Name + "AAQ").GetValue<bool>() && Variable.Player.IsWindingUp) return;

@@ -1,5 +1,4 @@
 ﻿using LeagueSharp;
-using LeagueSharp.Common;
 
 namespace ReformedAIO.Champions.Ashe.Logic
 {
@@ -12,7 +11,7 @@ namespace ReformedAIO.Champions.Ashe.Logic
 
         public void Kite(Obj_AI_Base x)
         {
-            if(x == null || x.Distance(Variable.Player) > Variable.Player.AttackRange || x.HasBuffOfType(BuffType.PhysicalImmunity)) return;
+            if(x == null || x.HasBuffOfType(BuffType.PhysicalImmunity)) return;
 
             Variable.Orbwalker.ForceTarget(x);
         }
