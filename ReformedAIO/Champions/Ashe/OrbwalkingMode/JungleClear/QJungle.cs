@@ -1,62 +1,79 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
+﻿namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear
 {
-    internal class QJungle : FeatureChild<Jungle>
-    {
-        public override string Name => "[Q] Ranger's Focus";
+    #region Using Directives
 
-        
-        public QJungle(Jungle parent) : base(parent)
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal sealed class QJungle : ChildBase
+    {
+        #region Constructors and Destructors
+
+        public QJungle(string name)
         {
-            this.OnLoad();
+            this.Name = name;
         }
 
-        private void RangersFocus()
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var mobs = MinionManager.GetMinions(Variable.Player.AttackRange, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            Events.OnUpdate -= this.OnUpdate;
+        }
 
-            if (mobs == null || !mobs.IsValid) return;
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            if(Menu.Item(Menu.Name + "QOverkill").GetValue<bool>() && mobs.Health < Variable.Player.GetAutoAttackDamage(mobs) * 2 && Variable.Player.HealthPercent >= 13) return;
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            base.OnLoad(sender, featureBaseEventArgs);
 
-            Variable.Spells[SpellSlot.Q].Cast();
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QOverkill", "Overkill Check").SetValue(true));
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.Q].IsReady() || Variable.Player.IsWindingUp) return;
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.Q].IsReady() || Variable.Player.IsWindingUp) return;
 
-           
             this.RangersFocus();
         }
 
-        protected sealed override void OnLoad()
+        private void RangersFocus()
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            var mobs =
+                MinionManager.GetMinions(
+                    Variable.Player.AttackRange,
+                    MinionTypes.All,
+                    MinionTeam.Neutral,
+                    MinionOrderTypes.MaxHealth).FirstOrDefault();
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QOverkill", "Overkill Check").SetValue(true));
+            if (mobs == null || !mobs.IsValid) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            if (this.Menu.Item(this.Menu.Name + "QOverkill").GetValue<bool>()
+                && mobs.Health < Variable.Player.GetAutoAttackDamage(mobs) * 2 && Variable.Player.HealthPercent >= 13) return;
 
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            Variable.Spells[SpellSlot.Q].Cast();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

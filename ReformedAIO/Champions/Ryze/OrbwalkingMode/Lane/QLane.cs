@@ -1,33 +1,62 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using ReformedAIO.Champions.Ryze.Logic;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Lane
+﻿namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Lane
 {
-    internal class QLane : FeatureChild<Lane>
-    {
-        public QLane(Lane parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+    #region Using Directives
 
-        public override string Name => "[Q] Overload";
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Ryze.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class QLane : ChildBase
+    {
+        #region Fields
 
         private ELogic eLogic;
 
         private QLogic qLoigc;
 
-        private void OnUpdate(EventArgs args)
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[Q] Overload";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.Q].IsReady()) return;
+            Events.OnUpdate -= this.OnUpdate;
 
-            if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+        }
 
-            this.GetMinions();
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+            
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.eLogic = new ELogic();
+            this.qLoigc = new QLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
         }
 
         private void GetMinions()
@@ -36,50 +65,31 @@ namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Lane
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>() && minions.Any(m => m.CountEnemiesInRange(1750) > 0))
+            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>()
+                && minions.Any(m => m.CountEnemiesInRange(1750) > 0))
             {
                 return;
             }
 
             foreach (var m in minions)
             {
-                if (eLogic.RyzeE(m))
+                if (this.eLogic.RyzeE(m))
                 {
-                    Variable.Spells[SpellSlot.Q].Cast(qLoigc.QPred(m));
+                    Variable.Spells[SpellSlot.Q].Cast(this.qLoigc.QPred(m));
                 }
             }
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+            if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.GetMinions();
         }
 
-        protected override void OnInitialize()
-        {
-            this.eLogic = new ELogic();
-            this.qLoigc = new QLogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

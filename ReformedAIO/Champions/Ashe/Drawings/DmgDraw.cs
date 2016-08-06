@@ -1,71 +1,81 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using ReformedAIO.Champions.Ashe.Logic;
-using RethoughtLib.Classes.Feature;
-using SharpDX;
-
-namespace ReformedAIO.Champions.Ashe.Drawings
+﻿namespace ReformedAIO.Champions.Ashe.Drawings
 {
-    internal class DmgDraw : FeatureChild<Draw>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Ashe.Logic;
+
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    using SharpDX;
+
+    #endregion
+
+    internal class DmgDraw : ChildBase
     {
-        public DmgDraw(Draw parent) : base(parent)
+        #region Fields
+
+        private HpBarIndicator drawDamage;
+
+        private RLogic logic;
+
+        #endregion
+
+        #region Public Properties
+
+        public sealed override string Name { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public DmgDraw(string name)
         {
-            this.OnLoad();
+            this.Name = name;
         }
-
-        private HpBarIndicator DrawDamage;
-
-        private RLogic logic; // Cba make new one, might aswell make use of this.
 
         public void OnDraw(EventArgs args)
         {
             if (Variable.Player.IsDead) return;
 
-
-
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget(900) && !ene.IsZombie))
+            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget(1500)))
             {
-                var EasyKill = Variable.Spells[SpellSlot.R].IsReady()
-                       ? new ColorBGRA(0, 255, 0, 120)
-                       : new ColorBGRA(255, 255, 0, 120);
-
-                DrawDamage.Unit = enemy;
-                DrawDamage.DrawDmg(logic.ComboDamage(enemy), EasyKill);
+                
+                this.drawDamage.Unit = enemy;
+                this.drawDamage.DrawDmg(this.logic.ComboDamage(enemy), Color.LawnGreen);
             }
-
-
         }
 
-        protected sealed override void OnLoad()
-        {          
-            Menu = new Menu(Name, Name);
+        #endregion
 
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
+        #region Methods
 
-            Parent.Menu.AddSubMenu(Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.logic = new RLogic();
-            this.DrawDamage = new HpBarIndicator();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw -= this.OnDraw;
-            base.OnDisable();
         }
 
-        protected override void OnEnable()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw += this.OnDraw;
-            base.OnEnable();
         }
 
-        public override string Name => "Draw Damage";
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.logic = new RLogic();
+            this.drawDamage = new HpBarIndicator();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+        }
+
+        #endregion
     }
 }

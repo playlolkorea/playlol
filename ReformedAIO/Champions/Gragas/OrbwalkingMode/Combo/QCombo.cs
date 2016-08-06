@@ -1,37 +1,74 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
+﻿namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
 {
-    internal class QCombo : FeatureChild<Combo>
+    #region Using Directives
+
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Gragas.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class QCombo : ChildBase
     {
-        public override string Name => "[Q] Barrel Roll";
+        #region Fields
 
-        private Logic.QLogic qLogic;
+        private QLogic qLogic;
 
-        public QCombo(Combo parent) : base(parent)
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[Q] Barrel Roll";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
+        }
+
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.qLogic = new QLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
+
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
         }
 
         private void BarrelRoll()
         {
-            var target = TargetSelector.GetTarget(Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
-              TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(
+                this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
+                TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
             if (target.HasBuffOfType(BuffType.Knockback)) return;
 
-            if (qLogic.CanThrowQ())
+            if (this.qLogic.CanThrowQ())
             {
-                Variable.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
+                Variable.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
             }
-            
-            if (qLogic.CanExplodeQ(target))
+
+            if (this.qLogic.CanExplodeQ(target))
             {
                 Variable.Spells[SpellSlot.Q].Cast();
             }
@@ -39,42 +76,14 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Combo
 
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.Q].IsReady()) return;
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
+                || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
             this.BarrelRoll();
         }
 
-        protected sealed override void OnLoad()
-        {
-            this.Menu = new Menu(this.Name, this.Name);
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.qLogic = new Logic.QLogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

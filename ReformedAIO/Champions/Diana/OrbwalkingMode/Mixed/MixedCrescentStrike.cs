@@ -1,69 +1,83 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Mixed
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Mixed
 {
-    internal class MixedCrescentStrike : FeatureChild<Mixed>
+    #region Using Directives
+
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Diana.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class MixedCrescentStrike : ChildBase
     {
-        public MixedCrescentStrike(Mixed parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+        #region Fields
 
-        public override string Name => "[Q] Crescent Strike";
+        private CrescentStrikeLogic qLogic;
 
-        private Logic.CrescentStrikeLogic qLogic;
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[Q] Crescent Strike";
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void OnUpdate(EventArgs args)
         {
-            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed || !Variables.Spells[SpellSlot.Q].IsReady()) return;
+            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed
+                || !Variables.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
 
             this.Crescent();
         }
 
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate -= this.OnUpdate;
+        }
+
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.qLogic = new CrescentStrikeLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
+
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
+        }
+
         private void Crescent()
         {
-            var target = TargetSelector.GetTarget(Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
+            var target = TargetSelector.GetTarget(
+                this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
-            Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
+            Variables.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
         }
 
-        protected sealed override void OnLoad()
-        {
-            this.Menu = new Menu(this.Name, this.Name);
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-            this.Parent.Menu.AddSubMenu(this.Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.qLogic = new Logic.CrescentStrikeLogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

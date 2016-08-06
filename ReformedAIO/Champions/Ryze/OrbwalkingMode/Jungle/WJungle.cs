@@ -1,23 +1,59 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Jungle
+﻿namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Jungle
 {
-    internal class WJungle : FeatureChild<Jungle>
-    {
-        public override string Name => "[W] Rune Prison";
+    #region Using Directives
 
-        public WJungle(Jungle parent) : base(parent)
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class WJungle : ChildBase
+    {
+        #region Public Properties
+
+        public override string Name { get; set; } = "[W] Rune Prison";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
+        }
+
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "WMana", "Mana %").SetValue(new Slider(0, 0, 100)));
+        }
+
+        private void OnUpdate(EventArgs args)
+        {
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.W].IsReady()) return;
+
+            if (this.Menu.Item(this.Menu.Name + "WMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+
+            this.SpellFlux();
         }
 
         private void SpellFlux()
         {
-            var mobs = MinionManager.GetMinions(Variable.Spells[SpellSlot.W].Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+            var mobs = MinionManager.GetMinions(
+                Variable.Spells[SpellSlot.W].Range,
+                MinionTypes.All,
+                MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
 
             if (mobs == null) return;
 
@@ -27,36 +63,6 @@ namespace ReformedAIO.Champions.Ryze.OrbwalkingMode.Jungle
             }
         }
 
-        private void OnUpdate(EventArgs args)
-        {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.W].IsReady()) return;
-
-            if (Menu.Item(Menu.Name + "WMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
-
-            this.SpellFlux();
-        }
-
-        protected sealed override void OnLoad()
-        {
-            this.Menu = new Menu(this.Name, this.Name);
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "WMana", "Mana %").SetValue(new Slider(0, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

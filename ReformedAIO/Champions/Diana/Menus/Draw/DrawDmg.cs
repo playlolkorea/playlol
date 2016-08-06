@@ -1,65 +1,86 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using SharpDX;
-
-namespace ReformedAIO.Champions.Diana.Menus.Draw
+﻿namespace ReformedAIO.Champions.Diana.Menus.Draw
 {
-    internal class DrawDmg : FeatureChild<Draw>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Diana.Logic;
+
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    using SharpDX;
+
+    #endregion
+
+    internal class DrawDmg : ChildBase
     {
-        public DrawDmg(Draw parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+        #region Fields
 
-        private Logic.LogicAll Logic;
+        private HpBarIndicator drawDamage;
 
-        private HpBarIndicator DrawDamage;
+        private LogicAll logic;
+
+        #endregion
+
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "Draw Damage";
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void OnEndScene(EventArgs args)
         {
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget(1200) && !ene.IsZombie))
+            foreach (
+                var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget(1200) && !ene.IsZombie))
             {
-                var EasyKill = Variables.Spells[SpellSlot.R].IsReady()
-                       ? new ColorBGRA(0, 255, 0, 120)
-                       : new ColorBGRA(255, 255, 0, 120);
+                var easyKill = Variables.Spells[SpellSlot.R].IsReady()
+                                   ? new ColorBGRA(0, 255, 0, 120)
+                                   : new ColorBGRA(255, 255, 0, 120);
 
-                DrawDamage.Unit = enemy;
-                DrawDamage.DrawDmg(Logic.ComboDmg(enemy), EasyKill);
+                this.drawDamage.Unit = enemy;
+                this.drawDamage.DrawDmg(this.logic.ComboDmg(enemy), easyKill);
             }
         }
 
-        protected sealed override void OnLoad()
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu = new Menu(Name, Name);
+            Drawing.OnEndScene -= this.OnEndScene;
 
-
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-
-            Parent.Menu.AddSubMenu(Menu);
         }
 
-        protected override void OnInitialize()
-        {
-            this.Logic = new Logic.LogicAll();
-            this.DrawDamage = new HpBarIndicator();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Drawing.OnEndScene-= this.OnEndScene;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnEndScene += this.OnEndScene;
-            base.OnEnable();
+            
         }
 
-        public override string Name => "Draw Damage";
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.logic = new LogicAll();
+            this.drawDamage = new HpBarIndicator();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected sealed override void OnLoad(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Menu = new Menu(this.Name, this.Name);
+
+            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+
+            
+        }
+
+        #endregion
     }
 }

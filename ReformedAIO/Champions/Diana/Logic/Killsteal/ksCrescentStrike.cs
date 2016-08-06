@@ -1,62 +1,72 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.Logic.Killsteal
+﻿namespace ReformedAIO.Champions.Diana.Logic.Killsteal
 {
-    internal class ksCrescentStrike : FeatureChild<Killsteal>
-    {
-        public ksCrescentStrike(Killsteal parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+    #region Using Directives
 
-        public override string Name => "[Q] Crescent Strike";
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class KsCrescentStrike : ChildBase
+    {
+        #region Fields
 
         private CrescentStrikeLogic qLogic;
 
-        private void OnUpdate(EventArgs args)
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[Q] Crescent Strike";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = HeroManager.Enemies .FirstOrDefault(x => !x.IsDead && x.IsValidTarget(Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value));
-
-            if(Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
-
-            if (target != null && target.Health < qLogic.GetDmg(target))
-            {
-                Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
-            }
+            Events.OnUpdate -= this.OnUpdate;
         }
 
-        protected override void OnLoad() // TODO Add Dmg Multiplier(?)
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            Events.OnUpdate += this.OnUpdate;
+        }
 
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.qLogic = new CrescentStrikeLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs) // TODO Add Dmg Multiplier(?)
+        {
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-            this.Parent.Menu.AddSubMenu(this.Menu);
-        }
-        protected override void OnInitialize()
-        {
-            this.qLogic = new CrescentStrikeLogic();
-            base.OnInitialize();
         }
 
-        protected override void OnDisable()
+        private void OnUpdate(EventArgs args)
         {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
+            var target =
+                HeroManager.Enemies.FirstOrDefault(
+                    x =>
+                    !x.IsDead && x.IsValidTarget(this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value));
+
+            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+
+            if (target != null && target.Health < this.qLogic.GetDmg(target))
+            {
+                Variables.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
+            }
         }
 
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

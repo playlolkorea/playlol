@@ -1,47 +1,63 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-
-namespace ReformedAIO.Champions.Diana.Menus.Draw
+﻿namespace ReformedAIO.Champions.Diana.Menus.Draw
 {
-    internal class DrawE : FeatureChild<Draw>
+    #region Using Directives
+
+    using System;
+    using System.Drawing;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class DrawE : ChildBase
     {
-        public DrawE(Draw parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "Draw [E]";
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void OnDraw(EventArgs args)
         {
             if (Variables.Player.IsDead) return;
 
-            Render.Circle.DrawCircle(Variables.Player.Position, Variables.Spells[SpellSlot.E].Range,
-                   Variables.Spells[SpellSlot.E].IsReady() ? System.Drawing.Color.FromArgb(120, 0, 170, 255) : System.Drawing.Color.IndianRed);
+            Render.Circle.DrawCircle(
+                Variables.Player.Position,
+                Variables.Spells[SpellSlot.E].Range,
+                Variables.Spells[SpellSlot.E].IsReady() ? Color.FromArgb(120, 0, 170, 255) : Color.IndianRed);
         }
 
-        protected sealed override void OnLoad()
-        {
-            Menu = new Menu(Name, Name);
+        #endregion
 
+        #region Methods
 
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-
-            Parent.Menu.AddSubMenu(Menu);
-        }
-
-        protected override void OnDisable()
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw -= this.OnDraw;
-            base.OnDisable();
+
         }
 
-        protected override void OnEnable()
+        protected override void OnEnable(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw += this.OnDraw;
-            base.OnEnable();
+            
         }
 
-        public override string Name => "Draw [E]";
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Menu = new Menu(this.Name, this.Name);
+
+            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+
+            
+        }
+
+        #endregion
     }
 }

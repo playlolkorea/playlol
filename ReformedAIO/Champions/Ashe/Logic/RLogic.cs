@@ -1,54 +1,15 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace ReformedAIO.Champions.Ashe.Logic
+﻿namespace ReformedAIO.Champions.Ashe.Logic
 {
+    #region Using Directives
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    #endregion
+
     internal class RLogic
     {
-        public bool SafeR(Obj_AI_Hero target)
-        {
-            bool safe;
-
-            if (target.Distance(Variable.Player) < 1500) safe = true;
-
-            if(target.CountAlliesInRange(1500) > target.CountEnemiesInRange(1500) || Variable.Player.Health > target.Health || ComboDamage(target) > target.Health); safe = true;
-            // This will count for more allies than enemies in 1500 units or if player health is more than targets health, can be improved.
-
-
-            if (target.HasBuffOfType(BuffType.SpellShield) || target.UnderTurret() || target.HasBuffOfType(BuffType.PhysicalImmunity) ||
-                target.HasBuff("kindredrnodeathbuff") || target.HasBuff("Chrono Shift")) safe = false;
-
-            return safe;
-        }
-
-        public bool Killable(Obj_AI_Hero target)
-        {
-            return RDmg(target) > target.Health && target.Distance(Variable.Player) < 1500;
-        }
-
-        private int QCount()
-        {
-            return Variable.Player.GetBuffCount("AsheQ");
-        }
-
-        public float RDmg(Obj_AI_Hero target)
-        {
-            var dmg = 0f;
-
-            if (!Variable.Spells[SpellSlot.R].IsReady()) return 0f;
-
-            if (Variable.Spells[SpellSlot.Q].IsReady() || QCount() >= 3) dmg = dmg +
-                    (float)Variable.Player.GetAutoAttackDamage(target) * 5 + Variable.Spells[SpellSlot.Q].GetDamage(target);
-
-            else
-            {
-                dmg = dmg + (float) Variable.Player.GetAutoAttackDamage(target) * 2;
-            } 
-
-            dmg = dmg + Variable.Spells[SpellSlot.R].GetDamage(target);
-
-            return dmg;
-        }
+        #region Public Methods and Operators
 
         public float ComboDamage(Obj_AI_Hero target)
         {
@@ -67,5 +28,58 @@ namespace ReformedAIO.Champions.Ashe.Logic
             return dmg;
         }
 
+        public bool Killable(Obj_AI_Hero target)
+        {
+            return this.RDmg(target) > target.Health && target.Distance(Variable.Player) < 1500;
+        }
+
+        public float RDmg(Obj_AI_Hero target)
+        {
+            var dmg = 0f;
+
+            if (!Variable.Spells[SpellSlot.R].IsReady()) return 0f;
+
+            if (Variable.Spells[SpellSlot.Q].IsReady() || this.QCount() >= 3)
+                dmg = dmg + (float)Variable.Player.GetAutoAttackDamage(target) * 5
+                      + Variable.Spells[SpellSlot.Q].GetDamage(target);
+
+            else
+            {
+                dmg = dmg + (float)Variable.Player.GetAutoAttackDamage(target) * 2;
+            }
+
+            dmg = dmg + Variable.Spells[SpellSlot.R].GetDamage(target);
+
+            return dmg;
+        }
+
+        public bool SafeR(Obj_AI_Hero target)
+        {
+            bool safe;
+
+            if (target.Distance(Variable.Player) < 1500) safe = true;
+
+            if (target.CountAlliesInRange(1500) > target.CountEnemiesInRange(1500)
+                || Variable.Player.Health > target.Health || this.ComboDamage(target) > target.Health) ;
+            safe = true;
+            // This will count for more allies than enemies in 1500 units or if player health is more than targets health, can be improved.
+
+            if (target.HasBuffOfType(BuffType.SpellShield) || target.UnderTurret()
+                || target.HasBuffOfType(BuffType.PhysicalImmunity) || target.HasBuff("kindredrnodeathbuff")
+                || target.HasBuff("Chrono Shift")) safe = false;
+
+            return safe;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private int QCount()
+        {
+            return Variable.Player.GetBuffCount("AsheQ");
+        }
+
+        #endregion
     }
 }

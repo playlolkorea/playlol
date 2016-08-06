@@ -1,19 +1,34 @@
-﻿using RethoughtLib.Classes.Intefaces;
-using System.Collections.Generic;
-using ReformedAIO.Champions;
-
-namespace ReformedAIO
+﻿namespace ReformedAIO
 {
+    #region Using Directives
+
+    using System.Collections.Generic;
+
+    using ReformedAIO.Champions;
+    using ReformedAIO.Champions.Ashe;
+    using ReformedAIO.Champions.Diana;
+    using ReformedAIO.Champions.Gragas;
+    using ReformedAIO.Champions.Ryze;
+
+    using RethoughtLib;
+    using RethoughtLib.Bootstraps.Abstract_Classes;
+    using RethoughtLib.Classes.General_Intefaces;
+
+    #endregion
+
     internal class Program
     {
-        private static void Main()
-        {
-            RethoughtLib.RethoughtLib.Instance.Load();
+        #region Methods
 
-            var bootstrap = new Bootstrap(new List<ILoadable>
-            {
-                new DianaLoader(), new GragasLoader(), new AsheLoader(), new RyzeLoader()
-            });
+        private static void Main(string[] args)
+        {
+            RethoughtLib.Instance.Load();
+
+            var bootstrap = new Bootstrap(new List<LoadableBase> { new DianaLoader(), new GragasLoader(), new AsheLoader(), new RyzeLoader() });
+
+            bootstrap.Run();
         }
+
+        #endregion
     }
 }

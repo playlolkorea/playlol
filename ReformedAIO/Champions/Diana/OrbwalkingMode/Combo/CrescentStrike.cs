@@ -1,76 +1,135 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    internal class CrescentStrike : FeatureChild<Combo>
+    #region Using Directives
+
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    using Prediction = SPrediction.Prediction;
+
+    #endregion
+
+    internal class CrescentStrike : ChildBase
     {
-        public CrescentStrike(Combo parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+        
+        #region Fields
 
-        public override string Name => "[Q] Crescent Strike";
+        /// <summary>
+        ///     The logic
+        /// </summary>
+        private LogicAll logic;
 
-        private Logic.LogicAll Logic;
+        /// <summary>
+        ///     The q logic
+        /// </summary>
+        private CrescentStrikeLogic qLogic;
 
-        private Logic.CrescentStrikeLogic qLogic;
+        #endregion
 
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the name.
+        /// </summary>
+        /// <value>
+        ///     The name.
+        /// </value>
+        public sealed override string Name { get; set; } = "[Q] Crescent Strike";
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        ///     Raises the <see cref="E:Update" /> event.
+        /// </summary>
+        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         public void OnUpdate(EventArgs args)
         {
-            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variables.Spells[SpellSlot.Q].IsReady()) return;
-            
-            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
-            
+            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
+                || !Variables.Spells[SpellSlot.Q].IsReady()) return;
+
+            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+
             this.Crescent();
         }
 
-        private void Crescent()
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        ///     Called when [disable].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = TargetSelector.GetTarget(Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
-                TargetSelector.DamageType.Magical);
-
-            if (target == null || !target.IsValid) return;
-
-            Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
+            Events.OnUpdate -= this.OnUpdate;
         }
 
-        protected sealed override void OnLoad()
+        /// <summary>
+        ///     Called when [enable].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variables.Spells != null) { Variables.Spells[SpellSlot.Q].SetSkillshot(0.25f, 185, 1600, false, SkillshotType.SkillshotCone); }
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            this.Menu = new Menu(this.Name, this.Name);
+        /// <summary>
+        ///     Called when [initialize].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.logic = new LogicAll();
+            this.qLogic = new CrescentStrikeLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
+
+        /// <summary>
+        ///     Called when [load].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            if (Variables.Spells != null)
+            {
+                Variables.Spells[SpellSlot.Q].SetSkillshot(0.25f, 185, 1600, false, SkillshotType.SkillshotCone);
+            }
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(10, 0, 100)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            SPrediction.Prediction.Initialize(Menu);
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            Prediction.Initialize(this.Menu);
         }
 
-        protected override void OnInitialize()
+        /// <summary>
+        ///     Crescents this instance.
+        /// </summary>
+        private void Crescent()
         {
-            this.Logic = new Logic.LogicAll();
-            this.qLogic = new Logic.CrescentStrikeLogic();
-            base.OnInitialize();
+            var target = TargetSelector.GetTarget(
+                this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
+                TargetSelector.DamageType.Magical);
+
+            if (target == null || !target.IsValid) return;
+
+            Variables.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

@@ -1,33 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-using RethoughtLib.Menu;
-using RethoughtLib.Menu.Presets;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
 {
-    using Logic;
+    #region Using Directives
 
-    internal class MisayaCombo : FeatureChild<Misaya>
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Diana.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class MisayaCombo : ChildBase
     {
-        public MisayaCombo(Misaya parent) : base(parent)
-        {
-            this.OnLoad();
-        }
-
-        public override string Name => "Misaya";
-
-        private CrescentStrikeLogic qLogic;
+        #region Fields
 
         private LogicAll logic;
 
+        private CrescentStrikeLogic qLogic;
+
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "Misaya";
+
+        #endregion
+
+        #region Public Methods and Operators
+
         public void OnUpdate(EventArgs args)
         {
-            if (!Menu.Item(Menu.Name + "Keybind").GetValue<KeyBind>().Active) return;
+            if (!this.Menu.Item(this.Menu.Name + "Keybind").GetValue<KeyBind>().Active) return;
 
             Variables.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
@@ -47,45 +54,31 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
             }
         }
 
-        private void LunarRush()
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = TargetSelector.GetTarget(Variables.Player.AttackRange + Variables.Player.BoundingRadius, TargetSelector.DamageType.Magical);
-
-            if (target == null || !target.IsValid) return;
-
-            Variables.Spells[SpellSlot.W].Cast();
+            Events.OnUpdate -= this.OnUpdate;
         }
 
-        private void MoonFall()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = TargetSelector.GetTarget(Menu.Item(Menu.Name + "ERange").GetValue<Slider>().Value, TargetSelector.DamageType.Magical);
-
-            if (target == null || !target.IsValid) return;
-
-            if(Menu.Item(Menu.Name + "EKillable").GetValue<bool>() && logic.ComboDmg(target) * 1.3 < target.Health) return;
-
-            Variables.Spells[SpellSlot.E].Cast();
+            Events.OnUpdate += this.OnUpdate;
         }
 
-        private void PaleCascade()
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = TargetSelector.GetTarget(Menu.Item(Menu.Name + "Range").GetValue<Slider>().Value, TargetSelector.DamageType.Magical);
-
-            if (target == null || !target.IsValid) return;
-
-            if (Variables.Spells[SpellSlot.Q].IsReady() && Variables.Spells[SpellSlot.R].IsReady() && target.Distance(Variables.Player) >= 500)
-            {
-                Variables.Spells[SpellSlot.R].Cast(target);
-            }
-            
-            Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
+            this.logic = new LogicAll();
+            this.qLogic = new CrescentStrikeLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
         }
 
-        protected sealed override void OnLoad()
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu = new Menu(this.Name, this.Name);
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "Keybind", "Keybind").SetValue(new KeyBind('Z', KeyBindType.Press)));
+            this.Menu.AddItem(
+                new MenuItem(this.Menu.Name + "Keybind", "Keybind").SetValue(new KeyBind('Z', KeyBindType.Press)));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "Range", "Range ").SetValue(new Slider(825, 0, 825)));
 
@@ -96,29 +89,50 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Misaya
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "ERange", "E Range").SetValue(new Slider(330, 0, 350)));
 
             this.Menu.AddItem(new MenuItem(this.Menu.Name + "EKillable", "Only E If Killable").SetValue(true));
-             
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
         }
 
-        protected override void OnInitialize()
+        private void LunarRush()
         {
-            this.logic = new LogicAll();
-            this.qLogic = new Logic.CrescentStrikeLogic();
-            base.OnInitialize();
+            var target = TargetSelector.GetTarget(
+                Variables.Player.AttackRange + Variables.Player.BoundingRadius,
+                TargetSelector.DamageType.Magical);
+
+            if (target == null || !target.IsValid) return;
+
+            Variables.Spells[SpellSlot.W].Cast();
         }
 
-        protected override void OnDisable()
+        private void MoonFall()
         {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
+            var target = TargetSelector.GetTarget(
+                this.Menu.Item(this.Menu.Name + "ERange").GetValue<Slider>().Value,
+                TargetSelector.DamageType.Magical);
+
+            if (target == null || !target.IsValid) return;
+
+            if (this.Menu.Item(this.Menu.Name + "EKillable").GetValue<bool>()
+                && this.logic.ComboDmg(target) * 1.3 < target.Health) return;
+
+            Variables.Spells[SpellSlot.E].Cast();
         }
 
-        protected override void OnEnable()
+        private void PaleCascade()
         {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
+            var target = TargetSelector.GetTarget(
+                this.Menu.Item(this.Menu.Name + "Range").GetValue<Slider>().Value,
+                TargetSelector.DamageType.Magical);
+
+            if (target == null || !target.IsValid) return;
+
+            if (Variables.Spells[SpellSlot.Q].IsReady() && Variables.Spells[SpellSlot.R].IsReady()
+                && target.Distance(Variables.Player) >= 500)
+            {
+                Variables.Spells[SpellSlot.R].Cast(target);
+            }
+
+            Variables.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
         }
+
+        #endregion
     }
 }

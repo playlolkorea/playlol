@@ -1,28 +1,54 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
+﻿namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
 {
-    internal class QLane : FeatureChild<Lane>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal sealed class QLane : ChildBase
     {
-        public QLane(Lane parent) : base(parent)
+        #region Constructors and Destructors
+
+        public QLane(string name)
         {
-            this.OnLoad();
+            this.Name = name;
         }
 
-        public override string Name => "[Q] Ranger's Focus";
+        #endregion
 
-        private void OnUpdate(EventArgs args)
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.W].IsReady()) return;
+            Events.OnUpdate -= this.OnUpdate;
+        }
 
-            if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            this.GetMinions();
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            base.OnLoad(sender, featureBaseEventArgs);
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
         }
 
         private void GetMinions()
@@ -31,36 +57,25 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>() && minions.Any(m => m.CountEnemiesInRange(2500) > 0))
+            if (this.Menu.Item(this.Menu.Name + "LaneQEnemy").GetValue<bool>()
+                && minions.Any(m => m.CountEnemiesInRange(2500) > 0))
             {
-               return;
+                return;
             }
+
             Variable.Spells[SpellSlot.Q].Cast();
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.W].IsReady()) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+            if (this.Menu.Item(this.Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.GetMinions();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

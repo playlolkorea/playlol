@@ -1,75 +1,93 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using ReformedAIO.Champions.Ashe.Logic;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Mixed
+﻿namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Mixed
 {
-    class QMixed : FeatureChild<Mixed>
-    {
-        public override string Name => "[Q] Ranger's Focus";
+    #region Using Directives
 
-        public QMixed(Mixed parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Ashe.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal sealed class QMixed : ChildBase
+    {
+        #region Fields
 
         private QLogic qLogic;
 
-        private void RangersFocus()
+        #endregion
+
+        #region Constructors and Destructors
+
+        public QMixed(string name)
         {
-            var target = TargetSelector.GetTarget(Orbwalking.GetRealAutoAttackRange(Variable.Player) + 65, TargetSelector.DamageType.Physical);
-
-            if (target == null || !target.IsValid) return;
-
-            if (Menu.Item(Menu.Name + "AAQ").GetValue<bool>() && Variable.Player.IsWindingUp) return;
-
-            Variable.Spells[SpellSlot.Q].Cast();
-
-            qLogic.Kite(target);
+            this.Name = name;
         }
 
+        #endregion
+
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate -= this.OnUpdate;
+        }
+
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.qLogic = new QLogic();
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            base.OnLoad(sender, featureBaseEventArgs);
+
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(80, 0, 100)));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("AA Q Reset"));
+        }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed || !Variable.Spells[SpellSlot.Q].IsReady()) return;
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed
+                || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
             this.RangersFocus();
         }
 
-        protected sealed override void OnLoad()
+        private void RangersFocus()
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            var target = TargetSelector.GetTarget(
+                Orbwalking.GetRealAutoAttackRange(Variable.Player) + 65,
+                TargetSelector.DamageType.Physical);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(80, 0, 50))); // You'd have to be retarded to set it over 50%
+            if (target == null || !target.IsValid) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("AA Q Reset"));
+            if (this.Menu.Item(this.Menu.Name + "AAQ").GetValue<bool>() && Variable.Player.IsWindingUp) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Variable.Spells[SpellSlot.Q].Cast();
 
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.qLogic.Kite(target);
         }
 
-        protected override void OnInitialize()
-        {
-            this.qLogic = new Logic.QLogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

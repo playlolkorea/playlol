@@ -1,37 +1,57 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
 {
-    internal class LaneCrescentStrike : FeatureChild<Laneclear>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class LaneCrescentStrike : ChildBase
     {
-        public LaneCrescentStrike(Laneclear parent) : base(parent)
+        #region Public Properties
+
+        public override string Name { get; set; } = "[Q] Crescent Strike";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
         }
 
-        public override string Name => "[Q] Crescent Strike";
-
-        private void OnUpdate(EventArgs args)
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variables.Spells[SpellSlot.Q].IsReady()) return;
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.GetMinions();
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQDistance", "Q Distance").SetValue(new Slider(730, 0, 825)));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQHit", "Min Minions Hit").SetValue(new Slider(3, 0, 6)));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(15, 0, 100)));
         }
 
         private void GetMinions()
         {
-            var minions = MinionManager.GetMinions(Menu.Item(Menu.Name + "LaneQDistance").GetValue<Slider>().Value);
+            var minions =
+                MinionManager.GetMinions(this.Menu.Item(this.Menu.Name + "LaneQDistance").GetValue<Slider>().Value);
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>())
+            if (this.Menu.Item(this.Menu.Name + "LaneQEnemy").GetValue<bool>())
             {
                 if (minions.Any(m => m.CountEnemiesInRange(1500) > 0))
                 {
@@ -39,7 +59,7 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
                 }
             }
 
-            if (minions.Count < Menu.Item(Menu.Name + "LaneQHit").GetValue<Slider>().Value) return;
+            if (minions.Count < this.Menu.Item(this.Menu.Name + "LaneQHit").GetValue<Slider>().Value) return;
 
             foreach (var qPRed in minions.Select(m => Variables.Spells[SpellSlot.Q].GetPrediction(m)))
             {
@@ -47,35 +67,16 @@ namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Laneclear
             }
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variables.Spells[SpellSlot.Q].IsReady()) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+            if (this.Menu.Item(this.Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQDistance", "Q Distance")
-                .SetValue(new Slider(730, 0, 825)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQHit", "Min Minions Hit")
-                .SetValue(new Slider(3, 0, 6)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(15, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.GetMinions();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

@@ -1,51 +1,65 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-
-namespace ReformedAIO.Champions.Ashe.Drawings
+﻿namespace ReformedAIO.Champions.Ashe.Drawings
 {
-    internal class WDraw : FeatureChild<Draw>
+    #region Using Directives
+
+    using System;
+    using System.Drawing;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal sealed class WDraw : ChildBase
     {
-        public WDraw(Draw parent) : base(parent)
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public WDraw(string name)
         {
-            this.OnLoad();
+            this.Name = name;
         }
 
         public void OnDraw(EventArgs args)
         {
             if (Variable.Player.IsDead) return;
 
-            if(Menu.Item(Menu.Name + "WReady").GetValue<bool>() && !Variable.Spells[SpellSlot.W].IsReady()) return;
+            if (this.Menu.Item(this.Menu.Name + "WReady").GetValue<bool>() && !Variable.Spells[SpellSlot.W].IsReady()) return;
 
-            Render.Circle.DrawCircle(Variable.Player.Position, 1275, Variable.Spells[SpellSlot.W].IsReady()
-                    ? System.Drawing.Color.FromArgb(120, 0, 170, 255)
-                    : System.Drawing.Color.IndianRed);
+            Render.Circle.DrawCircle(
+                Variable.Player.Position,
+                1275,
+                Variable.Spells[SpellSlot.W].IsReady() 
+                ? Color.White
+                : Color.DarkSlateGray);
         }
 
-        protected sealed override void OnLoad()
-        {
-            Menu = new Menu(Name, Name);
+        #endregion
 
-            Menu.AddItem(new MenuItem(Name + "WReady", "Only If Ready").SetValue(false));
+        #region Methods
 
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-
-            Parent.Menu.AddSubMenu(Menu);
-        }
-
-        protected override void OnDisable()
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw -= this.OnDraw;
-            base.OnDisable();
         }
 
-        protected override void OnEnable()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw += this.OnDraw;
-            base.OnEnable();
         }
 
-        public override string Name => "[W] Draw";
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Name + "WReady", "Only If Ready").SetValue(false));
+        }
+
+        #endregion
     }
 }

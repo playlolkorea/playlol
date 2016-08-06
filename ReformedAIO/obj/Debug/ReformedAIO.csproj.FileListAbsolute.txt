@@ -35,5 +35,31 @@ C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Common.pdb
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.Data.pdb
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\RethoughtLib.pdb
-C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.csprojResolveAssemblyReference.cache
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\RethoughtLib.dll
+C:\Users\bje\Desktop\ReformedAIO\ReformedAIO\bin\Debug\ReformedAIO.exe.config
+C:\Users\bje\Desktop\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.csprojResolveAssemblyReference.cache
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\ReformedAIO.exe.config
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\ReformedAIO.exe
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\ReformedAIO.pdb
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.Common.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\RethoughtLib.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\SharpDX.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\clipper_library.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.Sandbox.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\Newtonsoft.Json.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.Common.pdb
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\RethoughtLib.pdb
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.pdb
+C:\Users\bje\Desktop\ReformedAIO\obj\Debug\ReformedAIO.exe
+C:\Users\bje\Desktop\ReformedAIO\obj\Debug\ReformedAIO.pdb
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.Data.dll
+C:\Users\bje\Desktop\ReformedAIO\bin\Debug\LeagueSharp.Data.pdb
+C:\Users\bje\Desktop\ReformedAIO\obj\Debug\ReformedAIO.csproj.ReformedAIO.exe.config
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj\Debug\ReformedAIO.csprojResolveAssemblyReference.cache

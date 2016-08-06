@@ -1,38 +1,35 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-
-namespace ReformedAIO.Champions.Gragas.Logic
+﻿namespace ReformedAIO.Champions.Gragas.Logic
 {
+    #region Using Directives
+
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using SharpDX;
+
+    #endregion
+
     internal class QLogic
     {
+        #region Fields
 
-        public Vector3 QPred(Obj_AI_Hero target)
+        public GameObject GragasQ;
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public bool CanExplodeQ(Obj_AI_Base target)
         {
-            var pos = Variable.Spells[SpellSlot.Q].GetPrediction(target);
-            
-            return pos.CastPosition;
-        }
-
-        private float QDelay(Obj_AI_Base target)
-        {
-            var time = target.Distance(Variable.Player) / Variable.Spells[SpellSlot.R].Speed;
-
-            return time + Variable.Spells[SpellSlot.R].Delay;
+            return this.GragasQ != null && target.Distance(this.GragasQ.Position) <= 250;
         }
 
         public bool CanThrowQ()
         {
-            return GragasQ == null;
+            return this.GragasQ == null;
         }
-
-        public bool CanExplodeQ(Obj_AI_Base target)
-        {
-           return GragasQ != null && target.Distance(GragasQ.Position) <= 250;
-        }
-
-        public GameObject GragasQ;
 
         public void Load()
         {
@@ -43,24 +40,44 @@ namespace ReformedAIO.Champions.Gragas.Logic
                 Variable.Spells[SpellSlot.E].SetSkillshot(0.15f, 25f, 900f, true, SkillshotType.SkillshotLine);
             }
 
-            GameObject.OnCreate += OnCreateObject;
-            GameObject.OnDelete += GameObject_OnDelete;
+            GameObject.OnCreate += this.OnCreateObject;
+            GameObject.OnDelete += this.GameObject_OnDelete;
+        }
+
+        public Vector3 QPred(Obj_AI_Hero target)
+        {
+            var pos = Variable.Spells[SpellSlot.Q].GetPrediction(target);
+
+            return pos.CastPosition;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void GameObject_OnDelete(GameObject sender, EventArgs args)
+        {
+            if (sender.Name == "Gragas_Base_Q_Ally.troy")
+            {
+                this.GragasQ = null;
+            }
         }
 
         private void OnCreateObject(GameObject sender, EventArgs args)
         {
             if (sender.Name == "Gragas_Base_Q_Ally.troy")
             {
-                GragasQ = sender;
+                this.GragasQ = sender;
             }
         }
 
-        private void GameObject_OnDelete(GameObject sender, EventArgs args)
+        private float QDelay(Obj_AI_Base target)
         {
-            if (sender.Name == "Gragas_Base_Q_Ally.troy")
-            {
-                GragasQ = null;
-            }
+            var time = target.Distance(Variable.Player) / Variable.Spells[SpellSlot.R].Speed;
+
+            return time + Variable.Spells[SpellSlot.R].Delay;
         }
+
+        #endregion
     }
 }

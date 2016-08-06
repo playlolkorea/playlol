@@ -1,77 +1,93 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-
-namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
+﻿namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear
 {
-    internal class WLane : FeatureChild<Lane>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class WLane : ChildBase
     {
-        public WLane(Lane parent) : base(parent)
+        #region Constructors and Destructors
+
+        public WLane(string name)
         {
-            this.OnLoad();
+            this.Name = name;
         }
 
-        public override string Name => "[W] Volley";
+        #endregion
 
-        private void OnUpdate(EventArgs args)
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.W].IsReady()) return;
+            Events.OnUpdate -= this.OnUpdate;
+        }
 
-            if (Menu.Item(Menu.Name + "LaneWMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            this.GetMinions();
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            base.OnLoad(sender, featureBaseEventArgs);
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneWEnemy", "Only If No Enemies Visible").SetValue(true));
+
+            this.Menu.AddItem(
+                new MenuItem(this.Name + "LaneWMDistance", "Distance").SetValue(new Slider(600, 0, 900))
+                    .SetTooltip("Put it too high and you'll miss minions"));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneWMana", "Mana %").SetValue(new Slider(70, 0, 100)));
         }
 
         private void GetMinions()
         {
-            var minions = MinionManager.GetMinions(Menu.Item(Menu.Name + "LaneWMDistance").GetValue<Slider>().Value);
+            var minions =
+                MinionManager.GetMinions(this.Menu.Item(this.Menu.Name + "LaneWMDistance").GetValue<Slider>().Value);
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneWEnemy").GetValue<bool>() && minions.Any(m => m.CountEnemiesInRange(2000) > 0))
+            if (this.Menu.Item(this.Menu.Name + "LaneWEnemy").GetValue<bool>()
+                && minions.Any(m => m.CountEnemiesInRange(2000) > 0))
             {
                 return;
             }
 
-            if(minions.Count < 2) return;
+            if (minions.Count < 2) return;
 
             foreach (var m in minions)
             {
-                if(m.Health < Variable.Spells[SpellSlot.W].GetDamage(m) * 1.2) return;
+                if (m.Health < Variable.Spells[SpellSlot.W].GetDamage(m) * 1.2) return;
 
                 Variable.Spells[SpellSlot.W].CastIfHitchanceEquals(m, HitChance.High);
             }
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.W].IsReady()) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneWEnemy", "Only If No Enemies Visible").SetValue(true));
+            if (this.Menu.Item(this.Menu.Name + "LaneWMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneWMDistance", "Distance").SetValue(new Slider(600, 0, 900)).SetTooltip("Put it too high and you'll miss minions"));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneWMana", "Mana %").SetValue(new Slider(70, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.GetMinions();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

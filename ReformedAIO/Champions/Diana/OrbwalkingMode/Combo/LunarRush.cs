@@ -1,74 +1,91 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Combo
 {
-    internal class LunarRush : FeatureChild<Combo>
+    #region Using Directives
+
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Diana.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class LunarRush : ChildBase
     {
-        public LunarRush(Combo parent) : base(parent)
+        #region Fields
+
+        private LogicAll logic;
+
+        #endregion
+
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[W] Lunar Rush";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
+
         }
 
-        public override string Name => "[W] Lunar Rush";
-
-        private Logic.LogicAll Logic;
-
-        private void lunarrush()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            var target = TargetSelector.GetTarget(Variables.Player.AttackRange + Variables.Player.BoundingRadius, TargetSelector.DamageType.Magical);
+            Events.OnUpdate += this.OnUpdate;
+            
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.logic = new LogicAll();
+        }
+
+        protected sealed override void OnLoad(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Menu = new Menu(this.Name, this.Name);
+
+            Menu.AddItem(new MenuItem(this.Name + "WKillable", "Use Only If Killable By Combo").SetValue(false));
+
+            //   this.Menu.AddItem(new MenuItem(this.Name + "WMana", "Mana %")
+            //       .SetValue(new Slider(15, 100)));
+
+            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+
+            
+        }
+
+        private void Lunarrush()
+        {
+            var target = TargetSelector.GetTarget(
+                Variables.Player.AttackRange + Variables.Player.BoundingRadius,
+                TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
-            if (Menu.Item(Menu.Name + "WKillable").GetValue<bool>() && Logic.ComboDmg(target) < target.Health)
+            if (Menu.Item(Menu.Name + "WKillable").GetValue<bool>() && this.logic.ComboDmg(target) < target.Health)
             {
                 return;
             }
 
             Variables.Spells[SpellSlot.W].Cast();
-
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variables.Spells[SpellSlot.W].IsReady()) return;
+            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
+                || !Variables.Spells[SpellSlot.W].IsReady()) return;
 
-            lunarrush();
+            this.Lunarrush();
         }
 
-        protected sealed override void OnLoad()
-        {
-            Menu = new Menu(Name, Name);
-
-            Menu.AddItem(new MenuItem(Name + "WKillable", "Use Only If Killable By Combo").SetValue(false));
-
-          //   this.Menu.AddItem(new MenuItem(this.Name + "WMana", "Mana %")
-          //       .SetValue(new Slider(15, 100)));
-            
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-            
-            Parent.Menu.AddSubMenu(Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.Logic = new Logic.LogicAll();
-        }
-
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

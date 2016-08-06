@@ -1,60 +1,79 @@
-﻿using System;
-using System.Drawing;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-
-namespace ReformedAIO.Champions.Diana.Menus.Draw
+﻿namespace ReformedAIO.Champions.Diana.Menus.Draw
 {
-    internal class DrawPred : FeatureChild<Draw>
+    #region Using Directives
+
+    using System;
+    using System.Drawing;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Diana.Logic;
+
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class DrawPred : ChildBase
     {
-        public DrawPred(Draw parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+        #region Fields
+
+        private CrescentStrikeLogic qLogic;
+
+        #endregion
+
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "Draw Prediction";
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void OnDraw(EventArgs args)
         {
-            if(Variables.Player.IsDead) return;
+            if (Variables.Player.IsDead) return;
 
             var target = TargetSelector.GetTarget(825, TargetSelector.DamageType.Magical);
 
             if (target != null && target.IsVisible)
             {
-                Render.Circle.DrawCircle(qLogic.QPred(target), 50, Color.Aqua);
+                Render.Circle.DrawCircle(this.qLogic.QPred(target), 50, Color.Aqua);
             }
         }
 
-        protected sealed override void OnLoad()
-        {
-            Menu = new Menu(Name, Name);
+        #endregion
 
+        #region Methods
 
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-
-            Parent.Menu.AddSubMenu(Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.qLogic = new Logic.CrescentStrikeLogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw -= this.OnDraw;
-            base.OnDisable();
+
         }
 
-        protected override void OnEnable()
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Drawing.OnDraw += this.OnDraw;
-            base.OnEnable();
+            
         }
 
-        private Logic.CrescentStrikeLogic qLogic;
+        protected override void OnInitialize(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.qLogic = new CrescentStrikeLogic();
+            base.OnInitialize(sender, featureBaseEventArgs);
+        }
 
-        public override string Name => "Draw Prediction";
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Menu = new Menu(this.Name, this.Name);
+
+            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+
+            
+        }
+
+        #endregion
     }
 }

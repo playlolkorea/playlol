@@ -56,19 +56,18 @@
     <Reference Include="LeagueSharp.Common">
       <HintPath>C:\Software\PlaySharp\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.Data">
-      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.Data.dll</HintPath>
+    <Reference Include="LeagueSharp.SDKEx, Version=3.0.1.2, Culture=neutral, PublicKeyToken=ae325b57d943987e, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.SDKEx.dll</HintPath>
     </Reference>
     <Reference Include="RethoughtLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SharpDX">
       <HintPath>C:\Software\PlaySharp\References\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SharpDX.Direct3D9">
       <HintPath>C:\Software\PlaySharp\References\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SPrediction">
@@ -85,119 +84,93 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Champions\AsheLoader.cs" />
+    <Compile Include="Champions\Ashe\AsheLoader.cs" />
     <Compile Include="Champions\Ashe\Drawings\DmgDraw.cs" />
-    <Compile Include="Champions\Ashe\Drawings\Draw.cs" />
     <Compile Include="Champions\Ashe\Drawings\WDraw.cs" />
     <Compile Include="Champions\Ashe\Logic\ELogic.cs" />
     <Compile Include="Champions\Ashe\Logic\QLogic.cs" />
     <Compile Include="Champions\Ashe\Logic\RLogic.cs" />
     <Compile Include="Champions\Ashe\Logic\SetSpells.cs" />
     <Compile Include="Champions\Ashe\Logic\WLogic.cs" />
-    <Compile Include="Champions\Ashe\OrbwalkingMode\Combo\Combo.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Combo\ECombo.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Combo\QCombo.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Combo\RCombo.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Combo\WCombo.cs" />
-    <Compile Include="Champions\Ashe\OrbwalkingMode\JungleClear\Jungle.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\JungleClear\QJungle.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\JungleClear\WJungle.cs" />
-    <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\Lane.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\QLane.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\LaneClear\WLane.cs" />
-    <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\QMixed.cs" />
     <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\WMixed.cs" />
     <Compile Include="Champions\Ashe\Variable.cs" />
     <Compile Include="Champions\Bootstrap.cs" />
-    <Compile Include="Champions\DianaLoader.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\Misaya.cs" />
+    <Compile Include="Champions\Diana\DianaLoader.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\MisayaCombo.cs" />
-    <Compile Include="Champions\GragasLoader.cs" />
+    <Compile Include="Champions\Gragas\GragasLoader.cs" />
     <Compile Include="Champions\Diana\Logic\CrescentStrikeLogic.cs" />
     <Compile Include="Champions\Diana\Logic\FleeLogic.cs" />
-    <Compile Include="Champions\Diana\Logic\Killsteal\Killsteal.cs" />
     <Compile Include="Champions\Diana\Logic\Killsteal\ksCrescentStrike.cs" />
     <Compile Include="Champions\Diana\Logic\Killsteal\ksPaleCascade.cs" />
     <Compile Include="Champions\Diana\Logic\LogicAll.cs" />
     <Compile Include="Champions\Diana\Logic\MoonfallLogic.cs" />
     <Compile Include="Champions\Diana\Logic\PaleCascadeLogic.cs" />
-    <Compile Include="Champions\Diana\Menus\Draw\Draw.cs" />
     <Compile Include="Champions\Diana\Menus\Draw\DrawDmg.cs" />
     <Compile Include="Champions\Diana\Menus\Draw\DrawE.cs" />
     <Compile Include="Champions\Diana\Menus\Draw\DrawPred.cs" />
     <Compile Include="Champions\Diana\Menus\Draw\DrawQ.cs" />
-    <Compile Include="Champions\Gragas\Menus\Draw\Draw.cs" />
     <Compile Include="Champions\Gragas\Menus\Draw\DrawE.cs" />
     <Compile Include="Champions\Gragas\Menus\Draw\DrawIndicator.cs" />
     <Compile Include="Champions\Gragas\Menus\Draw\DrawQ.cs" />
     <Compile Include="Champions\Gragas\Menus\Draw\DrawR.cs" />
-    <Compile Include="Champions\RyzeLoader.cs" />
+    <Compile Include="Champions\Ryze\RyzeLoader.cs" />
     <Compile Include="Champions\Ryze\Drawings\DmgDraw.cs" />
-    <Compile Include="Champions\Ryze\Drawings\Draw.cs" />
     <Compile Include="Champions\Ryze\Drawings\EDraw.cs" />
     <Compile Include="Champions\Ryze\Drawings\QDraw.cs" />
     <Compile Include="Champions\Ryze\Drawings\RDraw.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\None\Killsteal\Killsteal.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\None\Killsteal\KillstealMenu.cs" />
     <Compile Include="Champions\Ryze\Logic\Damage.cs" />
     <Compile Include="Champions\Ryze\Logic\ELogic.cs" />
     <Compile Include="Champions\Ryze\Logic\QLogic.cs" />
     <Compile Include="Champions\Ryze\Logic\SetSpells.cs" />
     <Compile Include="Champions\Ryze\Logic\WLogic.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\Combo\Combo.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Combo\RyzeCombo.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Jungle\EJungle.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\Jungle\Jungle.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Jungle\QJungle.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Jungle\WJungle.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Lane\ELane.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\Lane\Lane.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Lane\QLane.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Lane\WLane.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Mixed\EMixed.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Mixed\QMixed.cs" />
     <Compile Include="Champions\Ryze\OrbwalkingMode\Mixed\WMixed.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\None\QStack\QStack.cs" />
-    <Compile Include="Champions\Ryze\OrbwalkingMode\None\QStack\Stack.cs" />
     <Compile Include="Champions\Ryze\Variable.cs" />
     <Compile Include="HpBarIndicator.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Combo\Combo.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\CrescentStrike.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\LunarRush.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\Moonfall.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Combo\PaleCascade.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Flee\Flee.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Flee\FleeMode.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Jungleclear\JungleCrescentStrike.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Jungleclear\Jungleclear.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Jungleclear\JungleLunarRush.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Jungleclear\JungleMoonfall.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Jungleclear\JunglePaleCascade.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Laneclear\Laneclear.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Laneclear\LaneCrescentStrike.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Laneclear\LaneLunarRush.cs" />
-    <Compile Include="Champions\Diana\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Mixed\MixedCrescentStrike.cs" />
     <Compile Include="Champions\Diana\Variables.cs" />
     <Compile Include="Champions\Gragas\Logic\LogicAll.cs" />
     <Compile Include="Champions\Gragas\Logic\QLogic.cs" />
     <Compile Include="Champions\Gragas\Logic\RLogic.cs" />
-    <Compile Include="Champions\Gragas\OrbwalkingMode\Combo\Combo.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Combo\ECombo.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Combo\QCombo.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Combo\RCombo.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Combo\WCombo.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Jungle\EJungle.cs" />
-    <Compile Include="Champions\Gragas\OrbwalkingMode\Jungle\Jungle.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Jungle\QJungle.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Jungle\WJungle.cs" />
-    <Compile Include="Champions\Gragas\OrbwalkingMode\Lane\Lane.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Lane\LaneE.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Lane\LaneQ.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Lane\LaneW.cs" />
-    <Compile Include="Champions\Gragas\OrbwalkingMode\Mixed\Mixed.cs" />
     <Compile Include="Champions\Gragas\OrbwalkingMode\Mixed\QMixed.cs" />
     <Compile Include="Champions\Gragas\Variable.cs" />
     <Compile Include="Program.cs" />

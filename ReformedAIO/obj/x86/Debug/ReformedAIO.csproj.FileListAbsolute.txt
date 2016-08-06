@@ -36,3 +36,5 @@ C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\obj
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\RethoughtLib.dll
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.dll
 C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\SPrediction.pdb
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.dll
+C:\Users\Nechr\Documents\Visual Studio 2015\Projects\ReformedAIO\ReformedAIO\bin\Debug\LeagueSharp.SDKEx.pdb

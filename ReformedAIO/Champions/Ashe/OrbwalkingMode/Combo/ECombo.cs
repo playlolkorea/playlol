@@ -1,40 +1,98 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using ReformedAIO.Champions.Ashe.Logic;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
+﻿namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
 {
-    internal class ECombo : FeatureChild<Combo>
-    {
-        public override string Name => "[E] Hawkshot";
+    #region Using Directives
 
-        public ECombo(Combo parent) : base(parent)
-        {
-            this.OnLoad();
-        }
+    using System;
+    using System.Drawing;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using ReformedAIO.Champions.Ashe.Logic;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class ECombo : ChildBase
+    {
+        #region Fields
 
         private ELogic eLogic;
 
-        private void OnDraw(EventArgs args)
+        #endregion
+
+        #region Constructors and Destructors
+
+        public ECombo(string name)
         {
-            if(Variable.Player.IsDead || !Menu.Item(Menu.Name + "VectorDraw").GetValue<bool>()) return;
+            this.Name = name;
+        }
 
-            var pos = eLogic.Camp.FirstOrDefault(x => x.Value.Distance(Variable.Player.Position) > 1500 && x.Value.Distance(Variable.Player.Position) < 7000);
+        #endregion
 
-            Render.Circle.DrawCircle(pos.Value, 100, !pos.Value.IsValid() ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+        #region Public Properties
+
+        public override string Name { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Drawing.OnDraw -= this.OnDraw;
+            Events.OnUpdate -= this.OnUpdate;
+        }
+
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Drawing.OnDraw += this.OnDraw;
+            Events.OnUpdate += this.OnUpdate;
+        }
+
+        protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.eLogic = new ELogic();
+        }
+
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(
+                new MenuItem(this.Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500))
+                    .SetTooltip("Only for enemeis & not objectives"));
+
+            this.Menu.AddItem(new MenuItem(this.Menu.Name + "ECount", "Save 1 Charge").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "EToVector", "E To Objectives").SetValue(true));
+
+            this.Menu.AddItem(new MenuItem(this.Name + "VectorDraw", "Draw Objective Position").SetValue(true));
+        }
+
+        private void EToCamp()
+        {
+            var pos =
+                this.eLogic.Camp.FirstOrDefault(
+                    x =>
+                    x.Value.Distance(Variable.Player.Position) > 1500
+                    && x.Value.Distance(Variable.Player.Position) < 7000);
+
+            if (!pos.Value.IsValid()) return;
+
+            Utility.DelayAction.Add(290, () => Variable.Spells[SpellSlot.E].Cast(pos.Value)); // Humanized
         }
 
         private void Hawkshot()
         {
             var target = TargetSelector.GetTarget(Variable.Player.AttackRange, TargetSelector.DamageType.Physical);
 
-            if (target == null || !target.IsValid || target.Distance(Variable.Player) > Menu.Item(Menu.Name + "EDistance").GetValue<Slider>().Value || target.IsVisible) return;
+            if (target == null || !target.IsValid
+                || target.Distance(Variable.Player)
+                > this.Menu.Item(this.Menu.Name + "EDistance").GetValue<Slider>().Value || target.IsVisible) return;
 
-            if(!eLogic.ComboE(target)) return;
+            if (!this.eLogic.ComboE(target)) return;
 
             foreach (var position in HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Variable.Player) < 1500))
             {
@@ -50,22 +108,27 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
             }
         }
 
-        private void EToCamp()
+        private void OnDraw(EventArgs args)
         {
-            var pos = eLogic.Camp.FirstOrDefault(x => x.Value.Distance(Variable.Player.Position) > 1500 && x.Value.Distance(Variable.Player.Position) < 7000);
+            if (Variable.Player.IsDead || !this.Menu.Item(this.Menu.Name + "VectorDraw").GetValue<bool>()) return;
 
-            if(!pos.Value.IsValid()) return;
+            var pos =
+                this.eLogic.Camp.FirstOrDefault(
+                    x =>
+                    x.Value.Distance(Variable.Player.Position) > 1500
+                    && x.Value.Distance(Variable.Player.Position) < 7000);
 
-            Utility.DelayAction.Add(290, ()=> Variable.Spells[SpellSlot.E].Cast(pos.Value)); // Humanized
+            Render.Circle.DrawCircle(pos.Value, 100, !pos.Value.IsValid() ? Color.Red : Color.Green);
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if(!Variable.Spells[SpellSlot.E].IsReady() || Variable.Player.IsRecalling() || Variable.Player.InShop()) return;
+            if (!Variable.Spells[SpellSlot.E].IsReady() || Variable.Player.IsRecalling() || Variable.Player.InShop()) return;
 
-            if (Menu.Item(Menu.Name + "ECount").GetValue<bool>() && eLogic.GetEAmmo() == 1) return;
+            if (this.Menu.Item(this.Menu.Name + "ECount").GetValue<bool>() && this.eLogic.GetEAmmo() == 1) return;
 
-            if (Variable.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None) // I could make a new class and stuff but, doesn't really matter
+            if (Variable.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+                // I could make a new class and stuff but, doesn't really matter
             {
                 this.EToCamp();
             }
@@ -75,42 +138,6 @@ namespace ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo
             this.Hawkshot();
         }
 
-        protected sealed override void OnLoad()
-        {
-            this.Menu = new Menu(this.Name, this.Name);
-
-            
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500)).SetTooltip("Only for enemeis & not objectives"));
-
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "ECount", "Save 1 Charge").SetValue(true));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "EToVector", "E To Objectives").SetValue(true));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "VectorDraw", "Draw Objective Position").SetValue(true));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
-        }
-
-        protected override void OnInitialize()
-        {
-            this.eLogic = new Logic.ELogic();
-            base.OnInitialize();
-        }
-
-        protected override void OnDisable()
-        {
-            Drawing.OnDraw -= this.OnDraw;
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Drawing.OnDraw += this.OnDraw;
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

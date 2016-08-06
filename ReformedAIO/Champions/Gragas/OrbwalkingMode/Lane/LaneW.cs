@@ -1,28 +1,43 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
+﻿namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
 {
-    internal class LaneW : FeatureChild<Lane>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class LaneW : ChildBase
     {
-        public LaneW(Lane parent) : base(parent)
+        #region Public Properties
+
+        public override string Name { get; set; } = "[W] Drunken Rage";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
         }
 
-        public override string Name => "[W] Drunken Rage";
-
-        private void OnUpdate(EventArgs args)
+        protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variable.Spells[SpellSlot.W].IsReady()) return;
+            Events.OnUpdate += this.OnUpdate;
+        }
 
-            if (Menu.Item(Menu.Name + "LaneWMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneWEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.GetMinions();
+            this.Menu.AddItem(new MenuItem(this.Name + "LaneWMana", "Mana %").SetValue(new Slider(15, 0, 100)));
         }
 
         private void GetMinions()
@@ -31,7 +46,7 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
 
             if (minions == null) return;
 
-            if (Menu.Item(Menu.Name + "LaneWEnemy").GetValue<bool>())
+            if (this.Menu.Item(this.Menu.Name + "LaneWEnemy").GetValue<bool>())
             {
                 if (minions.Any(m => m.CountEnemiesInRange(1500) > 0))
                 {
@@ -43,32 +58,18 @@ namespace ReformedAIO.Champions.Gragas.OrbwalkingMode.Lane
             {
                 Variable.Spells[SpellSlot.W].Cast();
             }
-            
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variable.Spells[SpellSlot.W].IsReady()) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneWEnemy", "Only If No Enemies Visible").SetValue(true));
+            if (this.Menu.Item(this.Menu.Name + "LaneWMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneWMana", "Mana %").SetValue(new Slider(15, 0, 100)));
-
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
-
-            this.Parent.Menu.AddSubMenu(this.Menu);
+            this.GetMinions();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= this.OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += this.OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }

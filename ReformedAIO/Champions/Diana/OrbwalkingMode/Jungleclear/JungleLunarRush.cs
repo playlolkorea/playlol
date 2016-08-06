@@ -1,61 +1,76 @@
-﻿using System;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using RethoughtLib.Classes.Feature;
-using RethoughtLib.Events;
-
-namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Jungleclear
+﻿namespace ReformedAIO.Champions.Diana.OrbwalkingMode.Jungleclear
 {
-    internal class JungleLunarRush : FeatureChild<Jungleclear>
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using RethoughtLib.Events;
+    using RethoughtLib.FeatureSystem.Abstract_Classes;
+
+    #endregion
+
+    internal class JungleLunarRush : ChildBase
     {
-        public JungleLunarRush(Jungleclear parent) : base(parent)
+
+        #region Public Properties
+
+        public override string Name { get; set; } = "[W] Lunar Rush";
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            OnLoad();
+            Events.OnUpdate -= this.OnUpdate;
+
         }
 
-        public override string Name => "[W] Lunar Rush";
-
-        private void OnUpdate(EventArgs args)
+        protected override void OnEnable(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
-            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear || !Variables.Spells[SpellSlot.W].IsReady()) return;
+            Events.OnUpdate += this.OnUpdate;
+            
+        }
 
-            if (Menu.Item(Menu.Name + "JungleWMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+        protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            Menu = new Menu(this.Name, this.Name);
 
-            this.GetMob();
+            Menu.AddItem(new MenuItem(this.Name + "JungleWMana", "Mana %").SetValue(new Slider(10, 0, 50)));
+
+            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+
+            
         }
 
         private void GetMob()
         {
-            var mobs = MinionManager.GetMinions(150 + ObjectManager.Player.AttackRange, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            var mobs =
+                MinionManager.GetMinions(
+                    150 + ObjectManager.Player.AttackRange,
+                    MinionTypes.All,
+                    MinionTeam.Neutral,
+                    MinionOrderTypes.MaxHealth).FirstOrDefault();
 
             if (mobs == null) return;
 
             Variables.Spells[SpellSlot.W].Cast(mobs);
         }
 
-        protected sealed override void OnLoad()
+        private void OnUpdate(EventArgs args)
         {
-            Menu = new Menu(Name, Name);
+            if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
+                || !Variables.Spells[SpellSlot.W].IsReady()) return;
 
-            Menu.AddItem(new MenuItem(Name + "JungleWMana", "Mana %")
-                .SetValue(new Slider(10, 0, 50)));
+            if (Menu.Item(Menu.Name + "JungleWMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
 
-            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
-
-            Parent.Menu.AddSubMenu(Menu);
+            this.GetMob();
         }
 
-        protected override void OnDisable()
-        {
-            Events.OnUpdate -= OnUpdate;
-            base.OnDisable();
-        }
-
-        protected override void OnEnable()
-        {
-            Events.OnUpdate += OnUpdate;
-            base.OnEnable();
-        }
+        #endregion
     }
 }
