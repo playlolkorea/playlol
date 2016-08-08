@@ -32,24 +32,24 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.eLogic = new ELogic();
+            eLogic = new ELogic();
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "ERange", "E Range ").SetValue(new Slider(600, 0, 600)));
+            Menu.AddItem(new MenuItem(Menu.Name + "ERange", "E Range ").SetValue(new Slider(600, 0, 600)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EMana", "Mana %").SetValue(new Slider(45, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "EMana", "Mana %").SetValue(new Slider(45, 0, 100)));
         }
 
         private void OnUpdate(EventArgs args)
@@ -58,13 +58,13 @@
                 || !Variable.Spells[SpellSlot.E].IsReady()) return;
 
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "ERange").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "ERange").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Magical);
 
             if (target == null) return;
 
             if (!target.IsValid
-                || !(this.Menu.Item(this.Menu.Name + "EMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)) return;
+                || !(Menu.Item(Menu.Name + "EMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)) return;
 
             Variable.Spells[SpellSlot.E].Cast(target);
         }

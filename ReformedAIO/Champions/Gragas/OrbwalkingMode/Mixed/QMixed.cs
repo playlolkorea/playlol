@@ -32,43 +32,43 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.qLogic = new QLogic();
+            qLogic = new QLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(45, 0, 100)));
         }
 
         private void BarrelRoll()
         {
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
             if (target.HasBuffOfType(BuffType.Knockback)) return;
 
-            if (this.qLogic.CanThrowQ())
+            if (qLogic.CanThrowQ())
             {
-                Variable.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
+                Variable.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
             }
 
-            if (this.qLogic.CanExplodeQ(target))
+            if (qLogic.CanExplodeQ(target))
             {
                 Variable.Spells[SpellSlot.Q].Cast();
             }
@@ -79,9 +79,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed
                 || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.BarrelRoll();
+            BarrelRoll();
         }
 
         #endregion

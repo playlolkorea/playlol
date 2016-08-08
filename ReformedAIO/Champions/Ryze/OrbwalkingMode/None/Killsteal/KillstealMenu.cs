@@ -25,21 +25,21 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "KsE", "Use E").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "KsE", "Use E").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "KsW", "Use W").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "KsW", "Use W").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "KsQ", "Use Q").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "KsQ", "Use Q").SetValue(true));
         }
 
         private void OnUpdate(EventArgs args)
@@ -48,7 +48,7 @@
 
             if (target == null) return;
 
-            if (Variable.Spells[SpellSlot.Q].IsReady() && this.Menu.Item(this.Menu.Name + "KsQ").GetValue<bool>())
+            if (Variable.Spells[SpellSlot.Q].IsReady() && Menu.Item(Menu.Name + "KsQ").GetValue<bool>())
             {
                 if (target.Health <= Variable.Spells[SpellSlot.Q].GetDamage(target))
                 {
@@ -56,7 +56,7 @@
                 }
             }
 
-            if (Variable.Spells[SpellSlot.W].IsReady() && this.Menu.Item(this.Menu.Name + "KsW").GetValue<bool>())
+            if (Variable.Spells[SpellSlot.W].IsReady() && Menu.Item(Menu.Name + "KsW").GetValue<bool>())
             {
                 if (target.Health <= Variable.Spells[SpellSlot.W].GetDamage(target))
                 {
@@ -64,7 +64,7 @@
                 }
             }
 
-            if (!Variable.Spells[SpellSlot.E].IsReady() || !this.Menu.Item(this.Menu.Name + "KsE").GetValue<bool>()) return;
+            if (!Variable.Spells[SpellSlot.E].IsReady() || !Menu.Item(Menu.Name + "KsE").GetValue<bool>()) return;
 
             if (target.Health <= Variable.Spells[SpellSlot.E].GetDamage(target))
             {

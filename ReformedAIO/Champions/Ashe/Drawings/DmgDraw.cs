@@ -8,7 +8,7 @@
     using LeagueSharp;
     using LeagueSharp.Common;
 
-    using ReformedAIO.Champions.Ashe.Logic;
+    using Logic;
 
     using RethoughtLib.FeatureSystem.Abstract_Classes;
 
@@ -36,7 +36,7 @@
 
         public DmgDraw(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public void OnDraw(EventArgs args)
@@ -46,8 +46,8 @@
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(ene => ene.IsValidTarget(1500)))
             {
                 
-                this.drawDamage.Unit = enemy;
-                this.drawDamage.DrawDmg(this.logic.ComboDamage(enemy), Color.LawnGreen);
+                drawDamage.Unit = enemy;
+                drawDamage.DrawDmg(logic.ComboDamage(enemy), Color.LawnGreen);
             }
         }
 
@@ -57,18 +57,18 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw -= this.OnDraw;
+            Drawing.OnDraw -= OnDraw;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw += this.OnDraw;
+            Drawing.OnDraw += OnDraw;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.logic = new RLogic();
-            this.drawDamage = new HpBarIndicator();
+            logic = new RLogic();
+            drawDamage = new HpBarIndicator();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 

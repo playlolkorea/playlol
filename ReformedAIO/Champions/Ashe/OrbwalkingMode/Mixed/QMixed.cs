@@ -26,7 +26,7 @@
 
         public QMixed(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         #endregion
@@ -41,26 +41,26 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.qLogic = new QLogic();
+            qLogic = new QLogic();
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(80, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(80, 0, 100)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("AA Q Reset"));
+            Menu.AddItem(new MenuItem(Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("AA Q Reset"));
         }
 
         private void OnUpdate(EventArgs args)
@@ -68,9 +68,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed
                 || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.RangersFocus();
+            RangersFocus();
         }
 
         private void RangersFocus()
@@ -81,11 +81,11 @@
 
             if (target == null || !target.IsValid) return;
 
-            if (this.Menu.Item(this.Menu.Name + "AAQ").GetValue<bool>() && Variable.Player.IsWindingUp) return;
+            if (Menu.Item(Menu.Name + "AAQ").GetValue<bool>() && Variable.Player.IsWindingUp) return;
 
             Variable.Spells[SpellSlot.Q].Cast();
 
-            this.qLogic.Kite(target);
+            qLogic.Kite(target);
         }
 
         #endregion

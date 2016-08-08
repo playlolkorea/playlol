@@ -37,7 +37,7 @@ namespace ReformedAIO.Champions.Diana
 
         public override void Load()
         {
-            var superParent = new SuperParent(this.DisplayName);
+            var superParent = new SuperParent(DisplayName);
 
             // Parents
             var combo = new Parent("Combo");

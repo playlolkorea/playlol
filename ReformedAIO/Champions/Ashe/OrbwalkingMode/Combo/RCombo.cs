@@ -26,7 +26,7 @@
 
         public RCombo(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         #endregion
@@ -41,65 +41,65 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Interrupter2.OnInterruptableTarget -= this.Interrupt;
-            AntiGapcloser.OnEnemyGapcloser -= this.Gapcloser;
-            Events.OnUpdate -= this.OnUpdate;
+            Interrupter2.OnInterruptableTarget -= Interrupt;
+            AntiGapcloser.OnEnemyGapcloser -= Gapcloser;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Interrupter2.OnInterruptableTarget += this.Interrupt;
-            AntiGapcloser.OnEnemyGapcloser += this.Gapcloser;
-            Events.OnUpdate += this.OnUpdate;
+            Interrupter2.OnInterruptableTarget += Interrupt;
+            AntiGapcloser.OnEnemyGapcloser += Gapcloser;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.rLogic = new RLogic();
+            rLogic = new RLogic();
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(
-                new MenuItem(this.Menu.Name + "RDistance", "Max Distance").SetValue(new Slider(1100, 0, 1500))
+            Menu.AddItem(
+                new MenuItem(Menu.Name + "RDistance", "Max Distance").SetValue(new Slider(1100, 0, 1500))
                     .SetTooltip("Too Much And You Might Not Get The Kill"));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "RMana", "Mana %").SetValue(new Slider(10, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "RMana", "Mana %").SetValue(new Slider(10, 0, 100)));
 
-            this.Menu.AddItem(
-                new MenuItem(this.Name + "SemiR", "Semi-Auto R Key").SetValue(new KeyBind('A', KeyBindType.Press))
+            Menu.AddItem(
+                new MenuItem(Name + "SemiR", "Semi-Auto R Key").SetValue(new KeyBind('A', KeyBindType.Press))
                     .SetTooltip("Select Your Target First"));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "RKillable", "Only When Killable").SetValue(true));
+            Menu.AddItem(new MenuItem(Menu.Name + "RKillable", "Only When Killable").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "RSafety", "Safety Check").SetValue(true));
+            Menu.AddItem(new MenuItem(Menu.Name + "RSafety", "Safety Check").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "Interrupt", "Interrupt").SetValue(true));
+            Menu.AddItem(new MenuItem(Menu.Name + "Interrupt", "Interrupt").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "Gapclose", "Gapcloser").SetValue(true));
+            Menu.AddItem(new MenuItem(Menu.Name + "Gapclose", "Gapcloser").SetValue(true));
         }
 
         private void CrystalArrow()
         {
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "RDistance").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "RDistance").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Physical,
                 false);
 
             if (target == null || !target.IsValid || target.IsInvulnerable || target.IsDashing()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "RSafety").GetValue<bool>() && !this.rLogic.SafeR(target)) return;
+            if (Menu.Item(Menu.Name + "RSafety").GetValue<bool>() && !rLogic.SafeR(target)) return;
 
-            if (this.Menu.Item(this.Menu.Name + "RKillable").GetValue<bool>() && !this.rLogic.Killable(target)) return;
+            if (Menu.Item(Menu.Name + "RKillable").GetValue<bool>() && !rLogic.Killable(target)) return;
 
             Variable.Spells[SpellSlot.R].CastIfHitchanceEquals(target, HitChance.High);
         }
 
         private void Gapcloser(ActiveGapcloser gapcloser)
         {
-            if (!this.Menu.Item(this.Menu.Name + "Gapclose").GetValue<bool>()) return;
+            if (!Menu.Item(Menu.Name + "Gapclose").GetValue<bool>()) return;
 
             var target = gapcloser.Sender;
 
@@ -112,7 +112,7 @@
 
         private void Interrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (!this.Menu.Item(this.Menu.Name + "Interrupt").GetValue<bool>()) return;
+            if (!Menu.Item(Menu.Name + "Interrupt").GetValue<bool>()) return;
 
             if (!sender.IsEnemy || !Variable.Spells[SpellSlot.R].IsReady() || sender.IsZombie) return;
 
@@ -123,18 +123,18 @@
         {
             if (!Variable.Spells[SpellSlot.R].IsReady()) return;
 
-            this.SemiR();
+            SemiR();
 
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
 
-            if (this.Menu.Item(this.Menu.Name + "RMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "RMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.CrystalArrow();
+            CrystalArrow();
         }
 
         private void SemiR()
         {
-            if (!this.Menu.Item(this.Menu.Name + "SemiR").GetValue<KeyBind>().Active) return;
+            if (!Menu.Item(Menu.Name + "SemiR").GetValue<KeyBind>().Active) return;
 
             if (Variable.Player.CountEnemiesInRange(1500) == 0) return;
 

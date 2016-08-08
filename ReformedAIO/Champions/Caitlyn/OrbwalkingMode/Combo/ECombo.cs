@@ -11,7 +11,7 @@
     {
         public ECombo(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; }
@@ -20,30 +20,30 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            AntiGapcloser.OnEnemyGapcloser -= this.Gapcloser;
-            Events.OnUpdate -= this.OnUpdate;
+            AntiGapcloser.OnEnemyGapcloser -= Gapcloser;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            AntiGapcloser.OnEnemyGapcloser += this.Gapcloser;
-            Events.OnUpdate += this.OnUpdate;
+            AntiGapcloser.OnEnemyGapcloser += Gapcloser;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EMana", "Mana %").SetValue(new Slider(30, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "EMana", "Mana %").SetValue(new Slider(30, 0, 100)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "AntiGapcloser", "Anti Gapcloser").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "AntiGapcloser", "Anti Gapcloser").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "AntiMelee", "E Anti-Melee").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "AntiMelee", "E Anti-Melee").SetValue(true));
         }
 
         private void Gapcloser(ActiveGapcloser gapcloser)
         {
-            if (!this.Menu.Item(this.Menu.Name + "AntiGapcloser").GetValue<bool>()) return;
+            if (!Menu.Item(Menu.Name + "AntiGapcloser").GetValue<bool>()) return;
 
             var target = gapcloser.Sender;
 
@@ -56,28 +56,26 @@
 
         private void OnUpdate(EventArgs args)
         {
-            if (Vars.Player.IsWindingUp
+            if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
+                ||Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.E].IsReady()
-                || this.Target == null
-                || this.Menu.Item(this.Menu.Name + "EMana").GetValue<Slider>().Value > Vars.Player.ManaPercent)
+                || Target == null
+                || Menu.Item(Menu.Name + "EMana").GetValue<Slider>().Value > Vars.Player.ManaPercent)
             {
                 return;
             }
 
             if (!Target.IsImmovable && Target.Distance(Vars.Player) > 270 &&
-                this.Menu.Item(this.Menu.Name + "AntiMelee").GetValue<bool>())
+                Menu.Item(Menu.Name + "AntiMelee").GetValue<bool>())
             {
                 return;
             }
 
-            var ePrediction = (Spells.Spell[SpellSlot.E].GetPrediction(this.Target));
+            var ePrediction = (Spells.Spell[SpellSlot.E].GetPrediction(Target));
+
+            if(ePrediction.Hitchance < HitChance.High) return;
 
             Spells.Spell[SpellSlot.E].Cast(ePrediction.CastPosition);
-            //Vars.Player.IsCastingInterruptableSpell(true);
-
-            //if (!Spells.Spell[SpellSlot.Q].IsReady()) return;
-
-            //Spells.Spell[SpellSlot.Q].CastCancelSpell(ePrediction.CastPosition);
         }
     }
 }

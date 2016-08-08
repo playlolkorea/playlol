@@ -33,31 +33,31 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
 
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
             
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.logic = new LogicAll();
+            logic = new LogicAll();
         }
 
         protected sealed override void OnLoad(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu = new Menu(this.Name, this.Name);
+            Menu = new Menu(Name, Name);
 
-            Menu.AddItem(new MenuItem(this.Name + "WKillable", "Use Only If Killable By Combo").SetValue(false));
+            Menu.AddItem(new MenuItem(Name + "WKillable", "Use Only If Killable By Combo").SetValue(false));
 
-            //   this.Menu.AddItem(new MenuItem(this.Name + "WMana", "Mana %")
+            //   Menu.AddItem(new MenuItem(Name + "WMana", "Mana %")
             //       .SetValue(new Slider(15, 100)));
 
-            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
 
             
         }
@@ -70,7 +70,7 @@
 
             if (target == null || !target.IsValid) return;
 
-            if (Menu.Item(Menu.Name + "WKillable").GetValue<bool>() && this.logic.ComboDmg(target) < target.Health)
+            if (Menu.Item(Menu.Name + "WKillable").GetValue<bool>() && logic.ComboDmg(target) < target.Health)
             {
                 return;
             }
@@ -83,7 +83,7 @@
             if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || !Variables.Spells[SpellSlot.W].IsReady()) return;
 
-            this.Lunarrush();
+            Lunarrush();
         }
 
         #endregion

@@ -25,33 +25,33 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEEnemy", "Only If No Enemies Visible").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "LaneEEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEDistance", "E Distance").SetValue(new Slider(500, 0, 600)));
+            Menu.AddItem(new MenuItem(Name + "LaneEDistance", "E Distance").SetValue(new Slider(500, 0, 600)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEHit", "Min Minions Hit").SetValue(new Slider(3, 0, 6)));
+            Menu.AddItem(new MenuItem(Name + "LaneEHit", "Min Minions Hit").SetValue(new Slider(3, 0, 6)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEMana", "Mana %").SetValue(new Slider(15, 0, 100)));
+            Menu.AddItem(new MenuItem(Name + "LaneEMana", "Mana %").SetValue(new Slider(15, 0, 100)));
         }
 
         private void GetMinions()
         {
             var minions =
-                MinionManager.GetMinions(this.Menu.Item(this.Menu.Name + "LaneEDistance").GetValue<Slider>().Value);
+                MinionManager.GetMinions(Menu.Item(Menu.Name + "LaneEDistance").GetValue<Slider>().Value);
 
             if (minions == null) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneEEnemy").GetValue<bool>())
+            if (Menu.Item(Menu.Name + "LaneEEnemy").GetValue<bool>())
             {
                 if (minions.Any(m => m.CountEnemiesInRange(1500) > 0))
                 {
@@ -59,7 +59,7 @@
                 }
             }
 
-            if (minions.Count < this.Menu.Item(this.Menu.Name + "LaneEHit").GetValue<Slider>().Value) return;
+            if (minions.Count < Menu.Item(Menu.Name + "LaneEHit").GetValue<Slider>().Value) return;
 
             var ePred = Variable.Spells[SpellSlot.E].GetCircularFarmLocation(minions);
 
@@ -71,9 +71,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
                 || !Variable.Spells[SpellSlot.E].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneEMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "LaneEMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.GetMinions();
+            GetMinions();
         }
 
         #endregion

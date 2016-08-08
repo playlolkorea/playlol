@@ -55,7 +55,7 @@
         public bool CanCastE()
         {
             var pos =
-                this.Camp.FirstOrDefault(
+                Camp.FirstOrDefault(
                     x =>
                     x.Value.Distance(Variable.Player.Position) > 1750
                     && x.Value.Distance(Variable.Player.Position) < 6000);

@@ -1,4 +1,6 @@
-﻿namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
+﻿using LeagueSharp.SDK.Utils;
+
+namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
 {
     using Logic;
     using System;
@@ -12,7 +14,7 @@
     {
         public QCombo(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; } 
@@ -21,23 +23,23 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(30, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(30, 0, 100)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "QImmobile", "Q On Immobile").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "QImmobile", "Q On Immobile").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "QHit", "Cast if 2 can be hit").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "QHit", "Cast if 2 can be hit").SetValue(true));
         }
 
         private void OnUpdate(EventArgs args)
@@ -45,22 +47,22 @@
             if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.Q].IsReady()
-                || this.Target == null
-                || this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
+                || Target == null
+                || Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
 
-
-            var qPrediction = (Spells.Spell[SpellSlot.Q].GetPrediction(this.Target));
-
-            if (this.Menu.Item(this.Menu.Name + "QHit").GetValue<bool>())
+            if (Menu.Item(Menu.Name + "QHit").GetValue<bool>())
             {
                 Spells.Spell[SpellSlot.Q].CastIfWillHit(Target, 2);
             }
 
-            if (qPrediction.Hitchance >= HitChance.Immobile && this.Menu.Item(this.Menu.Name + "QImmobile").GetValue<bool>())
+            var qPrediction = (Spells.Spell[SpellSlot.Q].GetPrediction(Target));
+
+            if (Vars.Player.IsCastingInterruptableSpell(true) || !Spells.Spell[SpellSlot.E].IsReady() && qPrediction.Hitchance >= HitChance.VeryHigh)
             {
                 Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition);
             }
-            if (Vars.Player.IsCastingInterruptableSpell())
+
+            if (qPrediction.Hitchance >= HitChance.Immobile && Menu.Item(Menu.Name + "QImmobile").GetValue<bool>())
             {
                 Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition);
             }

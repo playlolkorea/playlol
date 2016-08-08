@@ -33,32 +33,32 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.qLogic = new QLogic();
+            qLogic = new QLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QRange", "Q Range ").SetValue(new Slider(835, 0, 850)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(0, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(0, 0, 100)));
         }
 
         private void BarrelRoll()
         {
             var mobs =
                 MinionManager.GetMinions(
-                    this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
+                    Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
                     MinionTypes.All,
                     MinionTeam.Neutral,
                     MinionOrderTypes.MaxHealth).FirstOrDefault();
@@ -73,9 +73,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
                 || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.BarrelRoll();
+            BarrelRoll();
         }
 
         #endregion

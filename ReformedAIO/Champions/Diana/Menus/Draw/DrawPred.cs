@@ -39,7 +39,7 @@
 
             if (target != null && target.IsVisible)
             {
-                Render.Circle.DrawCircle(this.qLogic.QPred(target), 50, Color.Aqua);
+                Render.Circle.DrawCircle(qLogic.QPred(target), 50, Color.Aqua);
             }
         }
 
@@ -49,27 +49,27 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw -= this.OnDraw;
+            Drawing.OnDraw -= OnDraw;
 
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw += this.OnDraw;
+            Drawing.OnDraw += OnDraw;
             
         }
 
         protected override void OnInitialize(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.qLogic = new CrescentStrikeLogic();
+            qLogic = new CrescentStrikeLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu = new Menu(this.Name, this.Name);
+            Menu = new Menu(Name, Name);
 
-            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
 
             
         }

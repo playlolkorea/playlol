@@ -26,23 +26,23 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
 
         }
 
         protected override void OnEnable(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
             
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu = new Menu(this.Name, this.Name);
+            Menu = new Menu(Name, Name);
 
-            Menu.AddItem(new MenuItem(this.Name + "JungleWMana", "Mana %").SetValue(new Slider(10, 0, 50)));
+            Menu.AddItem(new MenuItem(Name + "JungleWMana", "Mana %").SetValue(new Slider(10, 0, 50)));
 
-            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
 
             
         }
@@ -68,7 +68,7 @@
 
             if (Menu.Item(Menu.Name + "JungleWMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
 
-            this.GetMob();
+            GetMob();
         }
 
         #endregion

@@ -36,7 +36,7 @@ namespace ReformedAIO.Champions.Gragas
 
         public override void Load()
         {
-            var superParent = new SuperParent(this.DisplayName);
+            var superParent = new SuperParent(DisplayName);
 
             var combo = new Parent("Combo");
             var mixed = new Parent("Mixed");

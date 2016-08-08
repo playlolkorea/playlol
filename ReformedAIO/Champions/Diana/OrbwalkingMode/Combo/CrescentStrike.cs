@@ -56,9 +56,9 @@
             if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || !Variables.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variables.Player.ManaPercent) return;
 
-            this.Crescent();
+            Crescent();
         }
 
         #endregion
@@ -72,7 +72,7 @@
         /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@
         /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         /// <summary>
@@ -92,8 +92,8 @@
         /// <param name="featureBaseEventArgs">The <see cref="FeatureBaseEventArgs" /> instance containing the event data.</param>
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.logic = new LogicAll();
-            this.qLogic = new CrescentStrikeLogic();
+            logic = new LogicAll();
+            qLogic = new CrescentStrikeLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
@@ -109,11 +109,11 @@
                 Variables.Spells[SpellSlot.Q].SetSkillshot(0.25f, 185, 1600, false, SkillshotType.SkillshotCone);
             }
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QRange", "Q Range ").SetValue(new Slider(820, 0, 825)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Mana %").SetValue(new Slider(10, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(10, 0, 100)));
 
-            Prediction.Initialize(this.Menu);
+            Prediction.Initialize(Menu);
         }
 
         /// <summary>
@@ -122,12 +122,12 @@
         private void Crescent()
         {
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "QRange").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "QRange").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
-            Variables.Spells[SpellSlot.Q].Cast(this.qLogic.QPred(target));
+            Variables.Spells[SpellSlot.Q].Cast(qLogic.QPred(target));
         }
 
         #endregion

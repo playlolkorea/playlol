@@ -15,53 +15,36 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
     {
         public RKillsteal(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; }
 
-        private Obj_AI_Hero Target => TargetSelector.GetTarget(Spells.Spell[SpellSlot.Q].Range, TargetSelector.DamageType.Physical);
+        private Obj_AI_Hero Target => TargetSelector.GetTarget(Spells.Spell[SpellSlot.R].Range, TargetSelector.DamageType.Physical);
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None
-                || Vars.Player.IsWindingUp
-                || !Spells.Spell[SpellSlot.R].IsReady()
-                || this.Target == null
-                || this.Target.Health > Spells.Spell[SpellSlot.R].GetDamage(this.Target)
-                || Vars.Player.IsUnderEnemyTurret())
+            Spells.Spell[SpellSlot.R].Range = 1500 + (500*Spells.Spell[SpellSlot.R].Level); // Brian if you see this i'm sorry XD
+
+            if (!Spells.Spell[SpellSlot.R].IsReady()
+                || Target == null
+                || Vars.Player.Distance(Target) < Vars.Player.GetRealAutoAttackRange() + 50
+                || Target.Health > Spells.Spell[SpellSlot.R].GetDamage(Target))
             {
                 return;
             }
 
-            if (this.Target.Distance(Vars.Player) < Vars.Player.GetRealAutoAttackRange())
-            {
-                return;
-            }
-
-            var pos = Spells.Spell[SpellSlot.R].GetPrediction(this.Target);
-
-            if (pos.AoeTargetsHit.Count > 1)// Todo: This just a TEST!
-            {
-                return;
-            } 
-
-            //if (Vars.Player.CountEnemiesInRange(Vars.Player.GetRealAutoAttackRange() + 400) != 0)
-            //{
-            //    return;
-            //}
-
-            Spells.Spell[SpellSlot.R].Cast(pos.CastPosition);
+            Spells.Spell[SpellSlot.R].Cast(Target);
         }
     }
 }

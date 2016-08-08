@@ -14,7 +14,7 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
     {
         public QKillsteal(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; }
@@ -23,28 +23,30 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None
-                || Vars.Player.IsWindingUp
+            if (Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.Q].IsReady()
-                || this.Target == null
-                || this.Target.Health > Spells.Spell[SpellSlot.Q].GetDamage(this.Target))
+                || Target == null
+                || Target.Health > Spells.Spell[SpellSlot.Q].GetDamage(Target))
             {
                 return;
             }
 
-            if(this.Target.Distance(Vars.Player) < Vars.Player.GetRealAutoAttackRange()) { return; }
+            if (Target.Distance(Vars.Player) < Vars.Player.GetRealAutoAttackRange())
+            {
+                return;
+            }
 
-            var pos = Spells.Spell[SpellSlot.Q].GetPrediction(this.Target);
+            var pos = Spells.Spell[SpellSlot.Q].GetPrediction(Target);
 
             Spells.Spell[SpellSlot.Q].Cast(pos.CastPosition);
         }

@@ -40,19 +40,19 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw -= this.OnDraw;
+            Drawing.OnDraw -= OnDraw;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw += this.OnDraw;
+            Drawing.OnDraw += OnDraw;
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu = new Menu(this.Name, this.Name);
+            Menu = new Menu(Name, Name);
 
-            this.Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
         }
 
         #endregion

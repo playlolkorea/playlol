@@ -35,35 +35,35 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
 
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
             
         }
 
         protected override void OnInitialize(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.rLogic = new PaleCascadeLogic();
-            this.logic = new LogicAll();
+            rLogic = new PaleCascadeLogic();
+            logic = new LogicAll();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu = new Menu(this.Name, this.Name);
+            Menu = new Menu(Name, Name);
 
-            this.Menu.AddItem(
-                new MenuItem(this.Name + "REnemies", "Don't R Into >= x Enemies").SetValue(new Slider(2, 0, 5)));
+            Menu.AddItem(
+                new MenuItem(Name + "REnemies", "Don't R Into >= x Enemies").SetValue(new Slider(2, 0, 5)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "RTurret", "Don't R Into Turret").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "RTurret", "Don't R Into Turret").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "RKillable", "Only If Killable").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "RKillable", "Only If Killable").SetValue(true));
 
-            Menu.AddItem(new MenuItem(this.Name + "Enabled", "Enabled").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
             
         }
 
@@ -72,7 +72,7 @@
             if (Variables.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || !Variables.Spells[SpellSlot.R].IsReady()) return;
 
-            this.paleCascade();
+            paleCascade();
         }
 
         private void paleCascade()
@@ -85,9 +85,9 @@
 
             if (Menu.Item(Menu.Name + "RTurret").GetValue<bool>() && target.UnderTurret()) return;
 
-            if (Menu.Item(Menu.Name + "RKillable").GetValue<bool>() && this.logic.ComboDmg(target) < target.Health) return;
+            if (Menu.Item(Menu.Name + "RKillable").GetValue<bool>() && logic.ComboDmg(target) < target.Health) return;
 
-            if (this.rLogic.Buff(target))
+            if (rLogic.Buff(target))
             {
                 Variables.Spells[SpellSlot.R].Cast(target);
             }

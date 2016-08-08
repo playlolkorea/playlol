@@ -31,24 +31,24 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.rLogic = new PaleCascadeLogic();
+            rLogic = new PaleCascadeLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
             // TODO Add Dmg Multiplier(?)
         {
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "RRange", "R Range ").SetValue(new Slider(825, 0, 825)));
+            Menu.AddItem(new MenuItem(Menu.Name + "RRange", "R Range ").SetValue(new Slider(825, 0, 825)));
         }
 
         private void OnUpdate(EventArgs args)
@@ -56,9 +56,9 @@
             var target =
                 HeroManager.Enemies.FirstOrDefault(
                     x =>
-                    !x.IsDead && x.IsValidTarget(this.Menu.Item(this.Menu.Name + "RRange").GetValue<Slider>().Value));
+                    !x.IsDead && x.IsValidTarget(Menu.Item(Menu.Name + "RRange").GetValue<Slider>().Value));
 
-            if (target == null || target.Health > this.rLogic.GetDmg(target)) return;
+            if (target == null || target.Health > rLogic.GetDmg(target)) return;
 
             Variables.Spells[SpellSlot.R].Cast(target);
         }

@@ -66,7 +66,7 @@
         {
             var pos = Variables.Spells[SpellSlot.Q].GetArcSPrediction(target);
 
-            return pos.CastPosition.To3D() + this.QDelay(target);
+            return pos.CastPosition.To3D() + QDelay(target);
         }
 
         #endregion

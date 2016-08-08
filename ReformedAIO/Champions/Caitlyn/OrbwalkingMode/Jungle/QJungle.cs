@@ -15,26 +15,26 @@ namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Jungle
     {
         public QJungle(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public sealed override string Name { get; set; }
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QOverkill", "Overkill Check").SetValue(true));
+            Menu.AddItem(new MenuItem(Menu.Name + "QOverkill", "Overkill Check").SetValue(true));
         }
 
         private void OnUpdate(EventArgs args)
@@ -52,10 +52,12 @@ namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Jungle
 
             var qPrediction = (Spells.Spell[SpellSlot.Q].GetPrediction(mobs));
 
-            if (this.Menu.Item(this.Menu.Name + "QOverkill").GetValue<bool>() &&
-                mobs.Health < Vars.Player.GetAutoAttackDamage(mobs) * 2) return;
+            if (Menu.Item(Menu.Name + "QOverkill").GetValue<bool>() &&
+                mobs.Health < Vars.Player.GetAutoAttackDamage(mobs) * 4) return;
 
-            Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition);
+
+            Utility.DelayAction.Add(50, ()=> Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition));
+
         }
     }
 }

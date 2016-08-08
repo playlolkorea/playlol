@@ -35,28 +35,28 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
 
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
             
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.eLogic = new ELogic();
-            this.qLoigc = new QLogic();
+            eLogic = new ELogic();
+            qLoigc = new QLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
+            Menu.AddItem(new MenuItem(Name + "LaneQMana", "Mana %").SetValue(new Slider(65, 0, 100)));
         }
 
         private void GetMinions()
@@ -73,9 +73,9 @@
 
             foreach (var m in minions)
             {
-                if (this.eLogic.RyzeE(m))
+                if (eLogic.RyzeE(m))
                 {
-                    Variable.Spells[SpellSlot.Q].Cast(this.qLoigc.QPred(m));
+                    Variable.Spells[SpellSlot.Q].Cast(qLoigc.QPred(m));
                 }
             }
         }
@@ -87,7 +87,7 @@
 
             if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.GetMinions();
+            GetMinions();
         }
 
         #endregion

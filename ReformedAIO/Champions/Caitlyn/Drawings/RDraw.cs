@@ -13,7 +13,7 @@
     {
         public RDraw(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; }
@@ -22,30 +22,33 @@
         {
             if (Vars.Player.IsDead) return;
 
-            if (this.Menu.Item(this.Menu.Name + "RReady").GetValue<bool>() && !Spells.Spell[SpellSlot.R].IsReady()) return;
+            if (Menu.Item(Menu.Name + "RReady").GetValue<bool>() && !Spells.Spell[SpellSlot.R].IsReady())
+            {
+                return;
+            }
 
             Render.Circle.DrawCircle(
                  Vars.Player.Position,
                 Spells.Spell[SpellSlot.R].Range,
                 Spells.Spell[SpellSlot.R].IsReady()
-                ? Color.White
+                ? Color.LightSlateGray
                 : Color.DarkSlateGray
                 , 1);
         }
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw -= this.OnDraw;
+            Drawing.OnDraw -= OnDraw;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Drawing.OnDraw += this.OnDraw;
+            Drawing.OnDraw += OnDraw;
         }
 
         protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "RReady", "Only If Ready").SetValue(false));
+            Menu.AddItem(new MenuItem(Name + "RReady", "Only If Ready").SetValue(false));
         }
     }
 }

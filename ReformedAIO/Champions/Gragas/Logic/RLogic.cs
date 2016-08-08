@@ -21,7 +21,7 @@
                 Variable.Spells[SpellSlot.R].GetVectorSPrediction(target, 1150)
                     .CastTargetPosition.Extend(Variable.Player.Position.To2D(), 65);
 
-            return pos.To3D() + this.RDelay(target);
+            return pos.To3D() + RDelay(target);
         }
 
         #endregion

@@ -18,7 +18,7 @@
 
         public WMixed(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         #endregion
@@ -33,22 +33,22 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(
-                new MenuItem(this.Menu.Name + "WDistance", "Max Distance").SetValue(new Slider(1100, 0, 1200)));
+            Menu.AddItem(
+                new MenuItem(Menu.Name + "WDistance", "Max Distance").SetValue(new Slider(1100, 0, 1200)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "WMana", "Mana %").SetValue(new Slider(80, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "WMana", "Mana %").SetValue(new Slider(80, 0, 100)));
         }
 
         private void OnUpdate(EventArgs args)
@@ -56,13 +56,13 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed
                 || !Variable.Spells[SpellSlot.W].IsReady() || Variable.Player.IsWindingUp) return;
 
-            this.Volley();
+            Volley();
         }
 
         private void Volley()
         {
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "WDistance").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "WDistance").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Physical);
 
             if (target == null || !target.IsValid) return;

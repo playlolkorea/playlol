@@ -12,7 +12,7 @@
     {
         public WCombo(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public override string Name { get; set; }
@@ -21,34 +21,34 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            AntiGapcloser.OnEnemyGapcloser -= this.Gapcloser;
-            Events.OnUpdate -= this.OnUpdate;
+            AntiGapcloser.OnEnemyGapcloser -= Gapcloser;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            AntiGapcloser.OnEnemyGapcloser += this.Gapcloser;
-            Events.OnUpdate += this.OnUpdate;
+            AntiGapcloser.OnEnemyGapcloser += Gapcloser;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "WMana", "Mana %").SetValue(new Slider(30, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "WMana", "Mana %").SetValue(new Slider(30, 0, 100)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "AntiGapcloser", "Anti-Gapcloser").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "AntiGapcloser", "Anti-Gapcloser").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "WTarget", "W Behind Target").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "WTarget", "W Behind Target").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "WImmobile", "W On Immobile").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "WImmobile", "W On Immobile").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "WBush", "Auto W On Bush").SetValue(false));
+        //    Menu.AddItem(new MenuItem(Name + "WBush", "Auto W On Bush").SetValue(false));
         }
 
         private void Gapcloser(ActiveGapcloser gapcloser)
         {
-            if (!this.Menu.Item(this.Menu.Name + "AntiGapcloser").GetValue<bool>()) return;
+            if (!Menu.Item(Menu.Name + "AntiGapcloser").GetValue<bool>()) return;
 
             var target = gapcloser.Sender;
 
@@ -64,21 +64,27 @@
             if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.W].IsReady()
-                || this.Target == null
-                || this.Menu.Item(this.Menu.Name + "WMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
+                || Target == null
+                || Menu.Item(Menu.Name + "WMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
 
-            if ((this.Menu.Item(this.Menu.Name + "WTarget").GetValue<bool>() &&
-                Vars.Player.GetSpell(SpellSlot.W).Ammo == 3) || Target.CountEnemiesInRange(1000) < Target.CountAlliesInRange(1000))
+            var wPrediction = Spells.Spell[SpellSlot.W].GetPrediction(Target);
+
+            if (Menu.Item(Menu.Name + "WTarget").GetValue<bool>()) 
             {
-                Spells.Spell[SpellSlot.W].CastIfWillHit(Target, 1);
+                if (Utils.TickCount - Spells.Spell[SpellSlot.W].LastCastAttemptT > 3350 && !Spells.Spell[SpellSlot.E].IsReady())
+                {
+                    Spells.Spell[SpellSlot.W].Cast(wPrediction.CastPosition);
+                }
+
+                if (Target.IsInvulnerable || Target.CountEnemiesInRange(1000) < Target.CountAlliesInRange(1000))
+                {
+                    Spells.Spell[SpellSlot.W].Cast(wPrediction.CastPosition);
+                }
             }
 
-            var wPrediction = (Spells.Spell[SpellSlot.W].GetPrediction(this.Target));
+            if (wPrediction.Hitchance < HitChance.Immobile || !Menu.Item(Menu.Name + "WImmobile").GetValue<bool>()) return;
 
-            if ((wPrediction.Hitchance >= HitChance.Immobile && this.Menu.Item(this.Menu.Name + "WImmobile").GetValue<bool>()) || Vars.Player.IsCastingInterruptableSpell())
-            {
-                Spells.Spell[SpellSlot.W].Cast(wPrediction.CastPosition);
-            }
+            Spells.Spell[SpellSlot.W].Cast(wPrediction.CastPosition);
         }
     }
 }

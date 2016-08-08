@@ -34,39 +34,39 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.logic = new LogicAll();
+            logic = new LogicAll();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "EKillable", "Only If Killable").SetValue(false));
+            Menu.AddItem(new MenuItem(Name + "EKillable", "Only If Killable").SetValue(false));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "ERange", "E Range ").SetValue(new Slider(835, 0, 850)));
+            Menu.AddItem(new MenuItem(Menu.Name + "ERange", "E Range ").SetValue(new Slider(835, 0, 850)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EMana", "Mana %").SetValue(new Slider(45, 0, 100)));
+            Menu.AddItem(new MenuItem(Menu.Name + "EMana", "Mana %").SetValue(new Slider(45, 0, 100)));
         }
 
         private void BodySlam()
         {
             var target = TargetSelector.GetTarget(
-                this.Menu.Item(this.Menu.Name + "ERange").GetValue<Slider>().Value,
+                Menu.Item(Menu.Name + "ERange").GetValue<Slider>().Value,
                 TargetSelector.DamageType.Magical);
 
             if (target == null || !target.IsValid) return;
 
-            if (this.Menu.Item(this.Menu.Name + "EKillable").GetValue<bool>()
-                && this.logic.ComboDmg(target) < target.Health) return;
+            if (Menu.Item(Menu.Name + "EKillable").GetValue<bool>()
+                && logic.ComboDmg(target) < target.Health) return;
 
             var ePred = Variable.Spells[SpellSlot.E].GetSPrediction(target);
 
@@ -82,9 +82,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || !Variable.Spells[SpellSlot.E].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "EMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "EMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.BodySlam();
+            BodySlam();
         }
 
         #endregion

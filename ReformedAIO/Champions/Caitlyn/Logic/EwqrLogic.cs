@@ -46,5 +46,10 @@ namespace ReformedAIO.Champions.Caitlyn.Logic
                 + Spells.Spell[SpellSlot.E].ManaCost
                 < Vars.Player.Mana;
         }
+
+        public bool CanExecute(Obj_AI_Hero target)
+        {
+            return EwqrMana() && EwqrDmg(target) > target.Health && Spells.Spell[SpellSlot.Q].IsReady() && Spells.Spell[SpellSlot.W].IsReady() && Spells.Spell[SpellSlot.E].IsReady();
+        }
     }
 }

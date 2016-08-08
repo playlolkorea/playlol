@@ -62,7 +62,7 @@
     </Reference>
     <Reference Include="RethoughtLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
+      <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\Software\PlaySharp\References\SharpDX.dll</HintPath>

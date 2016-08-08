@@ -33,25 +33,25 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.eLogic = new ELogic();
+            eLogic = new ELogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEEnemy", "Only If No Enemies Visible").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "LaneEEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneEMana", "Mana %").SetValue(new Slider(65, 0, 100)));
+            Menu.AddItem(new MenuItem(Name + "LaneEMana", "Mana %").SetValue(new Slider(65, 0, 100)));
         }
 
         private void GetMinions()
@@ -62,7 +62,7 @@
 
             if (minions == null) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneEEnemy").GetValue<bool>()
+            if (Menu.Item(Menu.Name + "LaneEEnemy").GetValue<bool>()
                 && minions.Any(m => m.CountEnemiesInRange(1750) > 0))
             {
                 return;
@@ -70,7 +70,7 @@
 
             foreach (var m in minions)
             {
-                if (this.eLogic.RyzeE(m)
+                if (eLogic.RyzeE(m)
                     || m.Health > Variable.Player.GetAutoAttackDamage(m)
                     && m.Health > Variable.Spells[SpellSlot.E].GetDamage(m))
                 {
@@ -84,9 +84,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
                 || !Variable.Spells[SpellSlot.E].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneEMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "LaneEMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.GetMinions();
+            GetMinions();
         }
 
         #endregion

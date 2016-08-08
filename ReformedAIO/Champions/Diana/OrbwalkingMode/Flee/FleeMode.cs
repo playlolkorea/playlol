@@ -33,40 +33,40 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.fleeLogic = new FleeLogic();
+            fleeLogic = new FleeLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(
-                new MenuItem(this.Name + "FleeKey", "Flee Key").SetValue(new KeyBind('A', KeyBindType.Press)));
+            Menu.AddItem(
+                new MenuItem(Name + "FleeKey", "Flee Key").SetValue(new KeyBind('A', KeyBindType.Press)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "FleeMinion", "Flee To Minions").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "FleeMinion", "Flee To Minions").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "FleeMob", "Flee To Mobs").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "FleeMob", "Flee To Mobs").SetValue(true));
 
-            this.Menu.AddItem(
-                new MenuItem(this.Name + "FleeVector", "Flee To Vector").SetValue(true)
+            Menu.AddItem(
+                new MenuItem(Name + "FleeVector", "Flee To Vector").SetValue(true)
                     .SetTooltip("Flee's To Jungle Camps"));
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (!this.Menu.Item(this.Menu.Name + "FleeKey").GetValue<KeyBind>().Active) return;
+            if (!Menu.Item(Menu.Name + "FleeKey").GetValue<KeyBind>().Active) return;
 
             var jump =
-                this.fleeLogic.JumpPos.FirstOrDefault(
+                fleeLogic.JumpPos.FirstOrDefault(
                     x =>
                     x.Value.Distance(ObjectManager.Player.Position) < 300f && x.Value.Distance(Game.CursorPos) < 700f);
 
@@ -76,12 +76,12 @@
 
             var mobs = MinionManager.GetMinions(900, MinionTypes.All, MinionTeam.NotAlly);
 
-            if (jump.Value.IsValid() && this.Menu.Item(this.Menu.Name + "FleeVector").GetValue<bool>())
+            if (jump.Value.IsValid() && Menu.Item(Menu.Name + "FleeVector").GetValue<bool>())
             {
                 Variables.Player.IssueOrder(GameObjectOrder.MoveTo, jump.Value);
 
                 foreach (var junglepos in
-                    this.fleeLogic.JunglePos.Where(
+                    fleeLogic.JunglePos.Where(
                         junglepos =>
                         Game.CursorPos.Distance(junglepos) <= 350
                         && ObjectManager.Player.Position.Distance(junglepos) <= 825
@@ -100,7 +100,7 @@
                 Variables.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
 
-            foreach (var junglepos in this.fleeLogic.JunglePos)
+            foreach (var junglepos in fleeLogic.JunglePos)
             {
                 if (Game.CursorPos.Distance(junglepos) <= 350
                     && ObjectManager.Player.Position.Distance(junglepos) <= 900

@@ -33,39 +33,39 @@
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Events.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.qLogic = new QLogic();
+            qLogic = new QLogic();
             base.OnInitialize(sender, featureBaseEventArgs);
         }
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
+            Menu.AddItem(new MenuItem(Name + "LaneQEnemy", "Only If No Enemies Visible").SetValue(true));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQDistance", "Q Distance").SetValue(new Slider(730, 0, 825)));
+            Menu.AddItem(new MenuItem(Name + "LaneQDistance", "Q Distance").SetValue(new Slider(730, 0, 825)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQHit", "Min Minions Hit").SetValue(new Slider(3, 0, 6)));
+            Menu.AddItem(new MenuItem(Name + "LaneQHit", "Min Minions Hit").SetValue(new Slider(3, 0, 6)));
 
-            this.Menu.AddItem(new MenuItem(this.Name + "LaneQMana", "Mana %").SetValue(new Slider(15, 0, 100)));
+            Menu.AddItem(new MenuItem(Name + "LaneQMana", "Mana %").SetValue(new Slider(15, 0, 100)));
         }
 
         private void GetMinions()
         {
             var minions =
-                MinionManager.GetMinions(this.Menu.Item(this.Menu.Name + "LaneQDistance").GetValue<Slider>().Value);
+                MinionManager.GetMinions(Menu.Item(Menu.Name + "LaneQDistance").GetValue<Slider>().Value);
 
             if (minions == null) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneQEnemy").GetValue<bool>())
+            if (Menu.Item(Menu.Name + "LaneQEnemy").GetValue<bool>())
             {
                 if (minions.Any(m => m.CountEnemiesInRange(1500) > 0))
                 {
@@ -73,20 +73,20 @@
                 }
             }
 
-            if (minions.Count < this.Menu.Item(this.Menu.Name + "LaneQHit").GetValue<Slider>().Value) return;
+            if (minions.Count < Menu.Item(Menu.Name + "LaneQHit").GetValue<Slider>().Value) return;
 
             var qPred = Variable.Spells[SpellSlot.Q].GetCircularFarmLocation(minions);
 
             foreach (var m in minions)
             {
-                if (this.qLogic.CanThrowQ())
+                if (qLogic.CanThrowQ())
                 {
                     Variable.Spells[SpellSlot.Q].Cast(qPred.Position);
                 }
 
                 if (!(Variable.Spells[SpellSlot.Q].GetDamage(m) > m.Health)) continue;
 
-                if (this.qLogic.CanExplodeQ(m))
+                if (qLogic.CanExplodeQ(m))
                 {
                     Variable.Spells[SpellSlot.Q].Cast();
                 }
@@ -98,9 +98,9 @@
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear
                 || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
-            if (this.Menu.Item(this.Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
+            if (Menu.Item(Menu.Name + "LaneQMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
-            this.GetMinions();
+            GetMinions();
         }
 
         #endregion

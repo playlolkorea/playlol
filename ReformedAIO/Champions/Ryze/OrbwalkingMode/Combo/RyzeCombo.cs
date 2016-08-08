@@ -32,22 +32,22 @@
 
         public RyzeCombo(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Game.OnUpdate -= this.OnUpdate;
+            Game.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Game.OnUpdate += this.OnUpdate;
+            Game.OnUpdate += OnUpdate;
         }
 
         protected override void OnInitialize(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            this.eLogic = new ELogic();
+            eLogic = new ELogic();
 
             base.OnInitialize(sender, featureBaseEventArgs);
         }
@@ -56,15 +56,15 @@
         {
             //base.OnLoad(sender, featureBaseEventArgs);
 
-            this.Menu.AddItem(
-                new MenuItem(this.Name + "Mode", "Mode").SetValue(
+            Menu.AddItem(
+                new MenuItem(Name + "Mode", "Mode").SetValue(
                     new StringList(new[] { "Burst", "Safe", "Automatic" })));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "QMana", "Q Mana %").SetValue(new Slider(0, 0, 50)));
+            Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Q Mana %").SetValue(new Slider(0, 0, 50)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "WMana", "W Mana %").SetValue(new Slider(0, 0, 50)));
+            Menu.AddItem(new MenuItem(Menu.Name + "WMana", "W Mana %").SetValue(new Slider(0, 0, 50)));
 
-            this.Menu.AddItem(new MenuItem(this.Menu.Name + "EMana", "E Mana %").SetValue(new Slider(0, 0, 50)));
+            Menu.AddItem(new MenuItem(Menu.Name + "EMana", "E Mana %").SetValue(new Slider(0, 0, 50)));
         }
 
         private void Burst()
@@ -76,7 +76,7 @@
             if (Variable.Spells[SpellSlot.Q].IsReady())
             {
                 if (target.IsValid
-                    && this.Menu.Item(this.Menu.Name + "QMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)
+                    && Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)
                 {
                     var qpred = Variable.Spells[SpellSlot.Q].GetPrediction(target);
                     if (qpred.Hitchance >= HitChance.Medium)
@@ -89,16 +89,16 @@
             if (Variable.Spells[SpellSlot.E].IsReady() && !Variable.Spells[SpellSlot.Q].IsReady())
             {
                 if (target.IsValidTarget(Variable.Spells[SpellSlot.E].Range)
-                    && this.Menu.Item(this.Menu.Name + "EMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)
+                    && Menu.Item(Menu.Name + "EMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)
                 {
                     Variable.Spells[SpellSlot.E].Cast(target);
                 }
             }
 
-            if (!Variable.Spells[SpellSlot.W].IsReady() || this.eLogic.RyzeE(target)) return;
+            if (!Variable.Spells[SpellSlot.W].IsReady() || eLogic.RyzeE(target)) return;
 
             if (!target.IsValidTarget(Variable.Spells[SpellSlot.W].Range)
-                || !(this.Menu.Item(this.Menu.Name + "WMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)) return;
+                || !(Menu.Item(Menu.Name + "WMana").GetValue<Slider>().Value < Variable.Player.ManaPercent)) return;
 
             Variable.Spells[SpellSlot.W].Cast(target);
         }
@@ -107,16 +107,16 @@
         {
             if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
 
-            switch (this.Menu.Item(this.Menu.Name + "Mode").GetValue<StringList>().SelectedIndex)
+            switch (Menu.Item(Menu.Name + "Mode").GetValue<StringList>().SelectedIndex)
             {
                 case 0:
                     {
-                        this.Burst();
+                        Burst();
                         break;
                     }
                 case 1:
                     {
-                        this.Safe();
+                        Safe();
                         break;
                     }
                 case 2:
@@ -145,13 +145,13 @@
                 Variable.Spells[SpellSlot.E].Cast(target);
             }
 
-            if (this.eLogic.RyzeE(target) && Variable.Spells[SpellSlot.W].IsReady()
+            if (eLogic.RyzeE(target) && Variable.Spells[SpellSlot.W].IsReady()
                 && target.IsValidTarget(Variable.Spells[SpellSlot.W].Range))
             {
                 Variable.Spells[SpellSlot.W].Cast(target);
             }
 
-            if (Variable.Spells[SpellSlot.Q].IsReady() && !this.eLogic.RyzeE(target))
+            if (Variable.Spells[SpellSlot.Q].IsReady() && !eLogic.RyzeE(target))
             {
                 Variable.Spells[SpellSlot.Q].CastIfHitchanceEquals(target, HitChance.High);
             }
