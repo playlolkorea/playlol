@@ -62,7 +62,7 @@
     </Reference>
     <Reference Include="RethoughtLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\Software\PlaySharp\References\SharpDX.dll</HintPath>
@@ -104,6 +104,26 @@
     <Compile Include="Champions\Ashe\OrbwalkingMode\Mixed\WMixed.cs" />
     <Compile Include="Champions\Ashe\Variable.cs" />
     <Compile Include="Champions\Bootstrap.cs" />
+    <Compile Include="Champions\Caitlyn\CaitlynLoader.cs" />
+    <Compile Include="Champions\Caitlyn\Drawings\DmgDraw.cs" />
+    <Compile Include="Champions\Caitlyn\Drawings\EDraw.cs" />
+    <Compile Include="Champions\Caitlyn\Drawings\QDraw.cs" />
+    <Compile Include="Champions\Caitlyn\Drawings\RDraw.cs" />
+    <Compile Include="Champions\Caitlyn\Drawings\WDraw.cs" />
+    <Compile Include="Champions\Caitlyn\Killsteal\QKillsteal.cs" />
+    <Compile Include="Champions\Caitlyn\Killsteal\RKillsteal.cs" />
+    <Compile Include="Champions\Caitlyn\Logic\EwqrLogic.cs" />
+    <Compile Include="Champions\Caitlyn\Logic\RLogic.cs" />
+    <Compile Include="Champions\Caitlyn\Logic\Spells.cs" />
+    <Compile Include="Champions\Caitlyn\Logic\WLogic.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Combo\ECombo.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Combo\EWQR.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Combo\QCombo.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Combo\WCombo.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Jungle\EJungle.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Jungle\QJungle.cs" />
+    <Compile Include="Champions\Caitlyn\OrbwalkingMode\Lane\QLane.cs" />
+    <Compile Include="Champions\Caitlyn\Vars.cs" />
     <Compile Include="Champions\Diana\DianaLoader.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\MisayaCombo.cs" />
     <Compile Include="Champions\Gragas\GragasLoader.cs" />

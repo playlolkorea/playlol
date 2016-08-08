@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using RethoughtLib.Utility;
-
-namespace ReformedAIO.Champions.Ashe
+﻿namespace ReformedAIO.Champions.Ashe
 {
     #region Using Directives
 
+    using System.Collections.Generic;
+    using RethoughtLib.Utility;
+
     using LeagueSharp.Common;
 
-    using ReformedAIO.Champions.Ashe.Drawings;
-    using ReformedAIO.Champions.Ashe.Logic;
-    using ReformedAIO.Champions.Ashe.OrbwalkingMode.Combo;
-    using ReformedAIO.Champions.Ashe.OrbwalkingMode.JungleClear;
-    using ReformedAIO.Champions.Ashe.OrbwalkingMode.LaneClear;
-    using ReformedAIO.Champions.Ashe.OrbwalkingMode.Mixed;
+    using Drawings;
+    using Logic;
+    using OrbwalkingMode.Combo;
+    using OrbwalkingMode.JungleClear;
+    using OrbwalkingMode.LaneClear;
+    using OrbwalkingMode.Mixed;
 
     using RethoughtLib.Bootstraps.Abstract_Classes;
     using RethoughtLib.FeatureSystem.Implementations;
@@ -35,7 +35,7 @@ namespace ReformedAIO.Champions.Ashe
 
         public override void Load()
         {
-            var superParent = new SuperParent(this.DisplayName);
+            var superParent = new SuperParent(DisplayName);
 
             var comboParent = new Parent("Combo");
             var mixedParent = new Parent("Mixed");

@@ -1,4 +1,6 @@
-﻿namespace ReformedAIO
+﻿using ReformedAIO.Champions.Caitlyn;
+
+namespace ReformedAIO
 {
     #region Using Directives
 
@@ -24,7 +26,7 @@
         {
             RethoughtLib.Instance.Load();
 
-            var bootstrap = new Bootstrap(new List<LoadableBase> { new DianaLoader(), new GragasLoader(), new AsheLoader(), new RyzeLoader() });
+            var bootstrap = new Bootstrap(new List<LoadableBase> { new DianaLoader(), new GragasLoader(), new AsheLoader(), new RyzeLoader(), new CaitlynLoader() });
 
             bootstrap.Run();
         }
