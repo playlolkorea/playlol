@@ -47,7 +47,7 @@ namespace ReformedAIO.Champions.Caitlyn
 
             comboParent.AddChildren(new ChildBase[]
             {
-                new Ewqr("EWQR Execute"), 
+             //   new Ewqr("EWQR Execute"), 
                 new QCombo("[Q]"),
                 new WCombo("[W]"),
                 new ECombo("[E]"),   

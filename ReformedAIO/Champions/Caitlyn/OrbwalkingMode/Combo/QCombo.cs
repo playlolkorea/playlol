@@ -1,6 +1,4 @@
-﻿using LeagueSharp.SDK.Utils;
-
-namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
+﻿namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
 {
     using Logic;
     using System;
@@ -48,7 +46,10 @@ namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
                 || Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.Q].IsReady()
                 || Target == null
-                || Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
+                || Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent)
+            {
+                return;
+            }
 
             if (Menu.Item(Menu.Name + "QHit").GetValue<bool>())
             {
@@ -57,7 +58,7 @@ namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
 
             var qPrediction = (Spells.Spell[SpellSlot.Q].GetPrediction(Target));
 
-            if (Vars.Player.IsCastingInterruptableSpell(true) || !Spells.Spell[SpellSlot.E].IsReady() && qPrediction.Hitchance >= HitChance.VeryHigh)
+            if (Vars.Player.IsCastingInterruptableSpell(true) || (!Spells.Spell[SpellSlot.E].IsReady() && qPrediction.Hitchance >= HitChance.VeryHigh && Vars.Player.Distance(Target) >= Vars.Player.AttackRange / 2))
             {
                 Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition);
             }

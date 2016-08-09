@@ -21,6 +21,8 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
 
         private Obj_AI_Hero Target => TargetSelector.GetTarget(Spells.Spell[SpellSlot.Q].Range, TargetSelector.DamageType.Physical);
 
+        private QLogic _qLogic;
+
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
             Events.OnUpdate -= OnUpdate;
@@ -31,17 +33,19 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
             Events.OnUpdate += OnUpdate;
         }
 
+        protected override void OnInitialize(object sender, Base.FeatureBaseEventArgs featureBaseEventArgs)
+        {
+            _qLogic = new QLogic();
+        }
+
         private void OnUpdate(EventArgs args)
         {
-            if (Vars.Player.IsWindingUp
-                || !Spells.Spell[SpellSlot.Q].IsReady()
+            if (!Spells.Spell[SpellSlot.Q].IsReady()
                 || Target == null
-                || Target.Health > Spells.Spell[SpellSlot.Q].GetDamage(Target))
-            {
-                return;
-            }
-
-            if (Target.Distance(Vars.Player) < Vars.Player.GetRealAutoAttackRange())
+                || Target.IsDead
+                || Target.Health > Spells.Spell[SpellSlot.Q].GetDamage(Target)
+                || Target.Distance(Vars.Player) < Vars.Player.GetRealAutoAttackRange()
+                || !_qLogic.CanKillSteal(Target))
             {
                 return;
             }

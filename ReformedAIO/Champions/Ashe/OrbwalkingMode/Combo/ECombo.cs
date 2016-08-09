@@ -60,9 +60,7 @@
 
         protected sealed override void OnLoad(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
-            Menu.AddItem(
-                new MenuItem(Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500))
-                    .SetTooltip("Only for enemeis & not objectives"));
+            Menu.AddItem(new MenuItem(Menu.Name + "EDistance", "Distance").SetValue(new Slider(1500, 0, 1500)).SetTooltip("Only for enemeis & not objectives"));
 
             Menu.AddItem(new MenuItem(Menu.Name + "ECount", "Save 1 Charge").SetValue(true));
 
@@ -73,7 +71,7 @@
 
         private void EToCamp()
         {
-            var pos =
+            var pos = 
                 eLogic.Camp.FirstOrDefault(
                     x =>
                     x.Value.Distance(Variable.Player.Position) > 1500

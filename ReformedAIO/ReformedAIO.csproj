@@ -51,27 +51,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.SDKEx, Version=3.0.1.2, Culture=neutral, PublicKeyToken=ae325b57d943987e, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Software\PlaySharp\References\LeagueSharp.SDKEx.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\LeagueSharp.SDKEx.dll</HintPath>
     </Reference>
     <Reference Include="RethoughtLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Software\PlaySharp\References\RethoughtLib.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\RethoughtLib.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\Software\PlaySharp\References\SharpDX.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\Software\PlaySharp\References\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SPrediction">
-      <HintPath>C:\Software\PlaySharp\References\SPrediction.dll</HintPath>
+      <HintPath>C:\Software\XoKn7ol1m\References\SPrediction.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -113,6 +113,7 @@
     <Compile Include="Champions\Caitlyn\Killsteal\QKillsteal.cs" />
     <Compile Include="Champions\Caitlyn\Killsteal\RKillsteal.cs" />
     <Compile Include="Champions\Caitlyn\Logic\EwqrLogic.cs" />
+    <Compile Include="Champions\Caitlyn\Logic\QLogic.cs" />
     <Compile Include="Champions\Caitlyn\Logic\RLogic.cs" />
     <Compile Include="Champions\Caitlyn\Logic\Spells.cs" />
     <Compile Include="Champions\Caitlyn\Logic\WLogic.cs" />

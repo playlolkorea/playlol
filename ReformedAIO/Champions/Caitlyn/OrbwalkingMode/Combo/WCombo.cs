@@ -1,5 +1,6 @@
 ﻿namespace ReformedAIO.Champions.Caitlyn.OrbwalkingMode.Combo
 {
+    using System.Linq;
     using Logic;
     using System;
     using LeagueSharp;
@@ -19,14 +20,18 @@
 
         private Obj_AI_Hero Target => TargetSelector.GetTarget(Spells.Spell[SpellSlot.W].Range, TargetSelector.DamageType.Physical);
 
+        private bool EWQ;
+
         protected override void OnDisable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
+            Obj_AI_Base.OnProcessSpellCast -= OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser -= Gapcloser;
             Events.OnUpdate -= OnUpdate;
         }
 
         protected override void OnEnable(object sender, FeatureBaseEventArgs featureBaseEventArgs)
         {
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser += Gapcloser;
             Events.OnUpdate += OnUpdate;
         }
@@ -43,7 +48,18 @@
 
             Menu.AddItem(new MenuItem(Name + "WImmobile", "W On Immobile").SetValue(true));
 
-        //    Menu.AddItem(new MenuItem(Name + "WBush", "Auto W On Bush").SetValue(false));
+            Menu.AddItem(new MenuItem(Name + "WBush", "Auto W On Bush").SetValue(false));
+        }
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            EWQ = false;
+
+            if (!Spells.Spell[SpellSlot.W].IsReady()
+                || !sender.IsMe
+                || (args.SData.Name != "CaitlynEntrapment") && args.SData.Name == "CaitlynPiltoverPeacemaker") return;
+
+            EWQ = true;
         }
 
         private void Gapcloser(ActiveGapcloser gapcloser)
@@ -59,21 +75,39 @@
             Spells.Spell[SpellSlot.W].Cast(gapcloser.End);
         }
 
+      
         private void OnUpdate(EventArgs args)
         {
+            if (Vars.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None
+                && Menu.Item(Menu.Name + "WBush").GetValue<bool>()
+                && Utils.TickCount - Spells.Spell[SpellSlot.W].LastCastAttemptT > 10000
+                && !Vars.Player.IsRecalling()
+                && !Vars.Player.IsWindingUp)
+            {
+                // Beta
+                if (Vars.Player.Spellbook.GetSpell(SpellSlot.W).Ammo < 3) return;
+
+                var path = Vars.Player.GetWaypoints().LastOrDefault().To3D();
+
+                if (!NavMesh.IsWallOfGrass(path, 0)) return;
+
+                Utility.DelayAction.Add(400, ()=> Spells.Spell[SpellSlot.W].Cast(path));
+            }
+
             if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
                 || Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.W].IsReady()
                 || Target == null
-                || Menu.Item(Menu.Name + "WMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
+                || Menu.Item(Menu.Name + "WMana").GetValue<Slider>().Value > Vars.Player.ManaPercent
+                || Utils.TickCount - Spells.Spell[SpellSlot.W].LastCastAttemptT < 5000) return;
 
             var wPrediction = Spells.Spell[SpellSlot.W].GetPrediction(Target);
 
             if (Menu.Item(Menu.Name + "WTarget").GetValue<bool>()) 
             {
-                if (Utils.TickCount - Spells.Spell[SpellSlot.W].LastCastAttemptT > 3350 && !Spells.Spell[SpellSlot.E].IsReady())
+                if (EWQ)
                 {
-                    Spells.Spell[SpellSlot.W].Cast(wPrediction.CastPosition);
+                    Utility.DelayAction.Add(170, ()=> Spells.Spell[SpellSlot.W].Cast(Target.Position));
                 }
 
                 if (Target.IsInvulnerable || Target.CountEnemiesInRange(1000) < Target.CountAlliesInRange(1000))
