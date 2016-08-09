@@ -38,29 +38,32 @@
             Menu.AddItem(new MenuItem(Name + "QImmobile", "Q On Immobile").SetValue(true));
 
             Menu.AddItem(new MenuItem(Name + "QHit", "Cast if 2 can be hit").SetValue(true));
+
+            Menu.AddItem(new MenuItem(Name + "QHigh", "E + Q Cancel").SetValue(false));
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
-                || Vars.Player.IsWindingUp
+            if (Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.Q].IsReady()
                 || Target == null
-                || Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent)
-            {
-                return;
-            }
+                || Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Vars.Player.ManaPercent) return;
 
             if (Menu.Item(Menu.Name + "QHit").GetValue<bool>())
             {
                 Spells.Spell[SpellSlot.Q].CastIfWillHit(Target, 2);
             }
 
+            if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
+            {
+                return;
+            }
+
             var qPrediction = (Spells.Spell[SpellSlot.Q].GetPrediction(Target));
 
-            if (Vars.Player.IsCastingInterruptableSpell(true) || (!Spells.Spell[SpellSlot.E].IsReady() && qPrediction.Hitchance >= HitChance.VeryHigh && Vars.Player.Distance(Target) >= Vars.Player.AttackRange / 2))
+            if (qPrediction.Hitchance >= HitChance.VeryHigh && Menu.Item(Menu.Name + "QHigh").GetValue<bool>()) // Needs work, too tired
             {
-                Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition);
+                Utility.DelayAction.Add(30, ()=> Spells.Spell[SpellSlot.Q].Cast(qPrediction.CastPosition));
             }
 
             if (qPrediction.Hitchance >= HitChance.Immobile && Menu.Item(Menu.Name + "QImmobile").GetValue<bool>())

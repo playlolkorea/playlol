@@ -57,7 +57,7 @@
         private void OnUpdate(EventArgs args)
         {
             if (Vars.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
-                ||Vars.Player.IsWindingUp
+                || Vars.Player.IsWindingUp
                 || !Spells.Spell[SpellSlot.E].IsReady()
                 || Target == null
                 || Menu.Item(Menu.Name + "EMana").GetValue<Slider>().Value > Vars.Player.ManaPercent)
@@ -65,15 +65,14 @@
                 return;
             }
 
-            if (!Target.IsImmovable && Target.Distance(Vars.Player) > 270 &&
-                Menu.Item(Menu.Name + "AntiMelee").GetValue<bool>())
-            {
-                return;
-            }
-
             var ePrediction = (Spells.Spell[SpellSlot.E].GetPrediction(Target));
 
-            if(ePrediction.Hitchance < HitChance.High) return;
+            if (Target.Distance(Vars.Player) > 270 && Menu.Item(Menu.Name + "AntiMelee").GetValue<bool>())
+            {
+                Spells.Spell[SpellSlot.E].Cast(ePrediction.CastPosition);
+            }
+
+            if (ePrediction.Hitchance < HitChance.High) return;
 
             Spells.Spell[SpellSlot.E].Cast(ePrediction.CastPosition);
         }

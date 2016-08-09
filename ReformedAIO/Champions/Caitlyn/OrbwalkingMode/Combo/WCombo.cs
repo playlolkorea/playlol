@@ -81,7 +81,7 @@
                 && !Vars.Player.IsWindingUp)
             {
                 // Beta
-                if (Vars.Player.Spellbook.GetSpell(SpellSlot.W).Ammo < 3) return;
+                if (Vars.Player.Spellbook.GetSpell(SpellSlot.W).Ammo < 2) return;
 
                 var path = Vars.Player.GetWaypoints().LastOrDefault().To3D();
 

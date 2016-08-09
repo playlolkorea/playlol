@@ -46,7 +46,7 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
 
             if (!Spells.Spell[SpellSlot.R].IsReady()
                 || Target == null
-                || Vars.Player.Distance(Target) < Vars.Player.GetRealAutoAttackRange() + 50
+                || Vars.Player.Distance(Target) < Vars.Player.GetRealAutoAttackRange() + 350
                 || Target.Health > Spells.Spell[SpellSlot.R].GetDamage(Target))
             {
                 return;
