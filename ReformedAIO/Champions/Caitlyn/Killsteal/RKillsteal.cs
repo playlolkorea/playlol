@@ -34,7 +34,15 @@ namespace ReformedAIO.Champions.Caitlyn.Killsteal
 
         private void OnUpdate(EventArgs args)
         {
-            Spells.Spell[SpellSlot.R].Range = 1500 + (500*Spells.Spell[SpellSlot.R].Level); // Brian if you see this i'm sorry XD
+             // Brian if you see this i'm sorry XD
+            if (Spells.Spell[SpellSlot.R].Level < 2)
+            {
+                Spells.Spell[SpellSlot.R].Range = 2000;
+            }
+            else
+            {
+                Spells.Spell[SpellSlot.R].Range = 1500 + (500 * Spells.Spell[SpellSlot.R].Level);
+            }
 
             if (!Spells.Spell[SpellSlot.R].IsReady()
                 || Target == null

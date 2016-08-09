@@ -53,13 +53,9 @@
 
         private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            EWQ = false;
-
-            if (!Spells.Spell[SpellSlot.W].IsReady()
-                || !sender.IsMe
-                || (args.SData.Name != "CaitlynEntrapment") && args.SData.Name == "CaitlynPiltoverPeacemaker") return;
-
-            EWQ = true;
+            if(!sender.IsMe || !Spells.Spell[SpellSlot.W].IsReady()) return;
+          
+            EWQ = args.SData.Name == "CaitlynPiltoverPeacemaker";
         }
 
         private void Gapcloser(ActiveGapcloser gapcloser)
