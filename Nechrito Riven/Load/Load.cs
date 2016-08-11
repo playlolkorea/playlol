@@ -19,7 +19,6 @@ namespace NechritoRiven.Load
             Spells.Load();
 
             Obj_AI_Base.OnProcessSpellCast += OnCasted.OnCasting;
-            Obj_AI_Base.OnDoCast += Modes.OnDoCastLc;
             Obj_AI_Base.OnDoCast += Modes.OnDoCast;
             Obj_AI_Base.OnProcessSpellCast += Core.Core.OnCast;
             Obj_AI_Base.OnPlayAnimation += Anim.OnPlay;
@@ -28,20 +27,14 @@ namespace NechritoRiven.Load
             Drawing.OnDraw += DrawRange.RangeDraw;
             Drawing.OnDraw += DrawWallSpot.WallDraw;
 
-            Game.OnUpdate += Trinkets.Update;
             Game.OnUpdate += KillSteal.Update;
             Game.OnUpdate += AlwaysUpdate.Update;
             Game.OnUpdate += Skinchanger.Update;
 
-            Spellbook.OnCastSpell += QSpell.OnSpell;
-
             Interrupter2.OnInterruptableTarget += Interrupt2.OnInterruptableTarget;
-            AntiGapcloser.OnEnemyGapcloser += Gapclose.gapcloser;
+            AntiGapcloser.OnEnemyGapcloser += Gapclose.Gapcloser;
 
-            AssemblyVersion.CheckVersion();
-
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 69</font></b>");
-            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Update</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Big Update</font></b>");
+            Game.PrintChat("<b><font color=\"#FFFFFF\">[</font></b><b><font color=\"#00e5e5\">Nechrito Riven</font></b><b><font color=\"#FFFFFF\">]</font></b><b><font color=\"#FFFFFF\"> Version: 71</font></b>");
         }
     }
 }

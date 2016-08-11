@@ -19,13 +19,13 @@ namespace NechritoRiven.Event
                 return;
             }
 
-            if (Utils.GameTimeTickCount - lastQ >= 3650 && Qstack != 1 && !Player.InFountain() && MenuConfig.KeepQ && Player.HasBuff("RivenTriCleave") &&
+            if (Utils.GameTimeTickCount - LastQ >= 3650 && Qstack != 1 && !Player.InFountain() && MenuConfig.KeepQ && Player.HasBuff("RivenTriCleave") &&
               !Player.Spellbook.IsChanneling && Spells.Q.IsReady()) Spells.Q.Cast(Game.CursorPos);
 
             Modes.QMove();
             ForceSkill();
             
-            switch (_orbwalker.ActiveMode)
+            switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                     Modes.Combo();
@@ -43,6 +43,8 @@ namespace NechritoRiven.Event
                     Modes.Harass();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
+                    Modes.Jungleclear();
+                    Modes.Laneclear();
                     break;
                 case Orbwalking.OrbwalkingMode.LastHit:
                     break;

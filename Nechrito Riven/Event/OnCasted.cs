@@ -22,7 +22,7 @@ namespace NechritoRiven.Event
 
                     if (args.Target.NetworkId == Player.NetworkId)
                     {
-                        if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
+                        if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
                             !args.SData.Name.Contains("NasusW"))
                         {
                             if (Spells.E.IsReady()) Spells.E.Cast(epos);
@@ -31,7 +31,7 @@ namespace NechritoRiven.Event
                     break;
                 case SpellDataTargetType.SelfAoe:
 
-                    if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || _orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                    if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                     {
                         if (Spells.E.IsReady()) Spells.E.Cast(epos);
                     }
