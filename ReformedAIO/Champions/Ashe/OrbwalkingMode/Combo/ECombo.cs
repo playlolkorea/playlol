@@ -71,11 +71,9 @@
 
         private void EToCamp()
         {
-            var pos = 
-                eLogic.Camp.FirstOrDefault(
-                    x =>
-                    x.Value.Distance(Variable.Player.Position) > 1500
-                    && x.Value.Distance(Variable.Player.Position) < 7000);
+            if(!Menu.Item(Menu.Name + "EToVector").GetValue<bool>()) return;
+
+            var pos =  eLogic.Camp.FirstOrDefault(x => x.Value.Distance(Variable.Player.Position) > 1500 && x.Value.Distance(Variable.Player.Position) < 7000);
 
             if (!pos.Value.IsValid()) return;
 
@@ -86,7 +84,8 @@
         {
             var target = TargetSelector.GetTarget(Variable.Player.AttackRange, TargetSelector.DamageType.Physical);
 
-            if (target == null || !target.IsValid
+            if (target == null
+                || !target.IsValid
                 || target.Distance(Variable.Player)
                 > Menu.Item(Menu.Name + "EDistance").GetValue<Slider>().Value || target.IsVisible) return;
 
@@ -98,7 +97,7 @@
 
                 if (!NavMesh.IsWallOfGrass(path, 1)) return;
 
-                if (position.Distance(path) > 1500) return;
+                //if (position.Distance(path) > 1500) return;
 
                 if (NavMesh.IsWallOfGrass(Variable.Player.Position, 1)) return; // Stil no proof wether or not this work yet.
 
@@ -110,13 +109,11 @@
         {
             if (Variable.Player.IsDead || !Menu.Item(Menu.Name + "VectorDraw").GetValue<bool>()) return;
 
-            var pos =
-                eLogic.Camp.FirstOrDefault(
-                    x =>
-                    x.Value.Distance(Variable.Player.Position) > 1500
-                    && x.Value.Distance(Variable.Player.Position) < 7000);
+            var pos = eLogic.Camp.FirstOrDefault(x => x.Value.Distance(Variable.Player.Position) > 2500 && x.Value.Distance(Variable.Player.Position) < 5500);
 
-            Render.Circle.DrawCircle(pos.Value, 100, !pos.Value.IsValid() ? Color.Red : Color.Green);
+            if(!pos.Value.IsValid()) return;
+ 
+            Render.Circle.DrawCircle(pos.Value, 100, Color.Green);
         }
 
         private void OnUpdate(EventArgs args)
@@ -126,7 +123,6 @@
             if (Menu.Item(Menu.Name + "ECount").GetValue<bool>() && eLogic.GetEAmmo() == 1) return;
 
             if (Variable.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
-                // I could make a new class and stuff but, doesn't really matter
             {
                 EToCamp();
             }

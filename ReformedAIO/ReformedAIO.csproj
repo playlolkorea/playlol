@@ -122,7 +122,7 @@
     <Compile Include="Champions\Caitlyn\OrbwalkingMode\Jungle\EJungle.cs" />
     <Compile Include="Champions\Caitlyn\OrbwalkingMode\Jungle\QJungle.cs" />
     <Compile Include="Champions\Caitlyn\OrbwalkingMode\Lane\QLane.cs" />
-    <Compile Include="Champions\Caitlyn\Vars.cs" />
+    <Compile Include="Champions\Vars.cs" />
     <Compile Include="Champions\Diana\DianaLoader.cs" />
     <Compile Include="Champions\Diana\OrbwalkingMode\Misaya\MisayaCombo.cs" />
     <Compile Include="Champions\Gragas\GragasLoader.cs" />

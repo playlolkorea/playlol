@@ -61,13 +61,12 @@
 
             Menu.AddItem(new MenuItem(Menu.Name + "QMana", "Mana %").SetValue(new Slider(0, 0, 50)));
 
-            Menu.AddItem(new MenuItem(Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("AA Q Reset"));
+            Menu.AddItem(new MenuItem(Name + "AAQ", "AA Before Q").SetValue(true).SetTooltip("Wont cancel AA with Q"));
         }
 
         private void OnUpdate(EventArgs args)
         {
-            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo
-                || !Variable.Spells[SpellSlot.Q].IsReady()) return;
+            if (Variable.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo || !Variable.Spells[SpellSlot.Q].IsReady()) return;
 
             if (Menu.Item(Menu.Name + "QMana").GetValue<Slider>().Value > Variable.Player.ManaPercent) return;
 
@@ -76,7 +75,7 @@
 
         private void RangersFocus()
         {
-            var target = HeroManager.Enemies.Where(Orbwalking.InAutoAttackRange).FirstOrDefault(x => !x.HasBuff(""));
+            var target = HeroManager.Enemies.Where(Orbwalking.InAutoAttackRange).FirstOrDefault();
 
             if (target == null || !target.IsValid) return;
 
