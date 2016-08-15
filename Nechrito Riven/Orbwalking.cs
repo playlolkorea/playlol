@@ -731,31 +731,31 @@ namespace NechritoRiven
             {
                 _config = attachToMenu;
                 /* Drawings submenu */
-                var drawings = new Menu("Drawings", "drawings");
+                var drawings = new Menu("Drawings", "표시");
                 drawings.AddItem(
-                    new MenuItem("AACircle", "AACircle").SetShared()
+                    new MenuItem("AACircle", "평타사거리 표시").SetShared()
                         .SetValue(new Circle(true, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(
-                    new MenuItem("AACircle2", "Enemy AA circle").SetShared()
+                    new MenuItem("AACircle2", "상대 클릭시 표시").SetShared()
                         .SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(
-                    new MenuItem("HoldZone", "HoldZone").SetShared()
+                    new MenuItem("HoldZone", "x").SetShared()
                         .SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(
-                    new MenuItem("AALineWidth", "Line Width")).SetShared()
+                    new MenuItem("AALineWidth", "선 굵기")).SetShared()
                         .SetValue(new Slider(2, 1, 6));
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
                 misc.AddItem(
-                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(0, 0, 250)));
-                misc.AddItem(new MenuItem("PriorizeFarm", "Priorize farm over harass").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(false));
-                misc.AddItem(new MenuItem("AttackPetsnTraps", "Auto attack pets & traps").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("AttackBarrel", "Auto attack gangplank barrel").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("Smallminionsprio", "Jungle clear small first").SetShared().SetValue(false));
-                misc.AddItem(new MenuItem("FocusMinionsOverTurrets", "Focus minions over objectives").SetShared().SetValue(new KeyBind('M', KeyBindType.Toggle)));
+                    new MenuItem("HoldPosRadius", "x").SetShared().SetValue(new Slider(0, 0, 250)));
+                misc.AddItem(new MenuItem("PriorizeFarm", "x").SetShared().SetValue(true));
+                misc.AddItem(new MenuItem("AttackWards", "콤보중 와드 공격").SetShared().SetValue(false));
+                misc.AddItem(new MenuItem("AttackPetsnTraps", "콤보중 덫 공격").SetShared().SetValue(true));
+                misc.AddItem(new MenuItem("AttackBarrel", "콤보중 갱플 화약통 공격").SetShared().SetValue(true));
+                misc.AddItem(new MenuItem("Smallminionsprio", "정글돌때 작은몹 먼저 공격").SetShared().SetValue(false));
+                misc.AddItem(new MenuItem("FocusMinionsOverTurrets", "x").SetShared().SetValue(new KeyBind('M', KeyBindType.Toggle)));
 
                 _config.AddSubMenu(misc);
 
@@ -765,36 +765,36 @@ namespace NechritoRiven
                 /* Delay sliders */
                 _config.AddItem(
                     new MenuItem("ExtraWindup", "Extra windup time").SetShared().SetValue(new Slider(35)));
-                _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(0)));
+                _config.AddItem(new MenuItem("FarmDelay", "파밍 딜레이(0=최고빠름)").SetShared().SetValue(new Slider(0)));
 
                 /*Load the menu*/
 
                 _config.AddItem(
-                    new MenuItem("Flee", "Flee").SetShared().SetValue(new KeyBind('Z', KeyBindType.Press)));
+                    new MenuItem("Flee", "이동(Z) 키설정").SetShared().SetValue(new KeyBind('Z', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("LastHit", "Last hit").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
+                    new MenuItem("LastHit", "막타(X) 키설정").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("Farm", "Mixed").SetShared().SetValue(new KeyBind('C', KeyBindType.Press)));
+                    new MenuItem("Farm", "견제(C) 키설정").SetShared().SetValue(new KeyBind('C', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("LWH", "Last Hit While Harass").SetShared().SetValue(false));
+                    new MenuItem("LWH", "견제(C)에 미니언막타 사용").SetShared().SetValue(false));
 
                 _config.AddItem(
-                    new MenuItem("LaneClear", "LaneClear").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
+                    new MenuItem("LaneClear", "라인클리어(V)").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
+                    new MenuItem("Orbwalk", "콤보(Spacebar)").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("Burst", "Burst").SetShared().SetValue(new KeyBind('T', KeyBindType.Press)));
+                    new MenuItem("Burst", "버스트콤보(T)").SetShared().SetValue(new KeyBind('T', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("FastHarass", "Fast Harass").SetShared().SetValue(new KeyBind('Y', KeyBindType.Press)));
+                    new MenuItem("FastHarass", "X").SetShared().SetValue(new KeyBind('Y', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("StillCombo", "Combo without moving").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));
+                    new MenuItem("StillCombo", "수동조작 콤보(N)").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));
 
                 _player = ObjectManager.Player;
                 Game.OnUpdate += GameOnOnGameUpdate;
