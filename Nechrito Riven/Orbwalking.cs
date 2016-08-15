@@ -747,7 +747,7 @@ namespace NechritoRiven
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
-                var misc = new Menu("Misc", "부가기능");
+                var misc = new Menu("부가기능", "부가기능");
                 misc.AddItem(
                     new MenuItem("HoldPosRadius", "x").SetShared().SetValue(new Slider(0, 0, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "x").SetShared().SetValue(true));
