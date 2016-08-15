@@ -16,7 +16,7 @@ namespace NechritoRiven.Menus
         {
             Config = new Menu(MenuName, MenuName, true);
 
-            TargetSelectorMenu = new Menu("translate by플레이롤", "translate by플레이롤");
+            TargetSelectorMenu = new Menu("카톡 PLAYLOLKOREA", "카톡 PLAYLOLKOREA");
             TargetSelector.AddToMenu(TargetSelectorMenu);
             Config.AddSubMenu(TargetSelectorMenu);
 
@@ -34,34 +34,34 @@ namespace NechritoRiven.Menus
             animation.AddItem(new MenuItem("animDance", "춤 애니메이션").SetValue(false));
             Config.AddSubMenu(animation);
 
-            var combo = new Menu("콤보(Spacebar)", "콤보(spacebar)");
-            combo.AddItem(new MenuItem("ignite", "자동 점화").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
-            combo.AddItem(new MenuItem("OverKillCheck", "R Max Damage").SetValue(true)).SetTooltip("Will save R for max damage");
-            combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
-            combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use Flash when target is killable");
+            var combo = new Menu("콤보(Spacebar)", "콤보(Spacebar)");
+            combo.AddItem(new MenuItem("ignite", "자동 점화").SetValue(true)).SetTooltip("점화를 자동으로 막타에 사용한다.");
+            combo.AddItem(new MenuItem("OverKillCheck", "궁 풀데미지").SetValue(true)).SetTooltip("데미지가 최고치일때 궁을 사용한다.");
+            combo.AddItem(new MenuItem("AlwaysR", "선궁 사용").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("콤보 사용시 궁을 먼저 발동한다.");
+            combo.AddItem(new MenuItem("AlwaysF", "선플래시 사용").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("콤보 사용시 플래시를 먼저 발동한다.");
             Config.AddSubMenu(combo);
 
-            var lane = new Menu("Lane", "Lane");
-            lane.AddItem(new MenuItem("LaneQ", "Use Q").SetValue(true));
-            lane.AddItem(new MenuItem("LaneW", "Use W").SetValue(true));
-            lane.AddItem(new MenuItem("LaneE", "Use E").SetValue(true));
+            var lane = new Menu("라인클리어(V)", "라인클리어(V)");
+            lane.AddItem(new MenuItem("LaneQ", "Q 사용").SetValue(true));
+            lane.AddItem(new MenuItem("LaneW", "W 사용").SetValue(true));
+            lane.AddItem(new MenuItem("LaneE", "E 사용").SetValue(true));
             Config.AddSubMenu(lane);
 
-            var jngl = new Menu("Jungle", "Jungle");
-            jngl.AddItem(new MenuItem("JungleQ", "Use Q").SetValue(true));
-            jngl.AddItem(new MenuItem("JungleW", "Use W").SetValue(true));
-            jngl.AddItem(new MenuItem("JungleE", "Use E").SetValue(true));
+            var jngl = new Menu("정글클리어(V)", "정글클리어(V)");
+            jngl.AddItem(new MenuItem("JungleQ", "Q 사용").SetValue(true));
+            jngl.AddItem(new MenuItem("JungleW", "W 사용").SetValue(true));
+            jngl.AddItem(new MenuItem("JungleE", "E 사용").SetValue(true));
             Config.AddSubMenu(jngl);
 
-            var misc = new Menu("Misc", "Misc");
-            misc.AddItem(new MenuItem("GapcloserMenu", "Anti-Gapcloser").SetValue(true));
+            var misc = new Menu("부가기능", "부가기능");
+            misc.AddItem(new MenuItem("GapcloserMenu", "상대 돌진기에 자동W").SetValue(true));
             misc.AddItem(new MenuItem("InterruptMenu", "Interrupter").SetValue(true));
-            misc.AddItem(new MenuItem("KeepQ", "Keep Q Alive").SetValue(true));
+            misc.AddItem(new MenuItem("KeepQ", "자동 Q유지").SetValue(true));
             Config.AddSubMenu(misc);
 
             var draw = new Menu("Draw", "Draw");
             draw.AddItem(new MenuItem("FleeSpot", "Draw Flee Spots").SetValue(true));
-            draw.AddItem(new MenuItem("Dind", "Damage Indicator").SetValue(true));
+            draw.AddItem(new MenuItem("Dind", "예상 데미지표시").SetValue(true));
             draw.AddItem(new MenuItem("DrawForceFlash", "Flash Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
             draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
@@ -75,13 +75,13 @@ namespace NechritoRiven.Menus
             flee.AddItem(new MenuItem("FleeYoumuu", "Youmuu's Ghostblade").SetValue(true).SetTooltip("Will flee with ghostblade"));
             Config.AddSubMenu(flee);
 
-            var skin = new Menu("SkinChanger", "SkinChanger");
-            skin.AddItem(new MenuItem("UseSkin", "Use SkinChanger").SetValue(false)).SetTooltip("Toggles Skinchanger");
+            var skin = new Menu("스킨 변경", "스킨 변경");
+            skin.AddItem(new MenuItem("UseSkin", "스킨 변경하기").SetValue(false)).SetTooltip("Toggles Skinchanger");
             skin.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Redeemed", "Crimson Elite", "Battle Bunny", "Championship", "Dragonblade", "Arcade" })));
             Config.AddSubMenu(skin);
 
-            var qmove = new Menu("Q Move", "Q Move");
-            qmove.AddItem(new MenuItem("QMove", "Q Move").SetValue(new KeyBind('K', KeyBindType.Press))).SetTooltip("Will Q Move to mouse");
+            var qmove = new Menu("Q 무빙", "Q 무빙");
+            qmove.AddItem(new MenuItem("QMove", "Q Move").SetValue(new KeyBind('K', KeyBindType.Press))).SetTooltip("마우스따라 Q 무빙");
             Config.AddSubMenu(qmove);
 
             Config.AddToMainMenu();
