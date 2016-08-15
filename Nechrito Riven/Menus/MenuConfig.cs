@@ -62,12 +62,12 @@ namespace NechritoRiven.Menus
             var draw = new Menu("표시", "표시");
             draw.AddItem(new MenuItem("FleeSpot", "이동(Z)키 넘을벽 표시").SetValue(true));
             draw.AddItem(new MenuItem("Dind", "예상데미지 표시").SetValue(true));
-            draw.AddItem(new MenuItem("DrawForceFlash", "선플래시 상태창").SetValue(true));
-            draw.AddItem(new MenuItem("DrawAlwaysR", "선궁 상태창").SetValue(true));
-            draw.AddItem(new MenuItem("DrawCB", "콤보(Spacebar) 관련").SetValue(false));
-            draw.AddItem(new MenuItem("DrawBT", "버스트(T) 관련").SetValue(false));
-            draw.AddItem(new MenuItem("DrawFH", "사용불가").SetValue(false));
-            draw.AddItem(new MenuItem("DrawHS", "견제 관련").SetValue(false));
+            draw.AddItem(new MenuItem("DrawForceFlash", "선플래시 상태창 표시").SetValue(true));
+            draw.AddItem(new MenuItem("DrawAlwaysR", "선궁 상태창 표시").SetValue(true));
+            draw.AddItem(new MenuItem("DrawCB", "콤보(Spacebar)관련 표시").SetValue(false));
+            draw.AddItem(new MenuItem("DrawBT", "버스트(T)관련 표시").SetValue(false));
+            draw.AddItem(new MenuItem("DrawFH", "사용x").SetValue(false));
+            draw.AddItem(new MenuItem("DrawHS", "견제(C)관련 표시").SetValue(false));
             Config.AddSubMenu(draw);
 
             var flee = new Menu("이동(Z)", "이동(Z)");
