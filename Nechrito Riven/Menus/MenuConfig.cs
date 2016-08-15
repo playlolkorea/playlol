@@ -55,33 +55,33 @@ namespace NechritoRiven.Menus
 
             var misc = new Menu("부가기능", "부가기능");
             misc.AddItem(new MenuItem("GapcloserMenu", "상대 돌진기에 자동W").SetValue(true));
-            misc.AddItem(new MenuItem("InterruptMenu", "Interrupter").SetValue(true));
+            misc.AddItem(new MenuItem("InterruptMenu", "쉔궁,텔등에 자동W").SetValue(true));
             misc.AddItem(new MenuItem("KeepQ", "자동 Q유지").SetValue(true));
             Config.AddSubMenu(misc);
 
-            var draw = new Menu("Draw", "Draw");
-            draw.AddItem(new MenuItem("FleeSpot", "Draw Flee Spots").SetValue(true));
-            draw.AddItem(new MenuItem("Dind", "예상 데미지표시").SetValue(true));
-            draw.AddItem(new MenuItem("DrawForceFlash", "Flash Status").SetValue(true));
-            draw.AddItem(new MenuItem("DrawAlwaysR", "R Status").SetValue(true));
-            draw.AddItem(new MenuItem("DrawCB", "Combo Engage").SetValue(false));
-            draw.AddItem(new MenuItem("DrawBT", "Burst Engage").SetValue(false));
-            draw.AddItem(new MenuItem("DrawFH", "FastHarass Engage").SetValue(false));
-            draw.AddItem(new MenuItem("DrawHS", "Harass Engage").SetValue(false));
+            var draw = new Menu("표시", "표시");
+            draw.AddItem(new MenuItem("FleeSpot", "이동(Z)키 넘을벽 표시").SetValue(true));
+            draw.AddItem(new MenuItem("Dind", "예상데미지 표시").SetValue(true));
+            draw.AddItem(new MenuItem("DrawForceFlash", "선플래시 상태창").SetValue(true));
+            draw.AddItem(new MenuItem("DrawAlwaysR", "선궁 상태창").SetValue(true));
+            draw.AddItem(new MenuItem("DrawCB", "콤보(Spacebar) 관련").SetValue(false));
+            draw.AddItem(new MenuItem("DrawBT", "버스트(T) 관련").SetValue(false));
+            draw.AddItem(new MenuItem("DrawFH", "사용불가").SetValue(false));
+            draw.AddItem(new MenuItem("DrawHS", "견제 관련").SetValue(false));
             Config.AddSubMenu(draw);
 
-            var flee = new Menu("Flee", "Flee");
-            flee.AddItem(new MenuItem("WallFlee", "WallJump in Flee").SetValue(true).SetTooltip("Jumps over walls in flee mode"));
-            flee.AddItem(new MenuItem("FleeYoumuu", "Youmuu's Ghostblade").SetValue(true).SetTooltip("Will flee with ghostblade"));
+            var flee = new Menu("이동(Z)", "이동(Z)");
+            flee.AddItem(new MenuItem("WallFlee", "이동시 벽넘기 지원").SetValue(true).SetTooltip("이동(Z)시 벽에다가가면 벽을 넘습니다."));
+            flee.AddItem(new MenuItem("FleeYoumuu", "요우무 자동 발동").SetValue(true).SetTooltip("요우무를 자동으로 발동합니다."));
             Config.AddSubMenu(flee);
 
-            var skin = new Menu("스킨 변경", "스킨 변경");
-            skin.AddItem(new MenuItem("UseSkin", "스킨 변경하기").SetValue(false)).SetTooltip("Toggles Skinchanger");
-            skin.AddItem(new MenuItem("Skin", "Skin").SetValue(new StringList(new[] { "Default", "Redeemed", "Crimson Elite", "Battle Bunny", "Championship", "Dragonblade", "Arcade" })));
+            var skin = new Menu("스킨바꾸기", "스킨바꾸기");
+            skin.AddItem(new MenuItem("UseSkin", "스킨바꾸기").SetValue(false)).SetTooltip("스킨을 바꿀것인가?");
+            skin.AddItem(new MenuItem("Skin", "스킨선택").SetValue(new StringList(new[] { "일반 리븐", "구원받은 리븐", "핏빛친위대 리븐", "전투토끼 리븐", "챔피언쉽 리븐", "화룡검 리븐", "아케이드 리븐" })));
             Config.AddSubMenu(skin);
 
             var qmove = new Menu("Q 무빙", "Q 무빙");
-            qmove.AddItem(new MenuItem("QMove", "Q Move").SetValue(new KeyBind('K', KeyBindType.Press))).SetTooltip("마우스따라 Q 무빙");
+            qmove.AddItem(new MenuItem("QMove", "Q 무빙").SetValue(new KeyBind('K', KeyBindType.Press))).SetTooltip("마우스따라 Q 무빙");
             Config.AddSubMenu(qmove);
 
             Config.AddToMainMenu();
