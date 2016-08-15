@@ -55,18 +55,18 @@ namespace NechritoRiven.Draw
 
             if (MenuConfig.DrawAlwaysR)
             {
-                Drawing.DrawText(pos.X - 15, pos.Y + 20, System.Drawing.Color.Cyan, "Force R  (     )");
+                Drawing.DrawText(pos.X - 15, pos.Y + 20, System.Drawing.Color.Mauve, "선궁  (     )");
                 Drawing.DrawText(pos.X + 53, pos.Y + 20,
-                    MenuConfig.AlwaysR ? System.Drawing.Color.White : System.Drawing.Color.Red, MenuConfig.AlwaysR ? "On" : "Off");
+                    MenuConfig.AlwaysR ? System.Drawing.Color.White : System.Drawing.Color.Red, MenuConfig.AlwaysR ? "켜짐" : "꺼짐");
             }
 
             if (!MenuConfig.ForceFlash) return;
 
-            Drawing.DrawText(pos.X - 15, pos.Y + 40, System.Drawing.Color.Cyan, "Force Flash  (     )");
+            Drawing.DrawText(pos.X - 15, pos.Y + 40, System.Drawing.Color.Mauve, "선플래시  (     )");
             Drawing.DrawText(pos.X + 83, pos.Y + 40, MenuConfig.AlwaysF 
                 ? System.Drawing.Color.White
                 : System.Drawing.Color.Red,
-                MenuConfig.AlwaysF ? "On" : "Off");
+                MenuConfig.AlwaysF ? "켜짐" : "꺼짐");
         }
     }
 }
