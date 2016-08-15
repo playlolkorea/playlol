@@ -10,32 +10,32 @@ namespace NechritoRiven.Menus
     {
         public static Menu Config;
         public static Menu TargetSelectorMenu;
-        public static string MenuName = "Nechrito Riven";
+        public static string MenuName = "리븐 설정";
 
         public static void LoadMenu()
         {
             Config = new Menu(MenuName, MenuName, true);
 
-            TargetSelectorMenu = new Menu("target Selector", "target Selector");
+            TargetSelectorMenu = new Menu("translate by플레이롤", "translate by플레이롤");
             TargetSelector.AddToMenu(TargetSelectorMenu);
             Config.AddSubMenu(TargetSelectorMenu);
 
-            var orbwalker = new Menu("Orbwalker", "rorb");
+            var orbwalker = new Menu("키설정", "rorb");
             Orbwalker = new Orbwalking.Orbwalker(orbwalker);
             Config.AddSubMenu(orbwalker);
 
-            var animation = new Menu("Animation", "Animation");
-            animation.AddItem(new MenuItem("QD", "Q1, Q2 Delay").SetValue(new Slider(23, 23, 43)));
-            animation.AddItem(new MenuItem("QLD", "Q3 Delay").SetValue(new Slider(36, 36, 53)));
-            animation.AddItem(new MenuItem("Qstrange", "Enable").SetValue(false)).SetTooltip("Enables Emote");
-            animation.AddItem(new MenuItem("animLaugh", "Laugh").SetValue(false));
-            animation.AddItem(new MenuItem("animTaunt", "Taunt").SetValue(false));
-            animation.AddItem(new MenuItem("animTalk", "Joke").SetValue(false));
-            animation.AddItem(new MenuItem("animDance", "Dance").SetValue(false));
+            var animation = new Menu("움직임", "움직임");
+            animation.AddItem(new MenuItem("QD", "Q1, Q2 딜레이").SetValue(new Slider(23, 23, 43)));
+            animation.AddItem(new MenuItem("QLD", "Q3 딜레이").SetValue(new Slider(36, 36, 53)));
+            animation.AddItem(new MenuItem("Qstrange", "사용x").SetValue(false)).SetTooltip("Enables Emote");
+            animation.AddItem(new MenuItem("animLaugh", "웃기 애니메이션").SetValue(false));
+            animation.AddItem(new MenuItem("animTaunt", "놀리기 애니메이션").SetValue(false));
+            animation.AddItem(new MenuItem("animTalk", "농담 애니메이션").SetValue(false));
+            animation.AddItem(new MenuItem("animDance", "춤 애니메이션").SetValue(false));
             Config.AddSubMenu(animation);
 
-            var combo = new Menu("Combo", "Combo");
-            combo.AddItem(new MenuItem("ignite", "Auto Ignite").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
+            var combo = new Menu("콤보(Spacebar)", "콤보(spacebar)");
+            combo.AddItem(new MenuItem("ignite", "자동 점화").SetValue(true)).SetTooltip("Auto Ignite When target is killable");
             combo.AddItem(new MenuItem("OverKillCheck", "R Max Damage").SetValue(true)).SetTooltip("Will save R for max damage");
             combo.AddItem(new MenuItem("AlwaysR", "Force R").SetValue(new KeyBind('G', KeyBindType.Toggle))).SetTooltip("Off will only use R when target is killable");
             combo.AddItem(new MenuItem("AlwaysF", "Force Flash").SetValue(new KeyBind('L', KeyBindType.Toggle))).SetTooltip("Off Will only use Flash when target is killable");
