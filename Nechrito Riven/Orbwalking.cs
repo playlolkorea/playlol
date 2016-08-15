@@ -731,7 +731,7 @@ namespace NechritoRiven
             {
                 _config = attachToMenu;
                 /* Drawings submenu */
-                var drawings = new Menu("Drawings", "표시");
+                var drawings = new Menu("표시", "표시");
                 drawings.AddItem(
                     new MenuItem("AACircle", "평타사거리 표시").SetShared()
                         .SetValue(new Circle(true, Color.FromArgb(155, 255, 255, 0))));
@@ -747,7 +747,7 @@ namespace NechritoRiven
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
-                var misc = new Menu("Misc", "Misc");
+                var misc = new Menu("Misc", "부가기능");
                 misc.AddItem(
                     new MenuItem("HoldPosRadius", "x").SetShared().SetValue(new Slider(0, 0, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "x").SetShared().SetValue(true));
@@ -760,11 +760,11 @@ namespace NechritoRiven
                 _config.AddSubMenu(misc);
 
                 /* Missile check */
-                _config.AddItem(new MenuItem("MissileCheck", "Use Missile Check").SetShared().SetValue(true));
+                _config.AddItem(new MenuItem("MissileCheck", "x").SetShared().SetValue(true));
 
                 /* Delay sliders */
                 _config.AddItem(
-                    new MenuItem("ExtraWindup", "Extra windup time").SetShared().SetValue(new Slider(35)));
+                    new MenuItem("ExtraWindup", "x").SetShared().SetValue(new Slider(35)));
                 _config.AddItem(new MenuItem("FarmDelay", "파밍 딜레이(0=최고빠름)").SetShared().SetValue(new Slider(0)));
 
                 /*Load the menu*/
